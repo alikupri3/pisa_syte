@@ -1286,6 +1286,13 @@
             try {
                 const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
                 myBoardKey = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
+                // Первый вход добавляет игрока на общий рынок через бота.
+                if (!localStorage.getItem('pupuUserSynced')) {
+                    localStorage.setItem('pupuUserSynced', '1');
+                    if (tg && tg.sendData) {
+                        tg.sendData(JSON.stringify({action: 'sync_user', coins: myCoins}));
+                    }
+                }
                 renderBoard();
             } catch (e) { /* подсветка себя недоступна */ }
         }
@@ -1462,7 +1469,7 @@
 
             document.getElementById('slvStatus').innerText =
                 user ? 'Общий рынок · обновлено только что' : 'Открой через Telegram, чтобы участвовать';
-            document.getElementById('slvBalance').innerText = formatNum(me ? me.balance : 0);
+            document.getElementById('slvBalance').innerText = formatNum(me ? (me.points || 0) : 0);
             document.getElementById('slvCount').innerText = players.length;
 
             const owned = me ? players.filter(p => p.owner === me.id) : [];
@@ -1507,7 +1514,7 @@
                 else if (owner) sub = 'У ' + owner.name + ' · выкуп ' + formatNum(p.price) + ' 🪙';
                 let buy = '';
                 if (!isMe) {
-                    const affordable = me && me.balance >= p.price;
+                    const affordable = me && (me.points || 0) >= p.price;
                     buy = '<button class="slave-buy' + (isMine ? ' upgrade' : '') + '" ' +
                         (affordable ? '' : 'disabled ') +
                         'onclick="slaveryAction(\'' + (isMine ? 'improve' : 'buy') + '\', \'' +
