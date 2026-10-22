@@ -1113,8 +1113,8 @@
             <div class="section-label"><span>Участники</span><span id="slvCount">0</span></div>
             <div class="slavery-list" id="slvList"></div>
             <div class="slavery-note">
-                Покупки и выкупы видят все участники. Доход можно собирать раз в 5 минут.
-                Цена и доход растут после каждого улучшения.
+                Баланс биржи берётся из бота: монеты из тапалки и игр после «Сохранить в Топ бота»,
+                выигрыши казино и собранный доход. Доход можно собирать раз в 5 минут.
             </div>
         </div>
 
@@ -1321,6 +1321,9 @@
                     }
                 }
                 renderBoard();
+                // Если биржа уже успела загрузиться до готовности ключа,
+                // перерисовываем её с привязкой к текущему игроку.
+                if (slaveryState) renderSlavery();
             } catch (e) { /* подсветка себя недоступна */ }
         }
 
@@ -1492,7 +1495,9 @@
         function renderSlavery() {
             if (!slaveryState) return;
             const user = telegramUser();
-            const me = slaveryState.me || (user ? findSlaveryPlayer(user.id) : null);
+            const me = slaveryState.me
+                || (user ? findSlaveryPlayer(user.id) : null)
+                || (myBoardKey ? findSlaveryPlayer(myBoardKey) : null);
             const players = slaveryState.players || [];
 
             document.getElementById('slvStatus').innerText =
@@ -1564,6 +1569,9 @@
             if (slaveryLoading) return;
             slaveryLoading = true;
             try {
+                // Не показываем чужой/пустой баланс, пока не готов
+                // SHA-1 ключ текущего Telegram-пользователя.
+                if (!myBoardKey && telegramUser()) await computeMyKey();
                 const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 const fresh = await resp.json();
