@@ -1078,7 +1078,7 @@
 
             <div class="board-list" id="boardList"></div>
             <div class="board-me" id="boardMe"></div>
-            <div class="board-note">Данные берутся из бота. Чтобы попасть в рейтинг, нажми «Сохранить в Топ бота» в главном меню.</div>
+            <div class="board-note">Таблица обновляется автоматически. Чтобы попасть в рейтинг, нажми «Сохранить в Топ бота».</div>
         </div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
@@ -1307,18 +1307,7 @@
                         loaded = true;
                     }
                 }
-            } catch (e) { /* пробуем живое хранилище */ }
-            // Живое хранилище — только запасной источник: в нём могут быть
-            // старые или неполные строки, и они не должны перекрывать файл.
-            if (!loaded) {
-                try {
-                    const liveResp = await fetch('/.netlify/functions/slavery?leaderboard=1&t=' + Date.now(), {cache: 'no-store'});
-                    if (liveResp.ok) {
-                        const liveRows = await liveResp.json();
-                        if (Array.isArray(liveRows) && liveRows.length) boardRows = liveRows;
-                    }
-                } catch (e) { /* остаётся статичная копия */ }
-            }
+            } catch (e) { /* остаётся статичная копия */ }
             renderBoard();
             updateAllUI();
         }
@@ -1540,20 +1529,24 @@
             if (slaveryLoading) return;
             slaveryLoading = true;
             try {
-                const user = telegramUser();
-                const params = new URLSearchParams();
-                if (user) {
-                    params.set('me', user.id);
-                    params.set('name', user.name);
-                }
-                const query = params.toString() ? '?' + params.toString() : '';
-                const resp = await fetch('/.netlify/functions/slavery' + query, {cache: 'no-store'});
+                const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                slaveryState = await resp.json();
+                const fresh = await resp.json();
+                // На GitHub Pages биржа публикуется как статичный снимок.
+                // Telegram ID в нём скрыт, поэтому сопоставляем себя по
+                // тому же SHA-1 ключу, который используется в рейтинге.
+                if (fresh && Array.isArray(fresh.players)) {
+                    const players = fresh.players.map(p => ({...p, id: p.key}));
+                    const user = telegramUser();
+                    const me = user ? players.find(p => p.id === myBoardKey) || null : null;
+                    slaveryState = {...fresh, players, me};
+                } else {
+                    slaveryState = fresh;
+                }
                 renderSlavery();
                 if (manual) slaveryToast('Список обновлён');
             } catch (e) {
-                document.getElementById('slvStatus').innerText = 'Не удалось загрузить общий рынок';
+                document.getElementById('slvStatus').innerText = 'Биржа временно недоступна';
             } finally {
                 slaveryLoading = false;
             }
@@ -1565,23 +1558,28 @@
                 return slaveryToast('Открой игру через Telegram, чтобы покупать.');
             }
             try {
-                const resp = await fetch('/.netlify/functions/slavery', {
-                    method: 'POST',
-                    headers: {'content-type': 'application/json'},
-                    body: JSON.stringify({
-                        mode: 'action',
-                        action,
-                        target,
-                        actor: {id: user.id, name: user.name},
-                        initData: user.initData
-                    })
-                });
-                const payload = await resp.json();
-                if (!resp.ok) return slaveryToast(payload.error || 'Не получилось.');
-                slaveryState = payload.state;
-                renderSlavery();
-                const resultKey = payload.state.me && payload.state.me.id;
-                slaveryToast((resultKey && payload.state.results[resultKey]?.text) || 'Готово');
+                // Покупки и сбор дохода выполняются ботом через Telegram:
+                // на GitHub Pages нет серверных функций Netlify.
+                const messages = {
+                    buy: 'Купить игрока',
+                    improve: 'Улучшить игрока',
+                    collect: 'Собрать доход'
+                };
+                const text = '/slave ' + action + (target ? ' ' + target : '');
+                const reply = tg && tg.showConfirm
+                    ? await new Promise(resolve => tg.showConfirm(messages[action] + '?\n\nОтправь команду боту: ' + text, resolve))
+                    : true;
+                if (!reply) return;
+                if (tg && tg.sendData) {
+                    tg.sendData(JSON.stringify({
+                        action: 'slavery_action',
+                        mode: action,
+                        target
+                    }));
+                    slaveryToast('Запрос отправлен боту. Открой чат для результата.');
+                } else {
+                    slaveryToast('Открой игру через Telegram, чтобы выполнить действие.');
+                }
             } catch (e) {
                 slaveryToast('Нет связи с биржей.');
             }
