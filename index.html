@@ -136,6 +136,18 @@
             margin-top: 20px;
         }
 
+        .save-status {
+            min-height: 20px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+            text-align: center;
+        }
+
+        .save-status.ok { color: #86efac; }
+        .save-status.error { color: #fda4af; }
+
         .btn-primary:active {
             transform: translateY(2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -955,7 +967,8 @@
             </div>
         </div>
 
-        <button class="btn-primary" onclick="sendToBot()">💾 Сохранить в Топ бота</button>
+        <button class="btn-primary" id="saveBtn" onclick="sendToBot()">💾 Сохранить в Топ бота</button>
+        <div id="saveStatus" class="save-status" role="status" aria-live="polite"></div>
     </div>
 
     <!-- ТАПАЛКА -->
@@ -1152,8 +1165,8 @@
         let energy = parseInt(localStorage.getItem('currEnergy'));
         if (isNaN(energy)) energy = maxEnergy;
 
-        // Текущий рейтинг из bot_data.json. Страница сначала пробует
-        // leaderboard.json рядом с index.html, затем использует эти данные.
+        // Текущий рейтинг. Сначала читаем свежий leaderboard.json,
+        // затем живое хранилище Netlify и статичный запасной список.
         const LEADERBOARD_ROWS = [
             {"key":"54a9d82aa1","name":"\u0e48","points":0,"snake":0,"race":0,"g2048":0,"slaves":9},
             {"key":"84c100c056","name":"moon","points":0,"snake":0,"race":0,"g2048":0,"slaves":1},
@@ -1168,6 +1181,7 @@
         ];
         let boardRows = LEADERBOARD_ROWS.slice();
         let boardSort = 'points';
+        let leaderboardTimer = null;
         let myBoardKey = null;
 
         const BOARD_SORTS = {
@@ -1283,14 +1297,30 @@
                 void btn.offsetWidth;
                 btn.classList.add('spinning');
             }
+            let loaded = false;
             try {
                 const resp = await fetch('leaderboard.json?t=' + Date.now(), {cache: 'no-store'});
                 if (resp.ok) {
                     const fresh = await resp.json();
-                    if (Array.isArray(fresh) && fresh.length) boardRows = fresh;
+                    if (Array.isArray(fresh) && fresh.length) {
+                        boardRows = fresh;
+                        loaded = true;
+                    }
                 }
-            } catch (e) { /* статичная копия ниже */ }
-            if (manual) renderBoard();
+            } catch (e) { /* пробуем живое хранилище */ }
+            // Живое хранилище — только запасной источник: в нём могут быть
+            // старые или неполные строки, и они не должны перекрывать файл.
+            if (!loaded) {
+                try {
+                    const liveResp = await fetch('/.netlify/functions/slavery?leaderboard=1&t=' + Date.now(), {cache: 'no-store'});
+                    if (liveResp.ok) {
+                        const liveRows = await liveResp.json();
+                        if (Array.isArray(liveRows) && liveRows.length) boardRows = liveRows;
+                    }
+                } catch (e) { /* остаётся статичная копия */ }
+            }
+            renderBoard();
+            updateAllUI();
         }
 
         computeMyKey();
@@ -1310,7 +1340,7 @@
             document.getElementById('mSnake').innerText = bestSnake;
             document.getElementById('mRace').innerText = bestRace;
             document.getElementById('mG2048').innerText = bestG2048;
-            document.getElementById('mLeadersCount').innerText = LEADERBOARD_ROWS.length;
+            document.getElementById('mLeadersCount').innerText = boardRows.length;
             document.getElementById('mTapLvl').innerText = tapPower;
             document.getElementById('tapScore').innerText = myCoins;
             document.getElementById('energyVal').innerText = energy;
@@ -1340,6 +1370,8 @@
             cancelAnimationFrame(raceAnim);
             if (slaveryTimer) clearInterval(slaveryTimer);
             slaveryTimer = null;
+            if (leaderboardTimer) clearInterval(leaderboardTimer);
+            leaderboardTimer = null;
         }
 
         function openGame(id) {
@@ -1348,7 +1380,12 @@
             updateAllUI();
             if (id === 'snake') startSnake();
             if (id === 'race') startRace();
-            if (id === 'leaders') renderBoard();
+            if (id === 'leaders') {
+                renderBoard();
+                loadLeaders(false);
+                if (leaderboardTimer) clearInterval(leaderboardTimer);
+                leaderboardTimer = setInterval(() => loadLeaders(false), 15000);
+            }
             if (id === 'slavery') {
                 loadSlavery(false);
                 if (slaveryTimer) clearInterval(slaveryTimer);
@@ -1357,23 +1394,44 @@
             if (id === 'g2048') init2048();
         }
 
-        function sendToBot() {
-            if (tg) {
-                let data = {
-                    action: 'save_games',
-                    coins: myCoins,
-                    snake: bestSnake,
-                    race: bestRace,
-                    g2048: bestG2048
-                };
-                try {
-                    tg.sendData(JSON.stringify(data));
-                    myCoins = 0;
-                    localStorage.setItem('myCoins', 0);
-                    tg.close();
-                } catch (e) {
-                    alert("Открой игру через кнопку «📱 Открыть Mini App» в боте!");
+        function setSaveStatus(text, kind) {
+            const el = document.getElementById('saveStatus');
+            if (!el) return;
+            el.innerText = text;
+            el.className = 'save-status' + (kind ? ' ' + kind : '');
+        }
+
+        // Telegram не сообщает странице, доставлено ли sendData боту. Поэтому
+        // монеты остаются в localStorage до подтверждения из чата; кнопка
+        // повторной отправки появится, если ответа нет через минуту.
+        function sendToBot(retry) {
+            if (!tg || !tg.sendData) {
+                setSaveStatus('Открой игру кнопкой «📱 Открыть Mini App» в боте.', 'error');
+                return;
+            }
+            if (!retry && myCoins <= 0 && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0) {
+                setSaveStatus('Нет новых результатов для сохранения.', '');
+                return;
+            }
+            const data = {
+                action: 'save_games',
+                coins: myCoins,
+                snake: bestSnake,
+                race: bestRace,
+                g2048: bestG2048
+            };
+            try {
+                tg.sendData(JSON.stringify(data));
+                localStorage.setItem('pupuPendingSave', JSON.stringify(data));
+                setSaveStatus('Отправлено. Проверь сообщение от бота в чате.', 'ok');
+                const btn = document.getElementById('saveBtn');
+                if (btn) {
+                    btn.innerText = '📨 Отправить ещё раз';
+                    btn.onclick = function() { sendToBot(true); };
                 }
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            } catch (e) {
+                setSaveStatus('Не удалось отправить. Открой игру через кнопку бота.', 'error');
             }
         }
 
@@ -1410,7 +1468,7 @@
         function renderSlavery() {
             if (!slaveryState) return;
             const user = telegramUser();
-            const me = user ? findSlaveryPlayer(user.id) : slaveryState.me;
+            const me = slaveryState.me || (user ? findSlaveryPlayer(user.id) : null);
             const players = slaveryState.players || [];
 
             document.getElementById('slvStatus').innerText =
@@ -1483,7 +1541,12 @@
             slaveryLoading = true;
             try {
                 const user = telegramUser();
-                const query = user ? '?me=' + encodeURIComponent(user.id) : '';
+                const params = new URLSearchParams();
+                if (user) {
+                    params.set('me', user.id);
+                    params.set('name', user.name);
+                }
+                const query = params.toString() ? '?' + params.toString() : '';
                 const resp = await fetch('/.netlify/functions/slavery' + query, {cache: 'no-store'});
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 slaveryState = await resp.json();
@@ -1517,7 +1580,8 @@
                 if (!resp.ok) return slaveryToast(payload.error || 'Не получилось.');
                 slaveryState = payload.state;
                 renderSlavery();
-                slaveryToast(payload.state.results[user.id]?.text || 'Готово');
+                const resultKey = payload.state.me && payload.state.me.id;
+                slaveryToast((resultKey && payload.state.results[resultKey]?.text) || 'Готово');
             } catch (e) {
                 slaveryToast('Нет связи с биржей.');
             }
