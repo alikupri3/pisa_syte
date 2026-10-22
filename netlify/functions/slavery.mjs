@@ -248,6 +248,9 @@ export default async (request) => {
   const mode = String(body.mode || "action");
   if (mode === "sync") {
     if (body.state?.players) {
+      for (const id of Object.keys(state.players)) {
+        if (/^\d{1,2}$/.test(id)) delete state.players[id];
+      }
       const source = body.state.players;
       const entries = Array.isArray(source)
         ? source.map(p => [String(p.key || p.id || ""), p])
