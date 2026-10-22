@@ -1155,6 +1155,71 @@
             tg.expand();
         }
 
+        // Telegram обычно передаёт данные запуска в hash URL. Читаем их сами:
+        // telegram.org/js/telegram-web-app.js в некоторых WebView не грузится,
+        // хотя сама страница и её данные открываются нормально.
+        function telegramParam(name) {
+            for (const source of [location.hash.slice(1), location.search.slice(1)]) {
+                if (!source) continue;
+                try {
+                    const value = new URLSearchParams(source).get(name);
+                    if (value) return value;
+                } catch (e) { /* пробуем следующий источник */ }
+            }
+            return '';
+        }
+
+        function telegramInitData() {
+            return (tg && tg.initData) || telegramParam('tgWebAppData') || '';
+        }
+
+        function telegramUserId() {
+            const direct = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (direct && direct.id) {
+                localStorage.setItem('pupuUid', String(direct.id));
+                return String(direct.id);
+            }
+            const initData = telegramInitData();
+            if (initData) {
+                try {
+                    const raw = new URLSearchParams(initData).get('user');
+                    const parsed = raw ? JSON.parse(raw) : null;
+                    if (parsed && parsed.id) {
+                        localStorage.setItem('pupuUid', String(parsed.id));
+                        return String(parsed.id);
+                    }
+                } catch (e) { /* профиль недоступен */ }
+            }
+            // Резерв: бот добавляет uid в ссылку Mini App. Все операции всё
+            // равно привязываются на сервере к message.from_user.id.
+            const fromUrl = telegramParam('uid');
+            if (/^\d+$/.test(fromUrl)) {
+                localStorage.setItem('pupuUid', fromUrl);
+                return fromUrl;
+            }
+            const stored = localStorage.getItem('pupuUid') || '';
+            return /^\d+$/.test(stored) ? stored : '';
+        }
+
+        function hasTelegramDataChannel() {
+            return !!((tg && typeof tg.sendData === 'function')
+                || (window.TelegramWebviewProxy
+                    && typeof window.TelegramWebviewProxy.postEvent === 'function'));
+        }
+
+        function sendTelegramData(payload) {
+            if (tg && typeof tg.sendData === 'function') {
+                tg.sendData(payload);
+                return true;
+            }
+            const proxy = window.TelegramWebviewProxy;
+            if (proxy && typeof proxy.postEvent === 'function') {
+                proxy.postEvent('web_app_data_send', JSON.stringify({data: payload}));
+                return true;
+            }
+            return false;
+        }
+
         // Загрузка данных
         let myCoins = parseInt(localStorage.getItem('myCoins')) || 0;
         let pupuEarned = Math.max(0, parseInt(localStorage.getItem('pupuEarned'), 10) || 0);
@@ -1391,7 +1456,8 @@
         }
 
         async function computeMyKey() {
-            const uid = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id;
+            const currentUser = telegramUser();
+            const uid = currentUser && currentUser.id;
             if (!uid || !window.crypto || !crypto.subtle) return;
             try {
                 const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
@@ -1399,9 +1465,7 @@
                 // Первый вход добавляет игрока на общий рынок через бота.
                 if (!localStorage.getItem('pupuUserSynced')) {
                     localStorage.setItem('pupuUserSynced', '1');
-                    if (tg && tg.sendData) {
-                        tg.sendData(JSON.stringify({action: 'sync_user', coins: myCoins}));
-                    }
+                    sendTelegramData(JSON.stringify({action: 'sync_user', coins: myCoins}));
                 }
                 renderBoard();
                 // Если биржа уже успела загрузиться до готовности ключа,
@@ -1516,7 +1580,7 @@
         // монеты остаются в localStorage до подтверждения из чата; кнопка
         // повторной отправки появится, если ответа нет через минуту.
         function sendToBot(retry) {
-            if (!tg || !tg.sendData) {
+            if (!hasTelegramDataChannel()) {
                 setSaveStatus('Открой игру кнопкой «📱 Открыть Mini App» в боте.', 'error');
                 return;
             }
@@ -1536,7 +1600,7 @@
                 g2048: bestG2048
             };
             try {
-                tg.sendData(JSON.stringify(data));
+                sendTelegramData(JSON.stringify(data));
                 localStorage.setItem('pupuPendingSave', JSON.stringify(data));
                 setSaveStatus('Отправлено. Проверь сообщение от бота в чате.', 'ok');
                 const btn = document.getElementById('saveBtn');
@@ -1544,7 +1608,7 @@
                     btn.innerText = '📨 Отправить ещё раз';
                     btn.onclick = function() { sendToBot(true); };
                 }
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             } catch (e) {
                 setSaveStatus('Не удалось отправить. Открой игру через кнопку бота.', 'error');
             }
@@ -1557,12 +1621,24 @@
         let slaveryTimer = null;
 
         function telegramUser() {
-            const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
-            if (!user || !user.id) return null;
+            const uid = telegramUserId();
+            if (!uid) return null;
+            let user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (!user) {
+                const initData = telegramInitData();
+                if (initData) {
+                    try {
+                        const raw = new URLSearchParams(initData).get('user');
+                        if (raw) user = JSON.parse(raw);
+                    } catch (e) { /* профиль недоступен */ }
+                }
+            }
             return {
-                id: String(user.id),
-                name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок',
-                initData: (tg && tg.initData) || ''
+                id: String(user && user.id ? user.id : uid),
+                name: user
+                    ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок')
+                    : 'Игрок',
+                initData: telegramInitData()
             };
         }
 
@@ -1705,8 +1781,8 @@
                     ? await new Promise(resolve => tg.showConfirm(messages[action] + '?\n\nОтправь команду боту: ' + text, resolve))
                     : true;
                 if (!reply) return;
-                if (tg && tg.sendData) {
-                    tg.sendData(JSON.stringify({
+                if (hasTelegramDataChannel()) {
+                    sendTelegramData(JSON.stringify({
                         action: 'slavery_action',
                         mode: action,
                         target
