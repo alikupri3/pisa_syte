@@ -198,8 +198,15 @@ export default async (request) => {
   }
 
   // Убираем служебные записи, которые могли появиться при импорте массива.
+  let cleaned = false;
   for (const id of Object.keys(state.players)) {
-    if (/^\d{1,2}$/.test(id)) delete state.players[id];
+    if (/^\d{1,2}$/.test(id)) {
+      delete state.players[id];
+      cleaned = true;
+    }
+  }
+  if (cleaned) {
+    await store.setJSON("state", state);
   }
 
   if (request.method === "GET") {
