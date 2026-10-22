@@ -9,6 +9,15 @@
     "slaves": 9
   },
   {
+    "key": "84c100c056",
+    "name": "moon",
+    "points": 50,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 1
+  },
+  {
     "key": "a71cc81108",
     "name": "Jealous Eyedress",
     "points": 0,
@@ -25,15 +34,6 @@
     "race": 0,
     "g2048": 0,
     "slaves": 0
-  },
-  {
-    "key": "84c100c056",
-    "name": "moon",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 1
   },
   {
     "key": "c970169c9c",
