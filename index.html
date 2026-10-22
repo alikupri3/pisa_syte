@@ -1469,7 +1469,7 @@
 
             document.getElementById('slvStatus').innerText =
                 user ? 'Общий рынок · обновлено только что' : 'Открой через Telegram, чтобы участвовать';
-            document.getElementById('slvBalance').innerText = formatNum(me ? (me.points || 0) : 0);
+            document.getElementById('slvBalance').innerText = formatNum(me ? (me.balance || 0) : 0);
             document.getElementById('slvCount').innerText = players.length;
 
             const owned = me ? players.filter(p => p.owner === me.id) : [];
@@ -1514,7 +1514,7 @@
                 else if (owner) sub = 'У ' + owner.name + ' · выкуп ' + formatNum(p.price) + ' 🪙';
                 let buy = '';
                 if (!isMe) {
-                    const affordable = me && (me.points || 0) >= p.price;
+                    const affordable = me && (me.balance || 0) >= p.price;
                     buy = '<button class="slave-buy' + (isMine ? ' upgrade' : '') + '" ' +
                         (affordable ? '' : 'disabled ') +
                         'onclick="slaveryAction(\'' + (isMine ? 'improve' : 'buy') + '\', \'' +
@@ -1543,7 +1543,7 @@
                 // Telegram ID в нём скрыт, поэтому сопоставляем себя по
                 // тому же SHA-1 ключу, который используется в рейтинге.
                 if (fresh && Array.isArray(fresh.players)) {
-                    const players = fresh.players.map(p => ({...p, id: p.key}));
+                    const players = fresh.players.map(p => ({...p, id: p.key, balance: p.points || 0}));
                     const user = telegramUser();
                     const me = user ? players.find(p => p.id === myBoardKey) || null : null;
                     slaveryState = {...fresh, players, me};
