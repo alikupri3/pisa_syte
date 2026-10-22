@@ -1157,6 +1157,20 @@
 
         // Загрузка данных
         let myCoins = parseInt(localStorage.getItem('myCoins')) || 0;
+        let pupuEarned = Math.max(0, parseInt(localStorage.getItem('pupuEarned'), 10) || 0);
+        let pupuSpent = Math.max(0, parseInt(localStorage.getItem('pupuSpent'), 10) || 0);
+        let pupuEpoch = localStorage.getItem('pupuEpoch') || '';
+        // В старых версиях не было эпохи и счётчика заработка. Их локальные
+        // значения уже могли быть учтены сервером, поэтому начинаем новый
+        // период с нуля и берём баланс из slavery.json.
+        if (!pupuEpoch || localStorage.getItem('pupuEarned') === null) {
+            pupuEpoch = String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
+            pupuEarned = 0;
+            pupuSpent = 0;
+            localStorage.setItem('pupuEpoch', pupuEpoch);
+            localStorage.setItem('pupuEarned', '0');
+            localStorage.setItem('pupuSpent', '0');
+        }
         let bestSnake = parseInt(localStorage.getItem('bestSnake')) || 0;
         let bestRace = parseInt(localStorage.getItem('bestRace')) || 0;
         let bestG2048 = parseInt(localStorage.getItem('bestG2048')) || 0;
@@ -1171,6 +1185,75 @@
         function saveEnergy() {
             localStorage.setItem('currEnergy', String(energy));
             localStorage.setItem('energyUpdatedAt', String(energyUpdatedAt));
+        }
+
+        // Серверный баланс — общий кошелёк для биржи, казино и игр.
+        // Заработок и траты хранятся отдельными счётчиками с меткой эпохи.
+        // Сервер применяет только приращения, а в slavery.json возвращает
+        // подтверждение. Поэтому повторное сохранение не удваивает монеты,
+        // а ожидающая трата не отменяется старым серверным снимком.
+        function ensureEpoch() {
+            if (!pupuEpoch) {
+                pupuEpoch = String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
+                localStorage.setItem('pupuEpoch', pupuEpoch);
+            }
+            return pupuEpoch;
+        }
+
+        function persistWallet() {
+            localStorage.setItem('myCoins', String(myCoins));
+            localStorage.setItem('pupuEarned', String(pupuEarned));
+            localStorage.setItem('pupuSpent', String(pupuSpent));
+        }
+
+        function earnCoins(amount) {
+            const value = Math.max(0, Math.floor(Number(amount) || 0));
+            if (!value) return;
+            myCoins += value;
+            pupuEarned += value;
+            persistWallet();
+        }
+
+        function spendCoins(amount) {
+            const value = Math.max(0, Math.floor(Number(amount) || 0));
+            if (!value) return;
+            myCoins = Math.max(0, myCoins - value);
+            pupuSpent += value;
+            persistWallet();
+        }
+
+        function applyServerWallet(balance, ackEpoch, ackEarned, ackSpent) {
+            const serverBalance = Math.max(0, Math.floor(Number(balance) || 0));
+            const sameEpoch = String(ackEpoch || '') === ensureEpoch();
+            // Счётчики накапливаются за эпоху. Сервер возвращает, сколько из
+            // них уже применено, поэтому повторный снимок не удваивает
+            // заработок и не возвращает потраченные монеты.
+            const ackE = sameEpoch ? Math.max(0, Math.floor(Number(ackEarned) || 0)) : 0;
+            const ackS = sameEpoch ? Math.max(0, Math.floor(Number(ackSpent) || 0)) : 0;
+            // Если сервер уже ушёл вперёд (например, сохранение пришло с
+            // другого устройства), продолжаем счётчики с его значения.
+            pupuEarned = Math.max(pupuEarned, ackE);
+            pupuSpent = Math.max(pupuSpent, ackS);
+            const pendingEarned = Math.max(0, pupuEarned - ackE);
+            const pendingSpent = Math.max(0, pupuSpent - ackS);
+            myCoins = Math.max(0, serverBalance + pendingEarned - pendingSpent);
+            persistWallet();
+            updateAllUI();
+            if (slaveryState) renderSlavery();
+            return true;
+        }
+
+        async function syncServerBalance() {
+            if (!myBoardKey) return;
+            try {
+                const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
+                if (!resp.ok) return;
+                const fresh = await resp.json();
+                const rows = Array.isArray(fresh && fresh.players) ? fresh.players : [];
+                const me = rows.find(p => p.key === myBoardKey);
+                if (!me) return;
+                applyServerWallet(me.points, me.ackEpoch, me.ackEarned, me.ackSpent);
+            } catch (e) { /* офлайн: остаётся локальный баланс */ }
         }
 
         // Начисляем энергию по прошедшему времени, поэтому закрытое
@@ -1324,6 +1407,7 @@
                 // Если биржа уже успела загрузиться до готовности ключа,
                 // перерисовываем её с привязкой к текущему игроку.
                 if (slaveryState) renderSlavery();
+                syncServerBalance();
             } catch (e) { /* подсветка себя недоступна */ }
         }
 
@@ -1436,13 +1520,17 @@
                 setSaveStatus('Открой игру кнопкой «📱 Открыть Mini App» в боте.', 'error');
                 return;
             }
-            if (!retry && myCoins <= 0 && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0) {
+            if (!retry && pupuEarned <= 0 && pupuSpent <= 0
+                    && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0) {
                 setSaveStatus('Нет новых результатов для сохранения.', '');
                 return;
             }
             const data = {
                 action: 'save_games',
                 coins: myCoins,
+                earned: pupuEarned,
+                spent: pupuSpent,
+                epoch: ensureEpoch(),
                 snake: bestSnake,
                 race: bestRace,
                 g2048: bestG2048
@@ -1502,6 +1590,9 @@
 
             document.getElementById('slvStatus').innerText =
                 user ? 'Общий рынок · обновлено только что' : 'Открой через Telegram, чтобы участвовать';
+            // На бирже показываем серверный кошелёк: именно с него бот
+            // списывает цену. Несохранённый заработок появится здесь после
+            // кнопки «Сохранить в Топ бота».
             document.getElementById('slvBalance').innerText = formatNum(me ? (me.balance || 0) : 0);
             document.getElementById('slvCount').innerText = players.length;
 
@@ -1583,6 +1674,7 @@
                     const user = telegramUser();
                     const me = user ? players.find(p => p.id === myBoardKey) || null : null;
                     slaveryState = {...fresh, players, me};
+                    if (me) applyServerWallet(me.balance, me.ackEpoch, me.ackEarned, me.ackSpent);
                 } else {
                     slaveryState = fresh;
                 }
@@ -1637,9 +1729,8 @@
             if (energy < 1) return;
             const wasFull = energy >= maxEnergy;
             energy -= 1;
-            myCoins += tapPower;
+            earnCoins(tapPower);
             if (wasFull) energyUpdatedAt = Date.now();
-            localStorage.setItem('myCoins', myCoins);
             saveEnergy();
             updateAllUI();
 
@@ -1658,9 +1749,8 @@
         function buyPower() {
             let cost = getPowerCost();
             if (myCoins >= cost) {
-                myCoins -= cost;
+                spendCoins(cost);
                 tapPower += 1;
-                localStorage.setItem('myCoins', myCoins);
                 localStorage.setItem('tapPower', tapPower);
                 updateAllUI();
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
@@ -1670,10 +1760,9 @@
         function buyEnergy() {
             let cost = getEnergyCost();
             if (myCoins >= cost) {
-                myCoins -= cost;
+                spendCoins(cost);
                 maxEnergy += 50;
                 energy += 50;
-                localStorage.setItem('myCoins', myCoins);
                 localStorage.setItem('maxEnergy', maxEnergy);
                 if (energy >= maxEnergy) energyUpdatedAt = Date.now();
                 saveEnergy();
@@ -1693,6 +1782,10 @@
         window.addEventListener('pageshow', refreshEnergy);
         window.addEventListener('focus', refreshEnergy);
         if (tg && tg.onEvent) tg.onEvent('activated', refreshEnergy);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) syncServerBalance();
+        });
+        setInterval(syncServerBalance, 30000);
 
         // === ЗМЕЙКА ===
         const sCtx = document.getElementById('sCanvas').getContext('2d');
@@ -1740,8 +1833,7 @@
             snake.unshift(head);
             if (head.x === food.x && head.y === food.y) {
                 sScore++;
-                myCoins += 2;
-                localStorage.setItem('myCoins', myCoins);
+                earnCoins(2);
                 document.getElementById('snakeScore').innerText = sScore;
                 if (sScore > bestSnake) {
                     bestSnake = sScore;
@@ -1919,8 +2011,7 @@
                     obstacles.splice(i, 1);
                     i--;
                     rScore++;
-                    myCoins += 1;
-                    localStorage.setItem('myCoins', myCoins);
+                    earnCoins(1);
                     document.getElementById('raceScore').innerText = rScore;
                     if (rScore > bestRace) {
                         bestRace = rScore;
@@ -2045,8 +2136,7 @@
                 bestG2048 = g2048Score;
                 localStorage.setItem('bestG2048', bestG2048);
             }
-            myCoins += Math.max(1, Math.floor(g2048Score / 100));
-            localStorage.setItem('myCoins', myCoins);
+            earnCoins(Math.max(1, Math.floor(g2048Score / 100)));
             draw2048();
             updateAllUI();
 
