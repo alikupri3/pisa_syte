@@ -10,39 +10,12 @@
       "lastCollect": 1792633122
     },
     {
-      "key": "a71cc81108",
-      "name": "Jealous Eyedress",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
-      "lastCollect": 0
-    },
-    {
-      "key": "62cf218c52",
-      "name": "descriptecal",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
-      "lastCollect": 0
-    },
-    {
-      "key": "84c100c056",
-      "name": "moon",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
-      "lastCollect": 0
-    },
-    {
       "key": "c970169c9c",
       "name": "Amir",
       "points": 0,
       "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
+      "price": 3838,
+      "income": 214,
       "lastCollect": 0
     },
     {
@@ -50,8 +23,44 @@
       "name": "qsef",
       "points": 0,
       "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
+      "price": 2560,
+      "income": 157,
+      "lastCollect": 0
+    },
+    {
+      "key": "47c4260078",
+      "name": "эвочка",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 2556,
+      "income": 153,
+      "lastCollect": 0
+    },
+    {
+      "key": "84c100c056",
+      "name": "moon",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 5745,
+      "income": 300,
+      "lastCollect": 0
+    },
+    {
+      "key": "a71cc81108",
+      "name": "Jealous Eyedress",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 8616,
+      "income": 416,
+      "lastCollect": 0
+    },
+    {
+      "key": "62cf218c52",
+      "name": "descriptecal",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 2553,
+      "income": 153,
       "lastCollect": 0
     },
     {
@@ -59,7 +68,7 @@
       "name": "Атлантический",
       "points": 0,
       "owner": "54a9d82aa1",
-      "price": 800,
+      "price": 1702,
       "income": 109,
       "lastCollect": 0
     },
@@ -68,17 +77,8 @@
       "name": ".",
       "points": 0,
       "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
-      "lastCollect": 0
-    },
-    {
-      "key": "47c4260078",
-      "name": "эвочка",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
+      "price": 2559,
+      "income": 153,
       "lastCollect": 0
     },
     {
@@ -86,8 +86,8 @@
       "name": "-",
       "points": 0,
       "owner": "54a9d82aa1",
-      "price": 800,
-      "income": 150,
+      "price": 5751,
+      "income": 300,
       "lastCollect": 0
     }
   ]
