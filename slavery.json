@@ -7,7 +7,10 @@
       "owner": "84c100c056",
       "price": 505,
       "income": 40,
-      "lastCollect": 1792633122
+      "lastCollect": 1792633122,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "a71cc81108",
@@ -16,7 +19,10 @@
       "owner": "54a9d82aa1",
       "price": 8616,
       "income": 416,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "62cf218c52",
@@ -25,7 +31,10 @@
       "owner": "54a9d82aa1",
       "price": 2553,
       "income": 153,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "84c100c056",
@@ -34,7 +43,10 @@
       "owner": "54a9d82aa1",
       "price": 5745,
       "income": 300,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "c970169c9c",
@@ -43,7 +55,10 @@
       "owner": "54a9d82aa1",
       "price": 3838,
       "income": 214,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "000304bf64",
@@ -52,7 +67,10 @@
       "owner": "54a9d82aa1",
       "price": 2560,
       "income": 157,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "bbad70fd57",
@@ -61,7 +79,10 @@
       "owner": "54a9d82aa1",
       "price": 1702,
       "income": 109,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "e153c7b1cc",
@@ -70,7 +91,10 @@
       "owner": "54a9d82aa1",
       "price": 2559,
       "income": 153,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "47c4260078",
@@ -79,7 +103,10 @@
       "owner": "54a9d82aa1",
       "price": 2556,
       "income": 153,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     },
     {
       "key": "301557b376",
@@ -88,7 +115,10 @@
       "owner": "54a9d82aa1",
       "price": 5751,
       "income": 300,
-      "lastCollect": 0
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
     }
   ]
 }
