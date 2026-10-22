@@ -2,11 +2,11 @@
   {
     "key": "54a9d82aa1",
     "name": "່",
-    "points": 679530,
+    "points": 679642,
     "snake": 24,
     "race": 8,
     "g2048": 1540,
-    "slaves": 10
+    "slaves": 9
   },
   {
     "key": "3b82c50e4a",
@@ -20,11 +20,11 @@
   {
     "key": "84c100c056",
     "name": "moon",
-    "points": 343,
+    "points": 118,
     "snake": 21,
     "race": 130,
     "g2048": 1420,
-    "slaves": 1
+    "slaves": 2
   },
   {
     "key": "a71cc81108",
