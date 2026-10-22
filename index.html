@@ -1388,7 +1388,8 @@
             if (!user || !user.id) return null;
             return {
                 id: String(user.id),
-                name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок'
+                name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок',
+                initData: (tg && tg.initData) || ''
             };
         }
 
@@ -1504,7 +1505,13 @@
                 const resp = await fetch('/.netlify/functions/slavery', {
                     method: 'POST',
                     headers: {'content-type': 'application/json'},
-                    body: JSON.stringify({mode: 'action', action, target, actor: user})
+                    body: JSON.stringify({
+                        mode: 'action',
+                        action,
+                        target,
+                        actor: {id: user.id, name: user.name},
+                        initData: user.initData
+                    })
                 });
                 const payload = await resp.json();
                 if (!resp.ok) return slaveryToast(payload.error || 'Не получилось.');
