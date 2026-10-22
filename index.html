@@ -690,49 +690,272 @@
             font-weight: 700;
             color: #ffe066;
         }
+
+        :root {
+            --panel: rgba(255, 255, 255, 0.055);
+            --line: rgba(255, 255, 255, 0.1);
+            --muted: rgba(226, 232, 240, 0.62);
+            --gold: #fbbf24;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 12% 0%, rgba(139, 92, 246, 0.28), transparent 42%),
+                radial-gradient(circle at 88% 12%, rgba(34, 211, 238, 0.18), transparent 38%),
+                linear-gradient(180deg, #0b1022 0%, #090d1a 55%, #070a14 100%);
+            background-attachment: fixed;
+            padding: 22px 16px 34px;
+        }
+
+        .screen { max-width: 520px; margin: 0 auto; }
+        h1 { font-size: 27px; letter-spacing: -0.8px; text-shadow: none; margin-bottom: 6px; }
+        .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 22px;
+            background: linear-gradient(140deg, rgba(139, 92, 246, 0.28), rgba(34, 211, 238, 0.1) 60%, rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.32);
+            text-align: left;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 180px; height: 180px;
+            right: -70px; top: -80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.28), transparent 70%);
+            pointer-events: none;
+        }
+        .hero-brand {
+            display: flex; align-items: center; gap: 9px;
+            font-size: 11px; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; color: rgba(255, 255, 255, 0.66);
+        }
+        .hero-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.14);
+        }
+        .hero-title {
+            font-size: 30px; font-weight: 850; line-height: 1.1;
+            margin: 14px 0 6px; letter-spacing: -1px;
+        }
+        .hero-title span {
+            background: linear-gradient(90deg, #c4b5fd, #67e8f9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-sub { color: var(--muted); font-size: 12.5px; }
+        .hero-balance {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            gap: 12px; margin-top: 18px; padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .hero-balance-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1.4px;
+            color: var(--muted); font-weight: 700;
+        }
+        .hero-balance-value {
+            display: flex; align-items: baseline; gap: 7px;
+            font-size: 27px; font-weight: 850; color: var(--gold); letter-spacing: -0.6px;
+        }
+        .hero-balance-value small { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+        .hero-chip {
+            font-size: 11px; font-weight: 700; padding: 7px 11px;
+            border-radius: 999px; background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.14); color: #e2e8f0;
+        }
+
+        .section-label {
+            display: flex; align-items: center; justify-content: space-between;
+            margin: 4px 2px 10px; font-size: 11px; font-weight: 800;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.5);
+        }
+
+        .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; max-width: none; margin-bottom: 20px; }
+        .menu-btn {
+            position: relative; display: block; text-align: left;
+            padding: 15px 15px; min-height: 112px; border-radius: 20px;
+            background: linear-gradient(155deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.035));
+            border: 1px solid var(--line);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+        }
+        .menu-btn:active { transform: scale(0.975); background: rgba(255, 255, 255, 0.11); }
+        .menu-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: 13px; font-size: 19px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 13px;
+        }
+        .menu-btn-text { display: block; font-size: 14px; font-weight: 750; letter-spacing: -0.2px; margin-bottom: 4px; }
+        .menu-btn-badge {
+            display: inline-block; background: transparent; padding: 0;
+            border-radius: 0; font-size: 11px; font-weight: 600; color: var(--muted);
+        }
+        .menu-btn.wide { grid-column: span 2; min-height: 76px; display: flex; align-items: center; gap: 13px; }
+        .menu-btn.wide .menu-icon { margin-bottom: 0; }
+        .menu-copy { flex: 1; min-width: 0; }
+        .menu-btn .chev { color: var(--muted); font-size: 20px; }
+
+        .balance { background: transparent; border: 0; box-shadow: none; backdrop-filter: none; padding: 0; margin: 0; }
+        .balance-amount { font-size: 26px; color: var(--gold); text-shadow: none; }
+        .btn-primary {
+            width: 100%; background: linear-gradient(120deg, #7c3aed, #a855f7 55%, #22d3ee 140%);
+            border-radius: 16px; padding: 15px 20px; font-size: 14px; font-weight: 750;
+            box-shadow: 0 14px 30px rgba(124, 58, 237, 0.28);
+        }
+        .btn-back { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); border-radius: 14px; padding: 11px 22px; font-size: 13px; }
+
+        .shop-container, .stats, .board-list, .board-me, .g2048-grid {
+            background: var(--panel); border-color: var(--line);
+            box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
+        }
+        .upgrade-item { background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 14px; }
+        .upgrade-btn { background: linear-gradient(135deg, #10b981, #0d9488); border-radius: 11px; }
+        canvas { border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3); }
+        .control-btn { background: rgba(255, 255, 255, 0.075); border-color: var(--line); border-radius: 14px; }
+        .board-tabs { background: rgba(0, 0, 0, 0.28); border-color: var(--line); }
+        .board-tab.active { background: #f8fafc; color: #1e1b4b; }
+        .board-row { border-color: rgba(255, 255, 255, 0.07); }
+        .podium-card { background: rgba(255, 255, 255, 0.06); border-color: var(--line); border-radius: 20px; }
+        .podium-card.first { background: linear-gradient(165deg, rgba(251, 191, 36, 0.24), rgba(255, 255, 255, 0.05)); border-color: rgba(251, 191, 36, 0.42); }
+        .board-value, .podium-coins { color: var(--gold); }
+
+        .slavery-wrap { max-width: 520px; margin: 0 auto; text-align: left; }
+        .slavery-hero {
+            border-radius: 22px; padding: 18px;
+            background: linear-gradient(145deg, rgba(34, 211, 238, 0.16), rgba(139, 92, 246, 0.18));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 14px;
+        }
+        .slavery-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .slavery-title { font-size: 20px; font-weight: 850; letter-spacing: -0.4px; }
+        .slavery-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .slavery-balance { text-align: right; font-size: 23px; font-weight: 850; color: var(--gold); }
+        .slavery-balance small { display: block; font-size: 10px; color: var(--muted); font-weight: 600; }
+        .slavery-stats { display: flex; gap: 8px; margin-top: 14px; }
+        .slavery-stat {
+            flex: 1; padding: 10px 11px; border-radius: 13px;
+            background: rgba(0, 0, 0, 0.18); border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .slavery-stat b { display: block; font-size: 15px; margin-top: 2px; }
+        .slavery-stat span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+        .slavery-actions { display: flex; gap: 8px; margin-bottom: 16px; }
+        .slavery-action {
+            flex: 1; padding: 13px 10px; border-radius: 14px; border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.07); color: #fff; font-size: 12px; font-weight: 750;
+            cursor: pointer; font-family: inherit;
+        }
+        .slavery-action.primary { background: linear-gradient(135deg, #0ea5e9, #6366f1); border: 0; }
+        .slavery-action:disabled { opacity: 0.45; }
+        .slavery-list { display: flex; flex-direction: column; gap: 8px; }
+        .slave-row {
+            display: flex; align-items: center; gap: 11px; padding: 12px;
+            border-radius: 16px; background: var(--panel); border: 1px solid var(--line);
+        }
+        .slave-row.mine { border-color: rgba(52, 211, 153, 0.35); background: rgba(16, 185, 129, 0.09); }
+        .slave-row.owned { border-color: rgba(251, 191, 36, 0.22); }
+        .slave-avatar {
+            width: 38px; height: 38px; border-radius: 13px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 850; color: #fff;
+        }
+        .slave-info { flex: 1; min-width: 0; }
+        .slave-name { font-size: 13px; font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .slave-sub { font-size: 10px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .slave-buy {
+            border: 0; border-radius: 11px; padding: 9px 12px; cursor: pointer;
+            font-size: 11px; font-weight: 800; color: #0b1022; background: #fbbf24; font-family: inherit;
+            white-space: nowrap;
+        }
+        .slave-buy.upgrade { background: #34d399; }
+        .slave-buy:disabled { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.45); }
+        .slavery-note { font-size: 10px; color: var(--muted); line-height: 1.55; margin: 12px 2px 0; }
+        .slavery-toast {
+            position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
+            background: rgba(15, 23, 42, 0.96); border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 11px 16px; border-radius: 13px; font-size: 12px; font-weight: 650;
+            opacity: 0; pointer-events: none; transition: all 0.22s ease; z-index: 50;
+            max-width: 86vw;
+        }
+        .slavery-toast.show { opacity: 1; transform: translate(-50%, 0); }
     </style>
 </head>
 <body>
 
     <!-- ГЛАВНОЕ МЕНЮ -->
     <div id="menu" class="screen active">
-        <h1>🎮 GAME HUB</h1>
-        <p class="subtitle">Играй, зарабатывай, соревнуйся!</p>
-
-        <div class="balance">
-            💰 <span class="balance-amount" id="mainCoins">0</span> монет
+        <div class="hero">
+            <div class="hero-brand"><span class="hero-dot"></span> Game Hub · онлайн</div>
+            <div class="hero-title">Играй. <span>Зарабатывай.</span></div>
+            <div class="hero-sub">Мини-игры, рейтинг и биржа одногруппников</div>
+            <div class="hero-balance">
+                <div>
+                    <div class="hero-balance-label">Твой баланс</div>
+                    <div class="hero-balance-value"><span id="mainCoins">0</span><small>монет</small></div>
+                </div>
+                <div class="hero-chip">🟢 Онлайн</div>
+            </div>
         </div>
 
+        <div class="section-label"><span>Игры</span><span>4 режима</span></div>
         <div class="menu-grid">
             <div class="menu-btn" onclick="openGame('tapper')">
-                <span class="menu-btn-text">🪙 Крипто-Тапалка</span>
-                <span class="menu-btn-badge">Ур. <span id="mTapLvl">1</span></span>
+                <div class="menu-icon">🪙</div>
+                <span class="menu-btn-text">Тапалка</span>
+                <span class="menu-btn-badge">Уровень <span id="mTapLvl">1</span></span>
             </div>
 
             <div class="menu-btn" onclick="openGame('snake')">
-                <span class="menu-btn-text">🐍 Змейка</span>
-                <span class="menu-btn-badge">Макс: <span id="mSnake">0</span></span>
+                <div class="menu-icon">🐍</div>
+                <span class="menu-btn-text">Змейка</span>
+                <span class="menu-btn-badge">Рекорд <span id="mSnake">0</span></span>
             </div>
 
             <div class="menu-btn" onclick="openGame('race')">
-                <span class="menu-btn-text">🏎️ Гонки</span>
-                <span class="menu-btn-badge">Макс: <span id="mRace">0</span></span>
+                <div class="menu-icon">🏎️</div>
+                <span class="menu-btn-text">Гонки</span>
+                <span class="menu-btn-badge">Рекорд <span id="mRace">0</span></span>
             </div>
 
             <div class="menu-btn" onclick="openGame('g2048')">
-                <span class="menu-btn-text">🧩 2048</span>
-                <span class="menu-btn-badge">Рекорд: <span id="mG2048">0</span></span>
-            </div>
-
-            <div class="menu-btn" onclick="openGame('leaders')">
-                <span class="menu-btn-text">🏆 Таблица лидеров</span>
-                <span class="menu-btn-badge"><span id="mLeadersCount">0</span> игр.</span>
+                <div class="menu-icon">🧩</div>
+                <span class="menu-btn-text">2048</span>
+                <span class="menu-btn-badge">Рекорд <span id="mG2048">0</span></span>
             </div>
         </div>
 
-        <button class="btn-primary" onclick="sendToBot()">
-            💾 Сохранить в Топ бота
-        </button>
+        <div class="section-label"><span>Сообщество</span><span>общее для всех</span></div>
+        <div class="menu-grid">
+            <div class="menu-btn wide" onclick="openGame('slavery')">
+                <div class="menu-icon">⛓️</div>
+                <div class="menu-copy">
+                    <span class="menu-btn-text">Биржа одногруппников</span>
+                    <span class="menu-btn-badge">Общий рынок · синхронизация в реальном времени</span>
+                </div>
+                <span class="chev">›</span>
+            </div>
+
+            <div class="menu-btn wide" onclick="openGame('leaders')">
+                <div class="menu-icon">🏆</div>
+                <div class="menu-copy">
+                    <span class="menu-btn-text">Таблица лидеров</span>
+                    <span class="menu-btn-badge"><span id="mLeadersCount">0</span> участников</span>
+                </div>
+                <span class="chev">›</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="sendToBot()">💾 Сохранить в Топ бота</button>
     </div>
 
     <!-- ТАПАЛКА -->
@@ -846,6 +1069,44 @@
         </div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- БИРЖА ОДНОГРУППНИКОВ -->
+    <div id="slavery" class="screen">
+        <div class="slavery-wrap">
+            <div class="slavery-hero">
+                <div class="slavery-top">
+                    <div>
+                        <div class="slavery-title">⛓️ Биржа</div>
+                        <div class="slavery-meta" id="slvStatus">Загрузка общего рынка…</div>
+                    </div>
+                    <div class="slavery-balance">
+                        <span id="slvBalance">0</span>
+                        <small>монет</small>
+                    </div>
+                </div>
+                <div class="slavery-stats">
+                    <div class="slavery-stat"><span>У тебя</span><b id="slvOwned">0</b></div>
+                    <div class="slavery-stat"><span>Доход</span><b id="slvIncome">+0</b></div>
+                    <div class="slavery-stat"><span>Хозяин</span><b id="slvOwner">—</b></div>
+                </div>
+            </div>
+
+            <div class="slavery-actions">
+                <button class="slavery-action primary" id="slvCollect" onclick="slaveryCollect()">💰 Собрать доход</button>
+                <button class="slavery-action" onclick="loadSlavery(true)">↻ Обновить</button>
+            </div>
+
+            <div class="section-label"><span>Участники</span><span id="slvCount">0</span></div>
+            <div class="slavery-list" id="slvList"></div>
+            <div class="slavery-note">
+                Покупки и выкупы видят все участники. Доход можно собирать раз в 5 минут.
+                Цена и доход растут после каждого улучшения.
+            </div>
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+        <div class="slavery-toast" id="slvToast"></div>
     </div>
 
     <!-- 2048 -->
@@ -1077,6 +1338,8 @@
             updateAllUI();
             clearInterval(snakeInterval);
             cancelAnimationFrame(raceAnim);
+            if (slaveryTimer) clearInterval(slaveryTimer);
+            slaveryTimer = null;
         }
 
         function openGame(id) {
@@ -1086,6 +1349,11 @@
             if (id === 'snake') startSnake();
             if (id === 'race') startRace();
             if (id === 'leaders') renderBoard();
+            if (id === 'slavery') {
+                loadSlavery(false);
+                if (slaveryTimer) clearInterval(slaveryTimer);
+                slaveryTimer = setInterval(() => loadSlavery(false), 15000);
+            }
             if (id === 'g2048') init2048();
         }
 
@@ -1110,6 +1378,148 @@
         }
 
         // === ТАПАЛКА ===
+        // === БИРЖА ОДНОГРУППНИКОВ ===
+        let slaveryState = null;
+        let slaveryLoading = false;
+        let slaveryTimer = null;
+
+        function telegramUser() {
+            const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (!user || !user.id) return null;
+            return {
+                id: String(user.id),
+                name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок'
+            };
+        }
+
+        function slaveryToast(text) {
+            const el = document.getElementById('slvToast');
+            if (!el) return;
+            el.innerText = text;
+            el.classList.add('show');
+            clearTimeout(slaveryToast.timer);
+            slaveryToast.timer = setTimeout(() => el.classList.remove('show'), 2600);
+        }
+
+        function findSlaveryPlayer(key) {
+            if (!slaveryState || !key) return null;
+            return slaveryState.players.find(p => p.id === key) || null;
+        }
+
+        function renderSlavery() {
+            if (!slaveryState) return;
+            const user = telegramUser();
+            const me = user ? findSlaveryPlayer(user.id) : slaveryState.me;
+            const players = slaveryState.players || [];
+
+            document.getElementById('slvStatus').innerText =
+                user ? 'Общий рынок · обновлено только что' : 'Открой через Telegram, чтобы участвовать';
+            document.getElementById('slvBalance').innerText = formatNum(me ? me.balance : 0);
+            document.getElementById('slvCount').innerText = players.length;
+
+            const owned = me ? players.filter(p => p.owner === me.id) : [];
+            const income = owned.reduce((sum, p) => sum + (p.income || 0), 0);
+            document.getElementById('slvOwned').innerText = owned.length;
+            document.getElementById('slvIncome').innerText = '+' + formatNum(income);
+
+            const owner = me && me.owner ? findSlaveryPlayer(me.owner) : null;
+            document.getElementById('slvOwner').innerText = owner ? owner.name : '—';
+
+            const btn = document.getElementById('slvCollect');
+            if (!me) {
+                btn.disabled = true;
+                btn.innerText = '💰 Собрать доход';
+            } else if (!owned.length) {
+                btn.disabled = true;
+                btn.innerText = '💰 Пока нечего собирать';
+            } else {
+                const left = Math.max(0, (me.lastCollect || 0) + (slaveryState.cooldown || 300) - Math.floor(Date.now() / 1000));
+                btn.disabled = left > 0;
+                btn.innerText = left > 0
+                    ? '⏳ ' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0')
+                    : '💰 Собрать +' + formatNum(income);
+            }
+
+            const list = document.getElementById('slvList');
+            list.innerHTML = '';
+            if (!players.length) {
+                list.innerHTML = '<div class="slavery-note">Пока никого нет. Открой биржу через Telegram.</div>';
+                return;
+            }
+
+            players.forEach(p => {
+                const isMe = me && p.id === me.id;
+                const isMine = me && p.owner === me.id;
+                const owner = p.owner ? findSlaveryPlayer(p.owner) : null;
+                const row = document.createElement('div');
+                row.className = 'slave-row' + (isMine ? ' mine' : '') + (p.owner && !isMine ? ' owned' : '');
+
+                let sub = 'Свободен · цена ' + formatNum(p.price) + ' 🪙';
+                if (isMine) sub = 'Твой · доход +' + formatNum(p.income) + ' 🪙';
+                else if (owner) sub = 'У ' + owner.name + ' · выкуп ' + formatNum(p.price) + ' 🪙';
+                let buy = '';
+                if (!isMe) {
+                    const affordable = me && me.balance >= p.price;
+                    buy = '<button class="slave-buy' + (isMine ? ' upgrade' : '') + '" ' +
+                        (affordable ? '' : 'disabled ') +
+                        'onclick="slaveryAction(\'' + (isMine ? 'improve' : 'buy') + '\', \'' +
+                        escapeHtml(p.id) + '\')">' +
+                        (isMine ? 'Улучшить · ' : 'Купить · ') + formatNum(p.price) + '</button>';
+                }
+
+                row.innerHTML =
+                    '<div class="slave-avatar" style="background:' + avatarColor(String(p.id)) + '">' +
+                    escapeHtml(playerInitials(p.name)) + '</div>' +
+                    '<div class="slave-info"><div class="slave-name">' + escapeHtml(p.name) +
+                    (isMe ? ' <span style="opacity:.6">· ты</span>' : '') + '</div>' +
+                    '<div class="slave-sub">' + escapeHtml(sub) + '</div></div>' + buy;
+                list.appendChild(row);
+            });
+        }
+
+        async function loadSlavery(manual) {
+            if (slaveryLoading) return;
+            slaveryLoading = true;
+            try {
+                const user = telegramUser();
+                const query = user ? '?me=' + encodeURIComponent(user.id) : '';
+                const resp = await fetch('/.netlify/functions/slavery' + query, {cache: 'no-store'});
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                slaveryState = await resp.json();
+                renderSlavery();
+                if (manual) slaveryToast('Список обновлён');
+            } catch (e) {
+                document.getElementById('slvStatus').innerText = 'Не удалось загрузить общий рынок';
+            } finally {
+                slaveryLoading = false;
+            }
+        }
+
+        async function slaveryAction(action, target) {
+            const user = telegramUser();
+            if (!user) {
+                return slaveryToast('Открой игру через Telegram, чтобы покупать.');
+            }
+            try {
+                const resp = await fetch('/.netlify/functions/slavery', {
+                    method: 'POST',
+                    headers: {'content-type': 'application/json'},
+                    body: JSON.stringify({mode: 'action', action, target, actor: user})
+                });
+                const payload = await resp.json();
+                if (!resp.ok) return slaveryToast(payload.error || 'Не получилось.');
+                slaveryState = payload.state;
+                renderSlavery();
+                slaveryToast(payload.state.results[user.id]?.text || 'Готово');
+            } catch (e) {
+                slaveryToast('Нет связи с биржей.');
+            }
+        }
+
+        function slaveryCollect() {
+            slaveryAction('collect', '');
+        }
+
         function tapCoin(e) {
             if (energy < 1) return;
             energy -= 1;
