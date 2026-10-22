@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Hub</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-align: center;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        /* Экраны */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Заголовки */
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Счётчик монет */
+        .balance {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 25px;
+            display: inline-block;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Кнопки меню */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .menu-btn-text {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .menu-btn-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:active {
+            transform: scale(0.97);
+        }
+
+        /* Тапалка */
+        .coin-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .coin-btn {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffd700, #ffed4e 40%, #f4c430 70%, #daa520);
+            border: 8px solid #ffe135;
+            box-shadow:
+                0 0 40px rgba(255, 215, 0, 0.4),
+                inset 0 -8px 20px rgba(180, 150, 0, 0.5),
+                inset 0 8px 20px rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            font-size: 90px;
+            font-weight: 900;
+        }
+
+        .coin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .coin-btn::before {
+            content: '🪙';
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .float-num {
+            position: absolute;
+            color: #ffd700;
+            font-weight: 900;
+            font-size: 32px;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+            text-shadow:
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(1.3);
+            }
+        }
+
+        /* Энергия */
+        .energy-info {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 15px 0 8px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .energy-bar {
+            width: 90%;
+            max-width: 320px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 3px;
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        /* Магазин */
+        .shop-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 15px;
+            max-width: 360px;
+            margin: 20px auto;
+        }
+
+        .shop-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .upgrade-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upgrade-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .upgrade-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .upgrade-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .upgrade-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .upgrade-btn:active {
+            transform: scale(0.95);
+        }
+
+        .upgrade-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Игровой холст */
+        canvas {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: block;
+            margin: 0 auto 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Кнопки управления играми */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 60px;
+            height: 50px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(2px);
+        }
+
+        .control-btn-wide {
+            width: 130px;
+            font-size: 14px;
+        }
+
+        /* Статистика */
+        .stats {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 12px 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .stats-highlight {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        /* Таблица лидеров */
+        .board-wrap {
+            max-width: 460px;
+            margin: 0 auto;
+            padding-bottom: 10px;
+        }
+
+        .board-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 0 4px 14px;
+            text-align: left;
+        }
+
+        .board-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .board-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .board-refresh {
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 19px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .board-refresh:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        .board-refresh.spinning {
+            animation: spin 0.8s linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .podium {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 14px;
+            min-height: 198px;
+        }
+
+        .podium-card {
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 140px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 18px;
+            padding: 12px 7px 13px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+        }
+
+        .podium-card.first {
+            background: linear-gradient(165deg, rgba(255, 215, 0, 0.34), rgba(255, 255, 255, 0.14));
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 10px 28px rgba(255, 190, 0, 0.24);
+            padding-top: 22px;
+        }
+
+        .podium-medal { font-size: 25px; line-height: 1; }
+        .podium-card.first .podium-medal { font-size: 34px; }
+
+        .podium-name {
+            font-size: 13px;
+            font-weight: 800;
+            margin: 7px 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .podium-coins {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffe066;
+        }
+
+        .podium-meta {
+            font-size: 10px;
+            opacity: 0.82;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .board-tabs {
+            display: flex;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 13px;
+            padding: 4px;
+            margin-bottom: 12px;
+        }
+
+        .board-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.76);
+            padding: 9px 3px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .board-tab.active {
+            background: rgba(255, 255, 255, 0.92);
+            color: #3f3f7a;
+            box-shadow: 0 3px 9px rgba(0, 0, 0, 0.14);
+        }
+
+        .board-list {
+            background: rgba(0, 0, 0, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .board-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .board-row:last-child { border-bottom: none; }
+
+        .board-row.me {
+            background: rgba(255, 215, 0, 0.16);
+            border-left: 3px solid #ffd700;
+        }
+
+        .board-place {
+            width: 28px;
+            flex-shrink: 0;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .board-avatar {
+            width: 31px;
+            height: 31px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.16);
+        }
+
+        .board-name {
+            flex: 1;
+            min-width: 0;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .board-row-meta {
+            font-size: 10px;
+            opacity: 0.72;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .board-value {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffe066;
+            flex-shrink: 0;
+        }
+
+        .board-empty {
+            padding: 32px 16px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .board-me {
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            border-radius: 14px;
+            padding: 10px 13px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .board-me strong { color: #ffe066; }
+        .board-note { font-size: 10px; opacity: 0.65; margin-top: 12px; line-height: 1.5; }
+
+        /* 2048 */
+        .g2048-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 340px;
+            margin: 0 auto 12px;
+            gap: 10px;
+        }
+
+        .g2048-score {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .g2048-score b {
+            display: block;
+            font-size: 20px;
+            color: #ffe066;
+            margin-top: 2px;
+            letter-spacing: 0;
+        }
+
+        .g2048-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: min(320px, calc(100vw - 64px));
+            margin: 0 auto;
+            padding: 9px;
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.22);
+            border: 2px solid rgba(255, 255, 255, 0.28);
+            touch-action: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .g2048-cell {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.09);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(17px, 6vw, 26px);
+            font-weight: 900;
+            color: #3d2b0f;
+            transition: transform 0.08s ease;
+        }
+
+        .g2048-cell.pop { animation: pop 0.15s ease-out; }
+        @keyframes pop {
+            0% { transform: scale(0.86); }
+            100% { transform: scale(1); }
+        }
+
+        .g2048-hint {
+            font-size: 11px;
+            opacity: 0.75;
+            margin: 13px 0 2px;
+        }
+
+        .g2048-msg {
+            min-height: 20px;
+            margin: 9px 0 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffe066;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ГЛАВНОЕ МЕНЮ -->
+    <div id="menu" class="screen active">
+        <h1>🎮 GAME HUB</h1>
+        <p class="subtitle">Играй, зарабатывай, соревнуйся!</p>
+
+        <div class="balance">
+            💰 <span class="balance-amount" id="mainCoins">0</span> монет
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="openGame('tapper')">
+                <span class="menu-btn-text">🪙 Крипто-Тапалка</span>
+                <span class="menu-btn-badge">Ур. <span id="mTapLvl">1</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('snake')">
+                <span class="menu-btn-text">🐍 Змейка</span>
+                <span class="menu-btn-badge">Макс: <span id="mSnake">0</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('race')">
+                <span class="menu-btn-text">🏎️ Гонки</span>
+                <span class="menu-btn-badge">Макс: <span id="mRace">0</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('g2048')">
+                <span class="menu-btn-text">🧩 2048</span>
+                <span class="menu-btn-badge">Рекорд: <span id="mG2048">0</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('leaders')">
+                <span class="menu-btn-text">🏆 Таблица лидеров</span>
+                <span class="menu-btn-badge"><span id="mLeadersCount">0</span> игр.</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="sendToBot()">
+            💾 Сохранить в Топ бота
+        </button>
+    </div>
+
+    <!-- ТАПАЛКА -->
+    <div id="tapper" class="screen">
+        <h1>🪙 Тапалка</h1>
+
+        <div class="balance">
+            💰 <span class="balance-amount" id="tapScore">0</span> монет
+        </div>
+
+        <div class="coin-container" id="coinBox">
+            <div class="coin-btn" onclick="tapCoin(event)"></div>
+        </div>
+
+        <div class="energy-info">
+            ⚡ <span id="energyVal">100</span> / <span id="energyMax">100</span>
+            <span style="opacity: 0.7; font-size: 12px;">(+1 / 3 сек)</span>
+        </div>
+        <div class="energy-bar">
+            <div class="energy-fill" id="energyFill"></div>
+        </div>
+
+        <div class="shop-container">
+            <div class="shop-title">🛠 Прокачка</div>
+
+            <div class="upgrade-item">
+                <div class="upgrade-info">
+                    <div class="upgrade-title">💪 Сила клика (+<span id="uiPower">1</span>)</div>
+                    <div class="upgrade-desc">Больше монет за 1 тап</div>
+                </div>
+                <button class="upgrade-btn" id="btnBuyPower" onclick="buyPower()">600 🪙</button>
+            </div>
+
+            <div class="upgrade-item">
+                <div class="upgrade-info">
+                    <div class="upgrade-title">🔋 Энергия (<span id="uiMaxE">100</span>)</div>
+                    <div class="upgrade-desc">+50 к максимуму</div>
+                </div>
+                <button class="upgrade-btn" id="btnBuyEnergy" onclick="buyEnergy()">600 🪙</button>
+            </div>
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- ЗМЕЙКА -->
+    <div id="snake" class="screen">
+        <h1>🐍 Змейка</h1>
+
+        <div class="stats">
+            Счёт: <span class="stats-highlight" id="snakeScore">0</span> |
+            Рекорд: <span class="stats-highlight" id="snakeBest">0</span>
+        </div>
+
+        <canvas id="sCanvas" width="280" height="280"></canvas>
+
+        <div class="game-controls">
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div class="control-btn" onclick="setSnakeDir(0, -1)">▲</div>
+            </div>
+            <div class="control-btn" onclick="setSnakeDir(-1, 0)">◀</div>
+            <div class="control-btn" onclick="setSnakeDir(0, 1)">▼</div>
+            <div class="control-btn" onclick="setSnakeDir(1, 0)">▶</div>
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- ГОНКИ -->
+    <div id="race" class="screen">
+        <h1>🏎️ Гонки</h1>
+
+        <div class="stats">
+            Очки: <span class="stats-highlight" id="raceScore">0</span> |
+            Рекорд: <span class="stats-highlight" id="raceBest">0</span>
+        </div>
+
+        <canvas id="rCanvas" width="280" height="320"></canvas>
+
+        <div class="game-controls">
+            <div class="control-btn control-btn-wide" onclick="moveRace(-1)">◀ Влево</div>
+            <div class="control-btn control-btn-wide" onclick="moveRace(1)">Вправо ▶</div>
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- ТАБЛИЦА ЛИДЕРОВ -->
+    <div id="leaders" class="screen">
+        <div class="board-wrap">
+            <div class="board-head">
+                <div>
+                    <div class="board-title">🏆 Топ игроков</div>
+                    <div class="board-subtitle" id="boardSubtitle">Загрузка рейтинга…</div>
+                </div>
+                <button class="board-refresh" id="boardRefresh" onclick="loadLeaders(true)" title="Обновить">↻</button>
+            </div>
+
+            <div class="podium" id="boardPodium"></div>
+
+            <div class="board-tabs" id="boardTabs">
+                <button class="board-tab active" data-sort="points" onclick="setBoardSort('points')">💰 Монеты</button>
+                <button class="board-tab" data-sort="snake" onclick="setBoardSort('snake')">🐍 Змейка</button>
+                <button class="board-tab" data-sort="race" onclick="setBoardSort('race')">🏎 Гонки</button>
+                <button class="board-tab" data-sort="g2048" onclick="setBoardSort('g2048')">🧩 2048</button>
+            </div>
+
+            <div class="board-list" id="boardList"></div>
+            <div class="board-me" id="boardMe"></div>
+            <div class="board-note">Данные берутся из бота. Чтобы попасть в рейтинг, нажми «Сохранить в Топ бота» в главном меню.</div>
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- 2048 -->
+    <div id="g2048" class="screen">
+        <h1>🧩 2048</h1>
+        <p class="subtitle">Соединяй плитки и набирай очки</p>
+
+        <div class="g2048-head">
+            <div class="g2048-score">Счёт<b id="g2048Score">0</b></div>
+            <div class="g2048-score">Рекорд<b id="g2048Best">0</b></div>
+        </div>
+
+        <div class="g2048-grid" id="g2048Grid"></div>
+        <div class="g2048-hint">Свайпай по полю или используй стрелки / WASD</div>
+        <div class="g2048-msg" id="g2048Msg"></div>
+
+        <div class="game-controls">
+            <div class="control-btn" onclick="move2048(0, -1)">▲</div>
+            <div class="control-btn" onclick="move2048(-1, 0)">◀</div>
+            <div class="control-btn" onclick="move2048(0, 1)">▼</div>
+            <div class="control-btn" onclick="move2048(1, 0)">▶</div>
+        </div>
+
+        <button class="btn-primary" onclick="new2048()" style="margin-top: 2px; padding: 12px 24px; font-size: 14px;">🔄 Новая игра</button>
+        <br>
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        // Загрузка данных
+        let myCoins = parseInt(localStorage.getItem('myCoins')) || 0;
+        let bestSnake = parseInt(localStorage.getItem('bestSnake')) || 0;
+        let bestRace = parseInt(localStorage.getItem('bestRace')) || 0;
+        let bestG2048 = parseInt(localStorage.getItem('bestG2048')) || 0;
+        let tapPower = parseInt(localStorage.getItem('tapPower')) || 1;
+        let maxEnergy = parseInt(localStorage.getItem('maxEnergy')) || 100;
+        let energy = parseInt(localStorage.getItem('currEnergy'));
+        if (isNaN(energy)) energy = maxEnergy;
+
+        // Текущий рейтинг из bot_data.json. Страница сначала пробует
+        // leaderboard.json рядом с index.html, затем использует эти данные.
+        const LEADERBOARD_ROWS = [
+            {"key":"54a9d82aa1","name":"\u0e48","points":18764,"snake":17,"race":17,"g2048":1540,"slaves":10},
+            {"key":"a71cc81108","name":"Jealous Eyedress","points":0,"snake":10,"race":25,"g2048":0,"slaves":0},
+            {"key":"62cf218c52","name":"descriptecal","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"84c100c056","name":"moon","points":7264,"snake":18,"race":165,"g2048":0,"slaves":1},
+            {"key":"c970169c9c","name":"Amir","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"000304bf64","name":"qsef","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"bbad70fd57","name":"Атлантический","points":1460,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"e153c7b1cc","name":".","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"47c4260078","name":"эвочка","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
+            {"key":"301557b376","name":"-","points":50,"snake":22,"race":224,"g2048":0,"slaves":0},
+            {"key":"30ac5959e5","name":"kupriibot","points":100,"snake":0,"race":0,"g2048":0,"slaves":0}
+        ];
+        let boardRows = LEADERBOARD_ROWS.slice();
+        let boardSort = 'points';
+        let myBoardKey = null;
+
+        const BOARD_SORTS = {
+            points: {label: 'монет', icon: '💰', value: r => r.points || 0},
+            snake: {label: 'очков', icon: '🐍', value: r => r.snake || 0},
+            race: {label: 'очков', icon: '🏎', value: r => r.race || 0},
+            g2048: {label: 'очков', icon: '🧩', value: r => r.g2048 || 0}
+        };
+
+        function formatNum(n) {
+            return Number(n || 0).toLocaleString('ru-RU');
+        }
+
+        function avatarColor(key) {
+            let hash = 0;
+            for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+            return `hsl(${hash % 360}, 62%, 48%)`;
+        }
+
+        function playerInitials(name) {
+            const clean = (name || 'И').trim();
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (!parts.length) return 'И';
+            if (parts.length > 1) return (parts[0][0] + parts[1][0]).toUpperCase();
+            return clean.slice(0, 2).toUpperCase();
+        }
+
+        function sortedBoard() {
+            const metric = BOARD_SORTS[boardSort].value;
+            return boardRows.slice().sort((a, b) => metric(b) - metric(a) || (b.points || 0) - (a.points || 0));
+        }
+
+        function renderBoard() {
+            const rows = sortedBoard();
+            const metric = BOARD_SORTS[boardSort];
+            const medals = ['🥇', '🥈', '🥉'];
+
+            document.getElementById('boardSubtitle').innerText =
+                `${rows.length} участников · сортировка по ${metric.label}`;
+
+            const podium = document.getElementById('boardPodium');
+            const top = rows.slice(0, 3);
+            const order = top.length >= 3 ? [1, 0, 2] : top.map((_, i) => i);
+            podium.innerHTML = '';
+            order.forEach((idx) => {
+                const p = top[idx];
+                if (!p) return;
+                const card = document.createElement('div');
+                card.className = 'podium-card' + (idx === 0 ? ' first' : '');
+                card.innerHTML = `
+                    <div class="podium-medal">${medals[idx]}</div>
+                    <div class="podium-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
+                    <div class="podium-coins">${metric.icon} ${formatNum(metric.value(p))}</div>
+                    <div class="podium-meta">🪙 ${formatNum(p.points)} · ⛓ ${p.slaves || 0}</div>`;
+                podium.appendChild(card);
+            });
+
+            const list = document.getElementById('boardList');
+            list.innerHTML = '';
+            if (!rows.length) {
+                list.innerHTML = '<div class="board-empty">Пока никто не играл — стань первым!</div>';
+            }
+            rows.forEach((p, i) => {
+                const row = document.createElement('div');
+                row.className = 'board-row' + (myBoardKey && p.key === myBoardKey ? ' me' : '');
+                const place = i < 3 ? medals[i] : (i + 1);
+                row.innerHTML = `
+                    <div class="board-place">${place}</div>
+                    <div class="board-avatar" style="background:${avatarColor(p.key)}">${escapeHtml(playerInitials(p.name))}</div>
+                    <div class="board-name">${escapeHtml(p.name)}${myBoardKey && p.key === myBoardKey ? ' <span style="opacity:.7">· ты</span>' : ''}
+                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · ⛓ ${p.slaves || 0} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)}</div>
+                    </div>
+                    <div class="board-value">${metric.icon} ${formatNum(metric.value(p))}</div>`;
+                list.appendChild(row);
+            });
+
+            const me = rows.find(p => myBoardKey && p.key === myBoardKey);
+            const meBox = document.getElementById('boardMe');
+            if (me) {
+                meBox.innerHTML = `<span>Твоя позиция</span><span><strong>#${rows.indexOf(me) + 1}</strong> · ${metric.icon} ${formatNum(metric.value(me))}</span>`;
+            } else {
+                meBox.innerHTML = `<span>Твой результат</span><span><strong>${formatNum(myCoins)}</strong> 🪙 в этой игре</span>`;
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function setBoardSort(sort) {
+            if (!BOARD_SORTS[sort]) return;
+            boardSort = sort;
+            document.querySelectorAll('.board-tab').forEach(t => t.classList.toggle('active', t.dataset.sort === sort));
+            renderBoard();
+        }
+
+        async function computeMyKey() {
+            const uid = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id;
+            if (!uid || !window.crypto || !crypto.subtle) return;
+            try {
+                const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
+                myBoardKey = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
+                renderBoard();
+            } catch (e) { /* подсветка себя недоступна */ }
+        }
+
+        async function loadLeaders(manual) {
+            const btn = document.getElementById('boardRefresh');
+            if (btn) {
+                btn.classList.remove('spinning');
+                void btn.offsetWidth;
+                btn.classList.add('spinning');
+            }
+            try {
+                const resp = await fetch('leaderboard.json?t=' + Date.now(), {cache: 'no-store'});
+                if (resp.ok) {
+                    const fresh = await resp.json();
+                    if (Array.isArray(fresh) && fresh.length) boardRows = fresh;
+                }
+            } catch (e) { /* статичная копия ниже */ }
+            if (manual) renderBoard();
+        }
+
+        computeMyKey();
+        loadLeaders(false);
+
+        // Цены улучшений
+        function getPowerCost() {
+            return Math.floor(600 * Math.pow(1.6, tapPower - 1));
+        }
+
+        function getEnergyCost() {
+            return Math.floor(600 * Math.pow(1.6, (maxEnergy - 100) / 50));
+        }
+
+        function updateAllUI() {
+            document.getElementById('mainCoins').innerText = myCoins;
+            document.getElementById('mSnake').innerText = bestSnake;
+            document.getElementById('mRace').innerText = bestRace;
+            document.getElementById('mG2048').innerText = bestG2048;
+            document.getElementById('mLeadersCount').innerText = LEADERBOARD_ROWS.length;
+            document.getElementById('mTapLvl').innerText = tapPower;
+            document.getElementById('tapScore').innerText = myCoins;
+            document.getElementById('energyVal').innerText = energy;
+            document.getElementById('energyMax').innerText = maxEnergy;
+            document.getElementById('energyFill').style.width = ((energy / maxEnergy) * 100) + '%';
+
+            let pCost = getPowerCost();
+            let eCost = getEnergyCost();
+            document.getElementById('uiPower').innerText = tapPower;
+            document.getElementById('uiMaxE').innerText = maxEnergy;
+
+            let btnP = document.getElementById('btnBuyPower');
+            btnP.innerText = pCost + ' 🪙';
+            btnP.disabled = myCoins < pCost;
+
+            let btnE = document.getElementById('btnBuyEnergy');
+            btnE.innerText = eCost + ' 🪙';
+            btnE.disabled = myCoins < eCost;
+        }
+        updateAllUI();
+
+        function openMenu() {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('menu').classList.add('active');
+            updateAllUI();
+            clearInterval(snakeInterval);
+            cancelAnimationFrame(raceAnim);
+        }
+
+        function openGame(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            updateAllUI();
+            if (id === 'snake') startSnake();
+            if (id === 'race') startRace();
+            if (id === 'leaders') renderBoard();
+            if (id === 'g2048') init2048();
+        }
+
+        function sendToBot() {
+            if (tg) {
+                let data = {
+                    action: 'save_games',
+                    coins: myCoins,
+                    snake: bestSnake,
+                    race: bestRace,
+                    g2048: bestG2048
+                };
+                try {
+                    tg.sendData(JSON.stringify(data));
+                    myCoins = 0;
+                    localStorage.setItem('myCoins', 0);
+                    tg.close();
+                } catch (e) {
+                    alert("Открой игру через кнопку «📱 Открыть Mini App» в боте!");
+                }
+            }
+        }
+
+        // === ТАПАЛКА ===
+        function tapCoin(e) {
+            if (energy < 1) return;
+            energy -= 1;
+            myCoins += tapPower;
+            localStorage.setItem('myCoins', myCoins);
+            localStorage.setItem('currEnergy', energy);
+            updateAllUI();
+
+            const box = document.getElementById('coinBox');
+            const num = document.createElement('div');
+            num.className = 'float-num';
+            num.innerText = '+' + tapPower;
+            num.style.left = (85 + (Math.random() * 30 - 15)) + 'px';
+            num.style.top = '70px';
+            box.appendChild(num);
+            setTimeout(() => num.remove(), 800);
+
+            if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function buyPower() {
+            let cost = getPowerCost();
+            if (myCoins >= cost) {
+                myCoins -= cost;
+                tapPower += 1;
+                localStorage.setItem('myCoins', myCoins);
+                localStorage.setItem('tapPower', tapPower);
+                updateAllUI();
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+        }
+
+        function buyEnergy() {
+            let cost = getEnergyCost();
+            if (myCoins >= cost) {
+                myCoins -= cost;
+                maxEnergy += 50;
+                energy += 50;
+                localStorage.setItem('myCoins', myCoins);
+                localStorage.setItem('maxEnergy', maxEnergy);
+                localStorage.setItem('currEnergy', energy);
+                updateAllUI();
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy = Math.min(maxEnergy, energy + 1);
+                localStorage.setItem('currEnergy', energy);
+                updateAllUI();
+            }
+        }, 3000);
+
+        // === ЗМЕЙКА ===
+        const sCtx = document.getElementById('sCanvas').getContext('2d');
+        let snake = [], food = {}, sDx = 1, sDy = 0, sScore = 0, snakeInterval = null;
+
+        function startSnake() {
+            snake = [{x: 7, y: 7}, {x: 6, y: 7}, {x: 5, y: 7}];
+            sDx = 1; sDy = 0; sScore = 0;
+            document.getElementById('snakeScore').innerText = sScore;
+            document.getElementById('snakeBest').innerText = bestSnake;
+            spawnFood();
+            if (snakeInterval) clearInterval(snakeInterval);
+            snakeInterval = setInterval(updateSnake, 160);
+        }
+
+        function spawnFood() {
+            while (true) {
+                let fx = Math.floor(Math.random() * 14);
+                let fy = Math.floor(Math.random() * 14);
+                if (!snake.some(p => p.x === fx && p.y === fy)) {
+                    food = {x: fx, y: fy};
+                    break;
+                }
+            }
+        }
+
+        function setSnakeDir(x, y) {
+            if (x !== -sDx || y !== -sDy) {
+                sDx = x; sDy = y;
+            }
+        }
+
+        function updateSnake() {
+            let head = {x: snake[0].x + sDx, y: snake[0].y + sDy};
+            if (head.x < 0 || head.x >= 14 || head.y < 0 || head.y >= 14 ||
+                snake.some(p => p.x === head.x && p.y === head.y)) {
+                if (sScore > bestSnake) {
+                    bestSnake = sScore;
+                    localStorage.setItem('bestSnake', bestSnake);
+                }
+                alert("Игра окончена! Счёт: " + sScore);
+                startSnake();
+                return;
+            }
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                sScore++;
+                myCoins += 2;
+                localStorage.setItem('myCoins', myCoins);
+                document.getElementById('snakeScore').innerText = sScore;
+                if (sScore > bestSnake) {
+                    bestSnake = sScore;
+                    localStorage.setItem('bestSnake', bestSnake);
+                    document.getElementById('snakeBest').innerText = bestSnake;
+                }
+                spawnFood();
+            } else {
+                snake.pop();
+            }
+            drawSnakeGame();
+        }
+
+        function drawSnakeGame() {
+            for (let r = 0; r < 14; r++) {
+                for (let c = 0; c < 14; c++) {
+                    sCtx.fillStyle = (r + c) % 2 === 0 ? '#1e293b' : '#334155';
+                    sCtx.fillRect(c * 20, r * 20, 20, 20);
+                }
+            }
+
+            let ax = food.x * 20 + 10, ay = food.y * 20 + 10;
+            sCtx.fillStyle = '#ef4444';
+            sCtx.beginPath(); sCtx.arc(ax, ay, 8, 0, Math.PI * 2); sCtx.fill();
+            sCtx.fillStyle = '#fca5a5';
+            sCtx.beginPath(); sCtx.arc(ax - 2, ay - 2, 2.5, 0, Math.PI * 2); sCtx.fill();
+            sCtx.fillStyle = '#22c55e';
+            sCtx.beginPath(); sCtx.ellipse(ax + 2, ay - 7, 3, 2, -Math.PI / 4, 0, Math.PI * 2); sCtx.fill();
+
+            snake.forEach((p, i) => {
+                let px = p.x * 20, py = p.y * 20;
+                sCtx.fillStyle = i === 0 ? '#10b981' : '#059669';
+                sCtx.beginPath();
+                sCtx.roundRect(px + 2, py + 2, 16, 16, i === 0 ? 6 : 4);
+                sCtx.fill();
+
+                if (i === 0) {
+                    sCtx.fillStyle = '#ffffff';
+                    let ex1 = px + 7, ey1 = py + 7, ex2 = px + 13, ey2 = py + 7;
+                    if (sDy === 1) { ey1 = py + 13; ey2 = py + 13; }
+                    else if (sDx === 1) { ex1 = px + 13; ey1 = py + 7; ex2 = px + 13; ey2 = py + 13; }
+                    else if (sDx === -1) { ex1 = px + 7; ey1 = py + 7; ex2 = px + 7; ey2 = py + 13; }
+                    sCtx.beginPath(); sCtx.arc(ex1, ey1, 2.5, 0, Math.PI * 2); sCtx.fill();
+                    sCtx.beginPath(); sCtx.arc(ex2, ey2, 2.5, 0, Math.PI * 2); sCtx.fill();
+                    sCtx.fillStyle = '#000000';
+                    sCtx.beginPath(); sCtx.arc(ex1, ey1, 1.2, 0, Math.PI * 2); sCtx.fill();
+                    sCtx.beginPath(); sCtx.arc(ex2, ey2, 1.2, 0, Math.PI * 2); sCtx.fill();
+                }
+            });
+        }
+
+        // === ГОНКИ ===
+        const rCtx = document.getElementById('rCanvas').getContext('2d');
+        const LANES = [50, 120, 190];
+        let carLane = 1, obstacles = [], rScore = 0, raceAnim = null;
+        let lastTime = 0, spawnTimer = 0, roadOffset = 0;
+
+        function drawCar(ctx, x, y, bodyColor, roofColor, isPlayer) {
+            const w = 36, h = 56;
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(x - 3, y + 8, 4, 12);
+            ctx.fillRect(x + w - 1, y + 8, 4, 12);
+            ctx.fillRect(x - 3, y + h - 20, 4, 12);
+            ctx.fillRect(x + w - 1, y + h - 20, 4, 12);
+
+            ctx.fillStyle = bodyColor;
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 8);
+            ctx.fill();
+
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.roundRect(x + 4, y + 12, w - 8, h - 24, 5);
+            ctx.fill();
+
+            ctx.fillStyle = roofColor;
+            ctx.beginPath();
+            ctx.roundRect(x + 6, y + 18, w - 12, h - 36, 3);
+            ctx.fill();
+
+            if (isPlayer) {
+                ctx.fillStyle = 'rgba(254, 240, 138, 0.2)';
+                ctx.beginPath();
+                ctx.moveTo(x + 4, y);
+                ctx.lineTo(x - 6, y - 30);
+                ctx.lineTo(x + 14, y - 30);
+                ctx.lineTo(x + 10, y);
+                ctx.moveTo(x + w - 10, y);
+                ctx.lineTo(x + w - 14, y - 30);
+                ctx.lineTo(x + w + 6, y - 30);
+                ctx.lineTo(x + w - 4, y);
+                ctx.fill();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(x + 5, y + 2, 6, 3);
+                ctx.fillRect(x + w - 11, y + 2, 6, 3);
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(x + 6, y + h - 3, 6, 3);
+                ctx.fillRect(x + w - 12, y + h - 3, 6, 3);
+            } else {
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(x + 5, y + h - 4, 6, 3);
+                ctx.fillRect(x + w - 11, y + h - 4, 6, 3);
+            }
+        }
+
+        function startRace() {
+            carLane = 1; obstacles = []; rScore = 0; spawnTimer = 0;
+            document.getElementById('raceScore').innerText = rScore;
+            document.getElementById('raceBest').innerText = bestRace;
+            cancelAnimationFrame(raceAnim);
+            lastTime = performance.now();
+            raceAnim = requestAnimationFrame(updateRace);
+        }
+
+        function moveRace(dir) {
+            carLane = Math.max(0, Math.min(2, carLane + dir));
+        }
+
+        function updateRace(time) {
+            let dt = (time - lastTime) / 1000;
+            if (dt > 0.1) dt = 0.1;
+            lastTime = time;
+
+            rCtx.fillStyle = '#0f172a';
+            rCtx.fillRect(0, 0, 280, 320);
+            rCtx.fillStyle = '#1e293b';
+            rCtx.fillRect(32, 0, 216, 320);
+
+            roadOffset = (roadOffset + 220 * dt) % 40;
+            for (let y = -40; y < 330; y += 20) {
+                rCtx.fillStyle = ((y / 20) % 2 === 0) ? '#ef4444' : '#f1f5f9';
+                rCtx.fillRect(28, y + roadOffset, 4, 20);
+                rCtx.fillRect(248, y + roadOffset, 4, 20);
+            }
+
+            rCtx.strokeStyle = '#64748b';
+            rCtx.lineWidth = 2;
+            rCtx.setLineDash([15, 15]);
+            rCtx.lineDashOffset = -roadOffset;
+            rCtx.beginPath();
+            rCtx.moveTo(102, 0); rCtx.lineTo(102, 320);
+            rCtx.moveTo(178, 0); rCtx.lineTo(178, 320);
+            rCtx.stroke();
+
+            spawnTimer += dt;
+            if (spawnTimer > 0.8) {
+                spawnTimer = 0;
+                let colors = [
+                    {b: '#ef4444', r: '#b91c1c'},
+                    {b: '#eab308', r: '#a16207'},
+                    {b: '#a855f7', r: '#7e22ce'}
+                ];
+                let c = colors[Math.floor(Math.random() * colors.length)];
+                obstacles.push({lane: Math.floor(Math.random() * 3), y: -65, b: c.b, r: c.r});
+            }
+
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].y += 200 * dt;
+                let ox = LANES[obstacles[i].lane], oy = obstacles[i].y;
+
+                drawCar(rCtx, ox, oy, obstacles[i].b, obstacles[i].r, false);
+
+                if (obstacles[i].lane === carLane && oy + 52 > 245 && oy < 298) {
+                    if (rScore > bestRace) {
+                        bestRace = rScore;
+                        localStorage.setItem('bestRace', bestRace);
+                    }
+                    alert("💥 Авария! Счёт: " + rScore);
+                    startRace();
+                    return;
+                }
+
+                if (oy > 330) {
+                    obstacles.splice(i, 1);
+                    i--;
+                    rScore++;
+                    myCoins += 1;
+                    localStorage.setItem('myCoins', myCoins);
+                    document.getElementById('raceScore').innerText = rScore;
+                    if (rScore > bestRace) {
+                        bestRace = rScore;
+                        localStorage.setItem('bestRace', bestRace);
+                        document.getElementById('raceBest').innerText = bestRace;
+                    }
+                }
+            }
+
+            drawCar(rCtx, LANES[carLane], 245, '#0ea5e9', '#38bdf8', true);
+
+            raceAnim = requestAnimationFrame(updateRace);
+        }
+
+        // === 2048 ===
+        const G2048_COLORS = {
+            0: 'rgba(255,255,255,0.09)', 2: '#eee4da', 4: '#ede0c8', 8: '#f2b179',
+            16: '#f59563', 32: '#f67c5f', 64: '#f65e3b', 128: '#edcf72',
+            256: '#edcc61', 512: '#edc850', 1024: '#edc53f', 2048: '#edc22e'
+        };
+        let g2048Grid = [];
+        let g2048Score = 0;
+        let g2048Won = false;
+        let g2048Ready = false;
+
+        function init2048() {
+            if (!g2048Ready) {
+                new2048();
+                bind2048Input();
+                g2048Ready = true;
+            }
+            document.getElementById('g2048Best').innerText = formatNum(bestG2048);
+        }
+
+        function new2048() {
+            g2048Grid = Array.from({length: 4}, () => [0, 0, 0, 0]);
+            g2048Score = 0;
+            g2048Won = false;
+            document.getElementById('g2048Msg').innerText = '';
+            add2048Tile();
+            add2048Tile();
+            draw2048();
+        }
+
+        function empty2048Cells() {
+            const cells = [];
+            for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) if (!g2048Grid[r][c]) cells.push([r, c]);
+            return cells;
+        }
+
+        function add2048Tile() {
+            const empty = empty2048Cells();
+            if (!empty.length) return;
+            const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+            g2048Grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+        }
+
+        function draw2048() {
+            const grid = document.getElementById('g2048Grid');
+            grid.innerHTML = '';
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const val = g2048Grid[r][c];
+                    const cell = document.createElement('div');
+                    cell.className = 'g2048-cell' + (val ? ' pop' : '');
+                    cell.innerText = val || '';
+                    cell.style.background = G2048_COLORS[val] || '#3c3a32';
+                    cell.style.color = val > 4 ? '#f9f6f2' : '#3d2b0f';
+                    if (val >= 128) cell.style.fontSize = 'clamp(14px, 5vw, 22px)';
+                    grid.appendChild(cell);
+                }
+            }
+            document.getElementById('g2048Score').innerText = formatNum(g2048Score);
+            document.getElementById('g2048Best').innerText = formatNum(bestG2048);
+        }
+
+        function slide2048Line(line) {
+            const values = line.filter(v => v);
+            const merged = [];
+            for (let i = 0; i < values.length; i++) {
+                if (values[i] === values[i + 1]) {
+                    const v = values[i] * 2;
+                    merged.push(v);
+                    g2048Score += v;
+                    if (v === 2048) g2048Won = true;
+                    i++;
+                } else {
+                    merged.push(values[i]);
+                }
+            }
+            while (merged.length < 4) merged.push(0);
+            return merged;
+        }
+
+        function move2048(dx, dy) {
+            if (!g2048Ready) return;
+            const before = JSON.stringify(g2048Grid);
+            const next = Array.from({length: 4}, () => [0, 0, 0, 0]);
+
+            for (let i = 0; i < 4; i++) {
+                let line = [];
+                for (let j = 0; j < 4; j++) {
+                    if (dx === 1) line.push(g2048Grid[i][j]);
+                    else if (dx === -1) line.push(g2048Grid[i][3 - j]);
+                    else if (dy === 1) line.push(g2048Grid[j][i]);
+                    else line.push(g2048Grid[3 - j][i]);
+                }
+                const merged = slide2048Line(line);
+                for (let j = 0; j < 4; j++) {
+                    if (dx === 1) next[i][j] = merged[j];
+                    else if (dx === -1) next[i][3 - j] = merged[j];
+                    else if (dy === 1) next[j][i] = merged[j];
+                    else next[3 - j][i] = merged[j];
+                }
+            }
+
+            if (JSON.stringify(next) === before) return;
+            g2048Grid = next;
+            add2048Tile();
+
+            if (g2048Score > bestG2048) {
+                bestG2048 = g2048Score;
+                localStorage.setItem('bestG2048', bestG2048);
+            }
+            myCoins += Math.max(1, Math.floor(g2048Score / 100));
+            localStorage.setItem('myCoins', myCoins);
+            draw2048();
+            updateAllUI();
+
+            const msg = document.getElementById('g2048Msg');
+            if (g2048Won) {
+                msg.innerText = '🎉 Ты собрал 2048! Можно продолжать.';
+                g2048Won = false;
+            } else if (!canMove2048()) {
+                msg.innerText = `💥 Ходов больше нет. Счёт: ${formatNum(g2048Score)}`;
+                if (g2048Score > bestG2048) {
+                    bestG2048 = g2048Score;
+                    localStorage.setItem('bestG2048', bestG2048);
+                    document.getElementById('g2048Best').innerText = formatNum(bestG2048);
+                }
+            }
+        }
+
+        function canMove2048() {
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (!g2048Grid[r][c]) return true;
+                    if (c < 3 && g2048Grid[r][c] === g2048Grid[r][c + 1]) return true;
+                    if (r < 3 && g2048Grid[r][c] === g2048Grid[r + 1][c]) return true;
+                }
+            }
+            return false;
+        }
+
+        function bind2048Input() {
+            document.addEventListener('keydown', (e) => {
+                if (!document.getElementById('g2048').classList.contains('active')) return;
+                const map = {ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+                    w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0], ц: [0, -1], ы: [0, 1], ф: [-1, 0], в: [1, 0]};
+                const move = map[e.key] || map[e.key.toLowerCase()];
+                if (move) {
+                    e.preventDefault();
+                    move2048(move[0], move[1]);
+                }
+            });
+
+            const grid = document.getElementById('g2048Grid');
+            let start = null;
+            grid.addEventListener('pointerdown', (e) => { start = [e.clientX, e.clientY]; });
+            grid.addEventListener('pointerup', (e) => {
+                if (!start) return;
+                const dx = e.clientX - start[0];
+                const dy = e.clientY - start[1];
+                start = null;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+                if (Math.abs(dx) > Math.abs(dy)) move2048(dx > 0 ? 1 : -1, 0);
+                else move2048(0, dy > 0 ? 1 : -1);
+            });
+        }
+    </script>
+</body>
+</html>
