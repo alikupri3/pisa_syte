@@ -197,8 +197,14 @@ export default async (request) => {
     state.updatedAt = Number(seed.updatedAt) || 0;
   }
 
+  // Убираем служебные записи, которые могли появиться при импорте массива.
+  for (const id of Object.keys(state.players)) {
+    if (/^\d{1,2}$/.test(id)) delete state.players[id];
+  }
+
   if (request.method === "GET") {
-    const me = new URL(request.url).searchParams.get("me");
+    const meRaw = new URL(request.url).searchParams.get("me");
+    const me = meRaw ? (state.players[meRaw] ? meRaw : keyFor(meRaw)) : null;
     return json(200, publicState(state, me));
   }
   if (request.method !== "POST") {
@@ -235,8 +241,20 @@ export default async (request) => {
   const mode = String(body.mode || "action");
   if (mode === "sync") {
     if (body.state?.players) {
-      for (const [id, p] of Object.entries(body.state.players)) {
-        state.players[id] = normalizePlayer(p);
+      const source = body.state.players;
+      const entries = Array.isArray(source)
+        ? source.map(p => [String(p.key || p.id || ""), p])
+        : Object.entries(source);
+      for (const [id, p] of entries) {
+        if (!id) continue;
+        state.players[id] = normalizePlayer({
+          name: p.name,
+          balance: p.balance ?? p.points,
+          owner: p.owner ?? null,
+          price: p.price,
+          income: p.income,
+          lastCollect: p.lastCollect
+        });
       }
     }
     state.updatedAt = Math.floor(Date.now() / 1000);
