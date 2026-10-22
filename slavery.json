@@ -3,47 +3,11 @@
     {
       "key": "54a9d82aa1",
       "name": "່",
-      "points": 680404,
+      "points": 675728,
       "owner": "84c100c056",
       "price": 505,
       "income": 40,
       "lastCollect": 1792633122
-    },
-    {
-      "key": "c970169c9c",
-      "name": "Amir",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 3838,
-      "income": 214,
-      "lastCollect": 0
-    },
-    {
-      "key": "000304bf64",
-      "name": "qsef",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 2560,
-      "income": 157,
-      "lastCollect": 0
-    },
-    {
-      "key": "47c4260078",
-      "name": "эвочка",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 2556,
-      "income": 153,
-      "lastCollect": 0
-    },
-    {
-      "key": "84c100c056",
-      "name": "moon",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 5745,
-      "income": 300,
-      "lastCollect": 0
     },
     {
       "key": "a71cc81108",
@@ -64,6 +28,33 @@
       "lastCollect": 0
     },
     {
+      "key": "84c100c056",
+      "name": "moon",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 5745,
+      "income": 300,
+      "lastCollect": 0
+    },
+    {
+      "key": "c970169c9c",
+      "name": "Amir",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 3838,
+      "income": 214,
+      "lastCollect": 0
+    },
+    {
+      "key": "000304bf64",
+      "name": "qsef",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 2560,
+      "income": 157,
+      "lastCollect": 0
+    },
+    {
       "key": "bbad70fd57",
       "name": "Атлантический",
       "points": 0,
@@ -78,6 +69,15 @@
       "points": 0,
       "owner": "54a9d82aa1",
       "price": 2559,
+      "income": 153,
+      "lastCollect": 0
+    },
+    {
+      "key": "47c4260078",
+      "name": "эвочка",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 2556,
       "income": 153,
       "lastCollect": 0
     },
