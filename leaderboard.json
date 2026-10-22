@@ -27,6 +27,15 @@
     "slaves": 0
   },
   {
+    "key": "54a9d82aa1",
+    "name": "່",
+    "points": 50,
+    "snake": 17,
+    "race": 17,
+    "g2048": 1540,
+    "slaves": 10
+  },
+  {
     "key": "301557b376",
     "name": "-",
     "points": 50,
@@ -34,15 +43,6 @@
     "race": 224,
     "g2048": 0,
     "slaves": 0
-  },
-  {
-    "key": "54a9d82aa1",
-    "name": "່",
-    "points": 0,
-    "snake": 17,
-    "race": 17,
-    "g2048": 1540,
-    "slaves": 10
   },
   {
     "key": "a71cc81108",
