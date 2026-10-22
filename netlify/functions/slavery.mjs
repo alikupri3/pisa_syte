@@ -92,33 +92,109 @@ export default async (request) => {
   state.players ||= {};
   state.results ||= {};
 
-  if (!raw) {
-    try {
-      const seedResp = await fetch(new URL("/slavery.json", request.url));
-      if (seedResp.ok) {
-        const seed = await seedResp.json();
-      if (seed && Array.isArray(seed.players)) {
-        for (const p of seed.players) {
-          if (!p || !p.key) continue;
-          const info = normalizePlayer({
-            name: p.name,
-            balance: p.points ?? p.balance,
-            owner: p.owner ?? null,
-            price: p.price,
-            income: p.income,
-            lastCollect: p.lastCollect
-          });
-          if (p.owner) {
-            info.owner = p.owner;
-          }
-          state.players[p.key] = info;
-        }
-        state.updatedAt = Number(seed.updatedAt) || 0;
-      }
-      }
-    } catch {
-      // без seed биржа стартует пустой
+  if (!raw || !Object.keys(state.players || {}).length) {
+    const seed = {
+  "updatedAt": 1792639082,
+  "players": [
+    {
+      "key": "54a9d82aa1",
+      "name": "່",
+      "points": 1000,
+      "owner": "84c100c056",
+      "price": 505,
+      "income": 40,
+      "lastCollect": 1792633122
+    },
+    {
+      "key": "a71cc81108",
+      "name": "Jealous Eyedress",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "62cf218c52",
+      "name": "descriptecal",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "84c100c056",
+      "name": "moon",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "c970169c9c",
+      "name": "Amir",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "000304bf64",
+      "name": "qsef",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "bbad70fd57",
+      "name": "Атлантический",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 109,
+      "lastCollect": 0
+    },
+    {
+      "key": "e153c7b1cc",
+      "name": ".",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "47c4260078",
+      "name": "эвочка",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
+    },
+    {
+      "key": "301557b376",
+      "name": "-",
+      "points": 1000,
+      "owner": "54a9d82aa1",
+      "price": 800,
+      "income": 150,
+      "lastCollect": 0
     }
+  ]
+};
+    for (const p of seed.players) {
+      state.players[p.key] = normalizePlayer({
+        name: p.name, balance: p.points, owner: p.owner, price: p.price,
+        income: p.income, lastCollect: p.lastCollect
+      });
+    }
+    state.updatedAt = Number(seed.updatedAt) || 0;
   }
 
   if (request.method === "GET") {
