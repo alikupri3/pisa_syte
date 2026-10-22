@@ -1164,6 +1164,33 @@
         let maxEnergy = parseInt(localStorage.getItem('maxEnergy')) || 100;
         let energy = parseInt(localStorage.getItem('currEnergy'));
         if (isNaN(energy)) energy = maxEnergy;
+        const ENERGY_REGEN_MS = 3000;
+        let energyUpdatedAt = parseInt(localStorage.getItem('energyUpdatedAt'), 10);
+        if (!Number.isFinite(energyUpdatedAt)) energyUpdatedAt = Date.now();
+
+        function saveEnergy() {
+            localStorage.setItem('currEnergy', String(energy));
+            localStorage.setItem('energyUpdatedAt', String(energyUpdatedAt));
+        }
+
+        // Начисляем энергию по прошедшему времени, поэтому закрытое
+        // приложение или свёрнутая вкладка не останавливают восстановление.
+        function syncEnergy(now = Date.now()) {
+            if (energy >= maxEnergy) {
+                energy = maxEnergy;
+                return false;
+            }
+
+            const gained = Math.floor(Math.max(0, now - energyUpdatedAt) / ENERGY_REGEN_MS);
+            if (gained < 1) return false;
+
+            energy = Math.min(maxEnergy, energy + gained);
+            energyUpdatedAt = energy >= maxEnergy
+                ? now
+                : energyUpdatedAt + gained * ENERGY_REGEN_MS;
+            saveEnergy();
+            return true;
+        }
 
         // Текущий рейтинг. Сначала читаем свежий leaderboard.json,
         // затем живое хранилище Netlify и статичный запасной список.
@@ -1356,6 +1383,7 @@
             btnE.innerText = eCost + ' 🪙';
             btnE.disabled = myCoins < eCost;
         }
+        syncEnergy();
         updateAllUI();
 
         function openMenu() {
@@ -1597,11 +1625,14 @@
         }
 
         function tapCoin(e) {
+            syncEnergy();
             if (energy < 1) return;
+            const wasFull = energy >= maxEnergy;
             energy -= 1;
             myCoins += tapPower;
+            if (wasFull) energyUpdatedAt = Date.now();
             localStorage.setItem('myCoins', myCoins);
-            localStorage.setItem('currEnergy', energy);
+            saveEnergy();
             updateAllUI();
 
             const box = document.getElementById('coinBox');
@@ -1636,19 +1667,24 @@
                 energy += 50;
                 localStorage.setItem('myCoins', myCoins);
                 localStorage.setItem('maxEnergy', maxEnergy);
-                localStorage.setItem('currEnergy', energy);
+                if (energy >= maxEnergy) energyUpdatedAt = Date.now();
+                saveEnergy();
                 updateAllUI();
                 if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             }
         }
 
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 1);
-                localStorage.setItem('currEnergy', energy);
-                updateAllUI();
-            }
-        }, 3000);
+        function refreshEnergy() {
+            if (syncEnergy()) updateAllUI();
+        }
+
+        setInterval(refreshEnergy, 1000);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refreshEnergy();
+        });
+        window.addEventListener('pageshow', refreshEnergy);
+        window.addEventListener('focus', refreshEnergy);
+        if (tg && tg.onEvent) tg.onEvent('activated', refreshEnergy);
 
         // === ЗМЕЙКА ===
         const sCtx = document.getElementById('sCanvas').getContext('2d');
