@@ -11,10 +11,10 @@
   {
     "key": "84c100c056",
     "name": "moon",
-    "points": 50,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
+    "points": 603,
+    "snake": 5,
+    "race": 32,
+    "g2048": 1420,
     "slaves": 1
   },
   {
