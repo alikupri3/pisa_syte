@@ -49,18 +49,6 @@
       "ackSpent": 0
     },
     {
-      "key": "000304bf64",
-      "name": "qsef",
-      "points": 50,
-      "owner": "54a9d82aa1",
-      "price": 2560,
-      "income": 157,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
       "key": "a71cc81108",
       "name": "Jealous Eyedress",
       "points": 0,
@@ -79,6 +67,18 @@
       "owner": "54a9d82aa1",
       "price": 3838,
       "income": 214,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
+      "key": "000304bf64",
+      "name": "qsef",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 2560,
+      "income": 157,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
