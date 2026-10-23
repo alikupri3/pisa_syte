@@ -1013,6 +1013,59 @@
         .payout-row span:first-child { color: rgba(226, 232, 240, 0.85); }
         .payout-x { color: var(--gold); font-weight: 850; }
         .payout-x.dim { color: var(--muted); font-weight: 700; }
+
+        /* АРКАНОИД */
+        .ark-head { display: flex; gap: 8px; margin-bottom: 13px; }
+        .ark-stat {
+            flex: 1; min-width: 0;
+            background: var(--panel); border: 1px solid var(--line);
+            border-radius: 15px; padding: 9px 6px;
+        }
+        .ark-stat-label {
+            font-size: 8.5px; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--muted); font-weight: 800;
+        }
+        .ark-stat-value {
+            font-size: 15px; font-weight: 850; color: #e2e8f0;
+            margin-top: 3px; letter-spacing: -0.4px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ark-stat-value.gold { color: var(--gold); }
+        .ark-stat-value.lives { color: #fb7185; letter-spacing: 0; }
+
+        .ark-stage { position: relative; width: min(300px, calc(100vw - 64px)); margin: 0 auto; }
+        #aCanvas { display: block; width: 100%; height: auto; touch-action: none; border-radius: 20px; }
+        .ark-overlay {
+            position: absolute; inset: 0; display: none;
+            align-items: center; justify-content: center; flex-direction: column;
+            gap: 9px; padding: 22px; border-radius: 20px; text-align: center;
+            background: rgba(6, 9, 20, 0.84);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+        }
+        .ark-overlay.show { display: flex; }
+        .ark-overlay-title { font-size: 19px; font-weight: 850; letter-spacing: -0.5px; }
+        .ark-overlay-text { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+        .ark-overlay-btn {
+            margin-top: 6px; padding: 12px 24px; border: 0; border-radius: 14px;
+            font-family: inherit; font-size: 14px; font-weight: 800; color: #241a00;
+            background: linear-gradient(120deg, #fbbf24, #f59e0b);
+            box-shadow: 0 12px 26px rgba(245, 158, 11, 0.3);
+        }
+        .ark-overlay-btn:active { transform: scale(0.97); }
+
+        .ark-controls { display: flex; gap: 10px; justify-content: center; margin-top: 13px; }
+        .ark-btn {
+            flex: 1; max-width: 132px; padding: 13px 0; border-radius: 16px;
+            background: rgba(255, 255, 255, 0.075); border: 1px solid var(--line);
+            color: #fff; font-size: 17px; font-weight: 800; font-family: inherit;
+            cursor: pointer;
+        }
+        .ark-btn:active { background: rgba(255, 255, 255, 0.16); }
+        .ark-hint { margin-top: 11px; font-size: 11.5px; color: var(--muted); min-height: 16px; }
+
+        .board-tabs { gap: 3px; }
+        .board-tab { font-size: 10px; padding: 9px 2px; }
     </style>
 </head>
 <body>
@@ -1032,7 +1085,7 @@
             </div>
         </div>
 
-        <div class="section-label"><span>Игры</span><span>4 режима</span></div>
+        <div class="section-label"><span>Игры</span><span>5 режимов</span></div>
         <div class="menu-grid">
             <div class="menu-btn" onclick="openGame('tapper')">
                 <div class="menu-icon">🪙</div>
@@ -1056,6 +1109,12 @@
                 <div class="menu-icon">🧩</div>
                 <span class="menu-btn-text">2048</span>
                 <span class="menu-btn-badge">Рекорд <span id="mG2048">0</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('arkanoid')">
+                <div class="menu-icon">🧱</div>
+                <span class="menu-btn-text">Арканоид</span>
+                <span class="menu-btn-badge">Рекорд <span id="mArkanoid">0</span></span>
             </div>
         </div>
 
@@ -1145,6 +1204,48 @@
         </div>
 
         <div class="board-note" style="margin-bottom: 14px;">Выигрыш и проигрыш попадают в общий баланс бота после «💾 Сохранить в Топ бота».</div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- АРКАНОИД -->
+    <div id="arkanoid" class="screen">
+        <h1>🧱 Арканоид</h1>
+        <p class="subtitle">Разбей все кирпичи и не урони мяч</p>
+
+        <div class="ark-head">
+            <div class="ark-stat">
+                <div class="ark-stat-label">Счёт</div>
+                <div class="ark-stat-value gold" id="arkScore">0</div>
+            </div>
+            <div class="ark-stat">
+                <div class="ark-stat-label">Рекорд</div>
+                <div class="ark-stat-value" id="arkBest">0</div>
+            </div>
+            <div class="ark-stat">
+                <div class="ark-stat-label">Уровень</div>
+                <div class="ark-stat-value" id="arkLevel">1</div>
+            </div>
+            <div class="ark-stat">
+                <div class="ark-stat-label">Жизни</div>
+                <div class="ark-stat-value lives" id="arkLives">❤❤❤</div>
+            </div>
+        </div>
+
+        <div class="ark-stage">
+            <canvas id="aCanvas" width="300" height="380"></canvas>
+            <div class="ark-overlay" id="arkOverlay">
+                <div class="ark-overlay-title" id="arkOverlayTitle">Готов?</div>
+                <div class="ark-overlay-text" id="arkOverlayText">Веди пальцем по полю, чтобы двигать платформу</div>
+                <button class="ark-overlay-btn" id="arkOverlayBtn" onclick="arkOverlayClick()">▶ Играть</button>
+            </div>
+        </div>
+
+        <div class="ark-controls">
+            <button class="ark-btn" onclick="arkNudge(-1)">◀</button>
+            <button class="ark-btn" onclick="arkNudge(1)">▶</button>
+        </div>
+        <div class="ark-hint" id="arkHint">Тапай по полю или жми стрелки — платформа едет за пальцем</div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
     </div>
@@ -1252,6 +1353,7 @@
                 <button class="board-tab" data-sort="snake" onclick="setBoardSort('snake')">🐍 Змейка</button>
                 <button class="board-tab" data-sort="race" onclick="setBoardSort('race')">🏎 Гонки</button>
                 <button class="board-tab" data-sort="g2048" onclick="setBoardSort('g2048')">🧩 2048</button>
+                <button class="board-tab" data-sort="arkanoid" onclick="setBoardSort('arkanoid')">🧱 Аркан</button>
             </div>
 
             <div class="board-list" id="boardList"></div>
@@ -1379,6 +1481,7 @@
         let bestSnake = parseInt(localStorage.getItem('bestSnake')) || 0;
         let bestRace = parseInt(localStorage.getItem('bestRace')) || 0;
         let bestG2048 = parseInt(localStorage.getItem('bestG2048')) || 0;
+        let bestArkanoid = parseInt(localStorage.getItem('bestArkanoid')) || 0;
         let tapPower = parseInt(localStorage.getItem('tapPower')) || 1;
         let maxEnergy = parseInt(localStorage.getItem('maxEnergy')) || 100;
         let energy = parseInt(localStorage.getItem('currEnergy'));
@@ -1446,16 +1549,16 @@
         // Текущий рейтинг. Сначала читаем свежий leaderboard.json,
         // затем живое хранилище Netlify и статичный запасной список.
         const LEADERBOARD_ROWS = [
-            {"key":"54a9d82aa1","name":"່","points":675728,"snake":24,"race":8,"g2048":1540,"slaves":9},
-            {"key":"a71cc81108","name":"Jealous Eyedress","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"62cf218c52","name":"descriptecal","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"84c100c056","name":"moon","points":0,"snake":0,"race":0,"g2048":0,"slaves":1},
-            {"key":"c970169c9c","name":"Amir","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"000304bf64","name":"qsef","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"bbad70fd57","name":"Атлантический","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"e153c7b1cc","name":".","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"47c4260078","name":"эвочка","points":0,"snake":0,"race":0,"g2048":0,"slaves":0},
-            {"key":"301557b376","name":"-","points":0,"snake":0,"race":0,"g2048":0,"slaves":0}
+            {"key":"54a9d82aa1","name":"່","points":675728,"snake":24,"race":8,"g2048":1540,"arkanoid":0,"slaves":9},
+            {"key":"a71cc81108","name":"Jealous Eyedress","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"62cf218c52","name":"descriptecal","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"84c100c056","name":"moon","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":1},
+            {"key":"c970169c9c","name":"Amir","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"000304bf64","name":"qsef","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"bbad70fd57","name":"Атлантический","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"e153c7b1cc","name":".","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"47c4260078","name":"эвочка","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0},
+            {"key":"301557b376","name":"-","points":0,"snake":0,"race":0,"g2048":0,"arkanoid":0,"slaves":0}
         ];
         let boardRows = LEADERBOARD_ROWS.slice();
         let boardSort = 'points';
@@ -1466,7 +1569,8 @@
             points: {label: 'монет', icon: '💰', value: r => r.points || 0},
             snake: {label: 'очков', icon: '🐍', value: r => r.snake || 0},
             race: {label: 'очков', icon: '🏎', value: r => r.race || 0},
-            g2048: {label: 'очков', icon: '🧩', value: r => r.g2048 || 0}
+            g2048: {label: 'очков', icon: '🧩', value: r => r.g2048 || 0},
+            arkanoid: {label: 'очков', icon: '🧱', value: r => r.arkanoid || 0}
         };
 
         function formatNum(n) {
@@ -1530,7 +1634,7 @@
                     <div class="board-place">${place}</div>
                     <div class="board-avatar" style="background:${avatarColor(p.key)}">${escapeHtml(playerInitials(p.name))}</div>
                     <div class="board-name">${escapeHtml(p.name)}${myBoardKey && p.key === myBoardKey ? ' <span style="opacity:.7">· ты</span>' : ''}
-                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)}</div>
+                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)} · 🧱 ${formatNum(p.arkanoid)}</div>
                     </div>
                     <div class="board-value">${metric.icon} ${formatNum(metric.value(p))}</div>`;
                 list.appendChild(row);
@@ -1865,6 +1969,7 @@
             document.getElementById('mSnake').innerText = bestSnake;
             document.getElementById('mRace').innerText = bestRace;
             document.getElementById('mG2048').innerText = bestG2048;
+            document.getElementById('mArkanoid').innerText = bestArkanoid;
             document.getElementById('mLeadersCount').innerText = boardRows.length;
             document.getElementById('mTapLvl').innerText = tapPower;
             document.getElementById('tapScore').innerText = myCoins;
@@ -1899,6 +2004,7 @@
             if (leaderboardTimer) clearInterval(leaderboardTimer);
             leaderboardTimer = null;
             stopCasinoSpin();
+            stopArkanoid();
         }
 
         function openGame(id) {
@@ -1915,6 +2021,7 @@
             }
             if (id === 'g2048') init2048();
             if (id === 'casino') openCasino();
+            if (id === 'arkanoid') openArkanoid();
         }
 
         function setSaveStatus(text, kind) {
@@ -1933,7 +2040,7 @@
                 return;
             }
             if (!retry && pupuEarned <= 0 && pupuSpent <= 0
-                    && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0) {
+                    && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0 && bestArkanoid <= 0) {
                 setSaveStatus('Нет новых результатов для сохранения.', '');
                 return;
             }
@@ -1945,7 +2052,8 @@
                 epoch: ensureEpoch(),
                 snake: bestSnake,
                 race: bestRace,
-                g2048: bestG2048
+                g2048: bestG2048,
+                arkanoid: bestArkanoid
             };
             try {
                 sendTelegramData(JSON.stringify(data));
@@ -2425,6 +2533,372 @@
                 else move2048(0, dy > 0 ? 1 : -1);
             });
         }
+
+        // === АРКАНОИД ===
+        // Физика считается в фиксированной системе 300×380, а CSS растягивает
+        // канвас под экран — иначе скорость мяча зависела бы от ширины телефона.
+        const ARK_W = 300, ARK_H = 380;
+        const ARK_ROWS = 5, ARK_COLS = 8;
+        const ARK_BRICK_W = 32, ARK_BRICK_H = 14, ARK_GAP = 4, ARK_TOP = 52;
+        const ARK_ROW_COLORS = ['#a855f7', '#6366f1', '#22d3ee', '#34d399', '#fbbf24'];
+        const aCanvas = document.getElementById('aCanvas');
+        const aCtx = aCanvas.getContext('2d');
+
+        let arkPaddle = {x: (ARK_W - 62) / 2, y: ARK_H - 24, w: 62, h: 10};
+        let arkBall = {x: ARK_W / 2, y: ARK_H - 34, vx: 0, vy: 0, r: 6};
+        let arkBricks = [];
+        let arkScore = 0, arkLives = 3, arkLevel = 1;
+        let arkAnim = null, arkRunning = false, arkLaunched = false;
+        let arkLast = 0, arkOverlayAction = null;
+
+        function arkSpeed() {
+            return 200 + (arkLevel - 1) * 22;
+        }
+
+        function arkBuildBricks() {
+            arkBricks = [];
+            const width = ARK_COLS * ARK_BRICK_W + (ARK_COLS - 1) * ARK_GAP;
+            const offsetX = (ARK_W - width) / 2;
+            for (let r = 0; r < ARK_ROWS; r++) {
+                for (let c = 0; c < ARK_COLS; c++) {
+                    arkBricks.push({
+                        x: offsetX + c * (ARK_BRICK_W + ARK_GAP),
+                        y: ARK_TOP + r * (ARK_BRICK_H + ARK_GAP),
+                        w: ARK_BRICK_W, h: ARK_BRICK_H,
+                        row: r, alive: true
+                    });
+                }
+            }
+        }
+
+        function arkUpdateHud() {
+            document.getElementById('arkScore').innerText = formatNum(arkScore);
+            document.getElementById('arkBest').innerText = formatNum(bestArkanoid);
+            document.getElementById('arkLevel').innerText = arkLevel;
+            document.getElementById('arkLives').innerText = '❤'.repeat(Math.max(0, arkLives)) || '—';
+        }
+
+        function arkShowOverlay(title, text, label, action) {
+            document.getElementById('arkOverlayTitle').innerText = title;
+            document.getElementById('arkOverlayText').innerText = text;
+            document.getElementById('arkOverlayBtn').innerText = label;
+            arkOverlayAction = action;
+            document.getElementById('arkOverlay').classList.add('show');
+        }
+
+        function arkHideOverlay() {
+            document.getElementById('arkOverlay').classList.remove('show');
+            arkOverlayAction = null;
+        }
+
+        function arkOverlayClick() {
+            const action = arkOverlayAction;
+            arkHideOverlay();
+            if (typeof action === 'function') action();
+        }
+
+        function arkResetBall() {
+            arkLaunched = false;
+            arkBall.x = arkPaddle.x + arkPaddle.w / 2;
+            arkBall.y = arkPaddle.y - arkBall.r - 1;
+            arkBall.vx = 0;
+            arkBall.vy = 0;
+        }
+
+        function arkLaunchBall() {
+            const speed = arkSpeed();
+            const angle = (Math.random() * 0.6 - 0.3) + (-Math.PI / 2);
+            arkBall.vx = Math.cos(angle) * speed;
+            arkBall.vy = Math.sin(angle) * speed;
+            arkLaunched = true;
+        }
+
+        function arkSetPaddleCenter(x) {
+            arkPaddle.x = Math.max(0, Math.min(ARK_W - arkPaddle.w, x - arkPaddle.w / 2));
+            if (!arkLaunched) {
+                arkBall.x = arkPaddle.x + arkPaddle.w / 2;
+                arkBall.y = arkPaddle.y - arkBall.r - 1;
+            }
+        }
+
+        function arkNudge(dir) {
+            arkSetPaddleCenter(arkPaddle.x + arkPaddle.w / 2 + dir * 28);
+            arkDraw();
+        }
+
+        function openArkanoid() {
+            arkScore = 0;
+            arkLives = 3;
+            arkLevel = 1;
+            arkPaddle.x = (ARK_W - arkPaddle.w) / 2;
+            arkBuildBricks();
+            arkResetBall();
+            arkUpdateHud();
+            arkDraw();
+            arkShowOverlay(
+                '🧱 Арканоид',
+                'Веди пальцем по полю — платформа поедет за ним. Разбей все кирпичи, не урони мяч.',
+                '▶ Играть',
+                startArkanoid
+            );
+        }
+
+        function startArkanoid() {
+            arkScore = 0;
+            arkLives = 3;
+            arkLevel = 1;
+            arkPaddle.x = (ARK_W - arkPaddle.w) / 2;
+            arkBuildBricks();
+            arkResetBall();
+            arkUpdateHud();
+            arkResume();
+        }
+
+        function arkResume() {
+            arkHideOverlay();
+            arkLaunchBall();
+            arkRunning = true;
+            arkLast = 0;
+            if (arkAnim) cancelAnimationFrame(arkAnim);
+            arkAnim = requestAnimationFrame(arkLoop);
+            document.getElementById('arkHint').innerText = 'Веди пальцем по полю или жми ◀ ▶';
+        }
+
+        function stopArkanoid() {
+            arkRunning = false;
+            if (arkAnim) cancelAnimationFrame(arkAnim);
+            arkAnim = null;
+        }
+
+        function arkLoop(time) {
+            if (!arkRunning) return;
+            if (!arkLast) arkLast = time;
+            let dt = (time - arkLast) / 1000;
+            arkLast = time;
+            if (dt > 0.05) dt = 0.05;
+            if (dt > 0) arkStep(dt);
+            arkDraw();
+            if (arkRunning) arkAnim = requestAnimationFrame(arkLoop);
+        }
+
+        function arkStep(dt) {
+            // Дробим шаг, иначе на слабом телефоне мяч может «проскочить» кирпич.
+            const chunks = Math.max(1, Math.ceil(dt / 0.006));
+            const sub = dt / chunks;
+            for (let i = 0; i < chunks && arkRunning; i++) {
+                arkMoveBall(sub);
+            }
+        }
+
+        function arkMoveBall(dt) {
+            const ball = arkBall;
+            ball.x += ball.vx * dt;
+            ball.y += ball.vy * dt;
+
+            if (ball.x - ball.r < 0) {
+                ball.x = ball.r;
+                ball.vx = Math.abs(ball.vx);
+            } else if (ball.x + ball.r > ARK_W) {
+                ball.x = ARK_W - ball.r;
+                ball.vx = -Math.abs(ball.vx);
+            }
+            if (ball.y - ball.r < 0) {
+                ball.y = ball.r;
+                ball.vy = Math.abs(ball.vy);
+            }
+
+            // Платформа: угол отскока зависит от точки удара.
+            if (ball.vy > 0
+                    && ball.y + ball.r >= arkPaddle.y
+                    && ball.y - ball.r <= arkPaddle.y + arkPaddle.h
+                    && ball.x >= arkPaddle.x - ball.r
+                    && ball.x <= arkPaddle.x + arkPaddle.w + ball.r) {
+                const hit = Math.max(-1, Math.min(1, (ball.x - (arkPaddle.x + arkPaddle.w / 2)) / (arkPaddle.w / 2)));
+                // Небольшой минимальный угол: при ударе ровно по центру мяч
+                // иначе летает строго вертикально и застревает в одной колонке.
+                const minAngle = 0.26;
+                let angle = hit * (Math.PI / 3);
+                if (Math.abs(angle) < minAngle) {
+                    angle = (hit >= 0 ? 1 : -1) * minAngle;
+                }
+                // Небольшой разброс, чтобы мяч не ходил по одной и той же
+                // траектории и не застревал в поисках последнего кирпича.
+                angle += (Math.random() - 0.5) * 0.16;
+                angle = Math.max(-1.15, Math.min(1.15, angle));
+                const speed = Math.hypot(ball.vx, ball.vy) || arkSpeed();
+                ball.vx = speed * Math.sin(angle);
+                ball.vy = -Math.abs(speed * Math.cos(angle));
+                ball.y = arkPaddle.y - ball.r - 0.5;
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+
+            // Кирпичи.
+            for (const brick of arkBricks) {
+                if (!brick.alive) continue;
+                const nearestX = Math.max(brick.x, Math.min(ball.x, brick.x + brick.w));
+                const nearestY = Math.max(brick.y, Math.min(ball.y, brick.y + brick.h));
+                const dx = ball.x - nearestX;
+                const dy = ball.y - nearestY;
+                if (dx * dx + dy * dy > ball.r * ball.r) continue;
+
+                const overlapLeft = (ball.x + ball.r) - brick.x;
+                const overlapRight = (brick.x + brick.w) - (ball.x - ball.r);
+                const overlapTop = (ball.y + ball.r) - brick.y;
+                const overlapBottom = (brick.y + brick.h) - (ball.y - ball.r);
+                const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+                if (minOverlap === overlapTop || minOverlap === overlapBottom) {
+                    ball.vy = -ball.vy;
+                } else {
+                    ball.vx = -ball.vx;
+                }
+                // Разбиваем «горизонтальный пинг-понг»: если после отскока
+                // мяч почти не движется по вертикали, он может навсегда
+                // застрять между двумя кирпичами. Наклоняем траекторию,
+                // сохраняя скорость.
+                if (Math.abs(ball.vy) < Math.abs(ball.vx) * 0.3) {
+                    const speed = Math.hypot(ball.vx, ball.vy) || arkSpeed();
+                    const tilt = 0.3;
+                    const dirX = ball.vx >= 0 ? 1 : -1;
+                    const dirY = ball.vy >= 0 ? 1 : -1;
+                    ball.vx = dirX * speed * Math.cos(tilt);
+                    ball.vy = dirY * speed * Math.sin(tilt);
+                }
+
+                brick.alive = false;
+                arkScore += (ARK_ROWS - brick.row) * 10 * arkLevel;
+                earnCoins(1);
+                if (arkScore > bestArkanoid) {
+                    bestArkanoid = arkScore;
+                    localStorage.setItem('bestArkanoid', bestArkanoid);
+                }
+                arkUpdateHud();
+                updateAllUI();
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+                if (!arkBricks.some(b => b.alive)) {
+                    arkLevelUp();
+                    return;
+                }
+                break;
+            }
+
+            if (ball.y - ball.r > ARK_H) arkLoseLife();
+        }
+
+        function arkLoseLife() {
+            arkLives -= 1;
+            arkUpdateHud();
+            if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+            if (arkLives <= 0) {
+                arkGameOver();
+                return;
+            }
+            arkResetBall();
+            arkLaunchBall();
+        }
+
+        function arkLevelUp() {
+            const cleared = arkLevel;
+            stopArkanoid();
+            arkLevel += 1;
+            arkBuildBricks();
+            arkPaddle.x = (ARK_W - arkPaddle.w) / 2;
+            arkResetBall();
+            arkUpdateHud();
+            arkDraw();
+            arkShowOverlay(
+                `🎉 Уровень ${cleared} пройден!`,
+                `Дальше мяч быстрее. Очки: ${formatNum(arkScore)}`,
+                '▶ Дальше',
+                arkResume
+            );
+        }
+
+        function arkGameOver() {
+            stopArkanoid();
+            if (arkScore > bestArkanoid) {
+                bestArkanoid = arkScore;
+                localStorage.setItem('bestArkanoid', bestArkanoid);
+            }
+            arkUpdateHud();
+            arkDraw();
+            arkShowOverlay(
+                '💥 Игра окончена',
+                `Счёт: ${formatNum(arkScore)} · Рекорд: ${formatNum(bestArkanoid)}`,
+                '🔄 Ещё раз',
+                startArkanoid
+            );
+            updateAllUI();
+        }
+
+        function arkDraw() {
+            const g = aCtx.createLinearGradient(0, 0, 0, ARK_H);
+            g.addColorStop(0, '#111a33');
+            g.addColorStop(1, '#080c17');
+            aCtx.fillStyle = g;
+            aCtx.fillRect(0, 0, ARK_W, ARK_H);
+
+            arkBricks.forEach(brick => {
+                if (!brick.alive) return;
+                aCtx.fillStyle = ARK_ROW_COLORS[brick.row % ARK_ROW_COLORS.length];
+                aCtx.beginPath();
+                aCtx.roundRect(brick.x, brick.y, brick.w, brick.h, 4);
+                aCtx.fill();
+                aCtx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+                aCtx.beginPath();
+                aCtx.roundRect(brick.x + 2, brick.y + 2, brick.w - 4, 3, 2);
+                aCtx.fill();
+            });
+
+            aCtx.shadowColor = 'rgba(251, 191, 36, 0.85)';
+            aCtx.shadowBlur = 14;
+            aCtx.fillStyle = '#fbbf24';
+            aCtx.beginPath();
+            aCtx.roundRect(arkPaddle.x, arkPaddle.y, arkPaddle.w, arkPaddle.h, 5);
+            aCtx.fill();
+
+            aCtx.shadowColor = 'rgba(103, 232, 249, 0.9)';
+            aCtx.fillStyle = '#e0f2fe';
+            aCtx.beginPath();
+            aCtx.arc(arkBall.x, arkBall.y, arkBall.r, 0, Math.PI * 2);
+            aCtx.fill();
+            aCtx.shadowBlur = 0;
+
+            if (!arkLaunched && !arkRunning) {
+                aCtx.fillStyle = 'rgba(226, 232, 240, 0.45)';
+                aCtx.font = '600 11px -apple-system, Segoe UI, Roboto, sans-serif';
+                aCtx.textAlign = 'center';
+                aCtx.fillText('нажми «Играть»', ARK_W / 2, ARK_H - 60);
+            }
+        }
+
+        function arkBindInput() {
+            const moveTo = (clientX) => {
+                if (!arkRunning) return;
+                const rect = aCanvas.getBoundingClientRect();
+                const x = ((clientX - rect.left) / rect.width) * ARK_W;
+                arkSetPaddleCenter(x);
+            };
+            aCanvas.addEventListener('pointerdown', (e) => { e.preventDefault(); moveTo(e.clientX); });
+            aCanvas.addEventListener('pointermove', (e) => {
+                if (e.pointerType === 'mouse' && e.buttons === 0 && !e.isPrimary) return;
+                moveTo(e.clientX);
+            });
+            aCanvas.addEventListener('touchmove', (e) => {
+                if (e.touches.length) moveTo(e.touches[0].clientX);
+            }, {passive: true});
+
+            document.addEventListener('keydown', (e) => {
+                if (!document.getElementById('arkanoid').classList.contains('active')) return;
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'ф') { e.preventDefault(); arkNudge(-1); }
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'в') { e.preventDefault(); arkNudge(1); }
+            });
+        }
+
+        arkBindInput();
+        arkBuildBricks();
+        arkUpdateHud();
+        arkDraw();
     </script>
 </body>
 </html>
