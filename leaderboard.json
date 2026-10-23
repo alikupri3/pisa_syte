@@ -39,19 +39,6 @@
     "ackSpent": 6985
   },
   {
-    "key": "84c100c056",
-    "name": "moon",
-    "points": 1172,
-    "snake": 21,
-    "race": 130,
-    "g2048": 1420,
-    "arkanoid": 1200,
-    "slaves": 1,
-    "epoch": "1792693625936-5u95jd",
-    "ackEarned": 6409,
-    "ackSpent": 5196
-  },
-  {
     "key": "bbad70fd57",
     "name": "Атлантический",
     "points": 1068,
@@ -76,6 +63,19 @@
     "epoch": "",
     "ackEarned": 0,
     "ackSpent": 0
+  },
+  {
+    "key": "84c100c056",
+    "name": "moon",
+    "points": 62,
+    "snake": 21,
+    "race": 130,
+    "g2048": 1420,
+    "arkanoid": 1280,
+    "slaves": 1,
+    "epoch": "1792693625936-5u95jd",
+    "ackEarned": 7799,
+    "ackSpent": 7696
   },
   {
     "key": "62cf218c52",
