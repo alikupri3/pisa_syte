@@ -63,6 +63,15 @@
     "slaves": 0
   },
   {
+    "key": "e153c7b1cc",
+    "name": ".",
+    "points": 50,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 0
+  },
+  {
     "key": "301557b376",
     "name": "-",
     "points": 50,
@@ -83,15 +92,6 @@
   {
     "key": "c970169c9c",
     "name": "Amir",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 0
-  },
-  {
-    "key": "e153c7b1cc",
-    "name": ".",
     "points": 0,
     "snake": 0,
     "race": 0,
