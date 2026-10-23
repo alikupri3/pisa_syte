@@ -36,6 +36,15 @@
     "slaves": 0
   },
   {
+    "key": "000304bf64",
+    "name": "qsef",
+    "points": 50,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 0
+  },
+  {
     "key": "a71cc81108",
     "name": "Jealous Eyedress",
     "points": 0,
@@ -47,15 +56,6 @@
   {
     "key": "c970169c9c",
     "name": "Amir",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 0
-  },
-  {
-    "key": "000304bf64",
-    "name": "qsef",
     "points": 0,
     "snake": 0,
     "race": 0,
