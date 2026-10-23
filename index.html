@@ -1255,18 +1255,30 @@
         }
 
         async function apiCall(path, options) {
-            const base = await loadApiBase();
-            if (!base) return null;
-            const url = base.replace(/\/api\/slavery$/, '') + path;
-            try {
-                const resp = await fetch(url, options);
-                return await resp.json();
-            } catch (e) {
-                // Туннель мог перезапуститься с новым адресом.
-                apiBasePromise = null;
-                localStorage.removeItem(API_FALLBACK_KEY);
-                return null;
+            // Две попытки: туннель живёт недолго и переезжает на новый
+            // адрес, а api.json обновляется только после этого. Без повтора
+            // игрок видел «биржа недоступна», хотя бот уже поднял новый
+            // адрес — достаточно было перечитать api.json.
+            for (let attempt = 0; attempt < 2; attempt++) {
+                const base = await loadApiBase();
+                if (!base) return null;
+                const url = base.replace(/\/api\/slavery$/, '') + path;
+                try {
+                    const resp = await fetch(url, options);
+                    // 4xx — это ответ бота (например, «не хватает монет»),
+                    // его надо показать как есть. 5xx и невалидный JSON —
+                    // это умерший туннель, его пробуем ещё раз.
+                    if (resp.status >= 500) throw new Error('HTTP ' + resp.status);
+                    return await resp.json();
+                } catch (e) {
+                    // Забываем адрес, чтобы следующая попытка взяла
+                    // свежий из api.json.
+                    apiBasePromise = null;
+                    localStorage.removeItem(API_FALLBACK_KEY);
+                    if (attempt === 0) await new Promise(r => setTimeout(r, 700));
+                }
             }
+            return null;
         }
 
         async function slaveryApi(mode, target) {
