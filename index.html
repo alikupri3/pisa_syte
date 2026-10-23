@@ -1074,6 +1074,105 @@
 
         .board-tabs { gap: 3px; }
         .board-tab { font-size: 10px; padding: 9px 2px; }
+
+        /* МАГАЗИН */
+        .shop-balance {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 13px; padding: 12px 15px; border-radius: 16px;
+            background: var(--panel); border: 1px solid var(--line);
+            font-size: 12.5px; color: var(--muted); font-weight: 700;
+        }
+        .shop-balance b { color: var(--gold); font-size: 15px; font-weight: 850; }
+
+        .shop-item {
+            display: flex; gap: 11px; align-items: center;
+            padding: 12px; border-radius: 17px; margin-bottom: 9px;
+            background: var(--panel); border: 1px solid var(--line);
+            text-align: left;
+        }
+        .shop-item.maxed {
+            border-color: rgba(52, 211, 153, 0.32);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .shop-icon {
+            width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--line);
+        }
+        .shop-body { flex: 1; min-width: 0; }
+        .shop-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.2px; }
+        .shop-desc { font-size: 11px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+        .shop-level { display: flex; gap: 3px; margin-top: 6px; }
+        .shop-pip { width: 14px; height: 4px; border-radius: 3px; background: rgba(255, 255, 255, 0.14); }
+        .shop-pip.filled { background: var(--gold); }
+        .shop-buy {
+            align-self: center; flex-shrink: 0; min-width: 76px;
+            padding: 9px 11px; border-radius: 12px; border: 0;
+            font-family: inherit; font-size: 11.5px; font-weight: 850; color: #241a00;
+            background: linear-gradient(120deg, #fbbf24, #f59e0b);
+            box-shadow: 0 8px 18px rgba(245, 158, 11, 0.22);
+        }
+        .shop-buy:disabled {
+            background: rgba(255, 255, 255, 0.09); color: rgba(226, 232, 240, 0.42);
+            box-shadow: none;
+        }
+        .shop-buy:active:not(:disabled) { transform: scale(0.96); }
+        .shop-hint { font-size: 11px; color: var(--muted); margin: 4px 0 16px; line-height: 1.5; }
+
+        /* ПЕРЕВОДЫ */
+        .transfer-balance {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 13px; padding: 12px 15px; border-radius: 16px;
+            background: var(--panel); border: 1px solid var(--line);
+            font-size: 12.5px; color: var(--muted); font-weight: 700;
+        }
+        .transfer-balance b { color: var(--gold); font-size: 15px; font-weight: 850; }
+
+        .tr-search, .tr-amount {
+            width: 100%; padding: 12px 14px; border-radius: 14px;
+            background: rgba(0, 0, 0, 0.28); border: 1px solid var(--line);
+            color: #e2e8f0; font-family: inherit; font-size: 14px; font-weight: 600;
+            outline: none;
+        }
+        .tr-search:focus, .tr-amount:focus { border-color: rgba(251, 191, 36, 0.5); }
+        .tr-search { margin-bottom: 10px; }
+
+        .tr-people {
+            max-height: 216px; overflow-y: auto; border-radius: 16px;
+            background: var(--panel); border: 1px solid var(--line);
+            margin-bottom: 12px;
+        }
+        .tr-person {
+            display: flex; align-items: center; gap: 9px; width: 100%;
+            padding: 10px 12px; border: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent; color: inherit; font-family: inherit;
+            cursor: pointer; text-align: left;
+        }
+        .tr-person:last-child { border-bottom: none; }
+        .tr-person.active { background: rgba(251, 191, 36, 0.14); }
+        .tr-avatar {
+            width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 850; color: #241a00;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+        .tr-person-name {
+            flex: 1; min-width: 0; font-size: 12.5px; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .tr-person-coins { font-size: 11px; color: var(--muted); font-weight: 700; flex-shrink: 0; }
+        .tr-empty { padding: 22px 14px; text-align: center; color: var(--muted); font-size: 12px; }
+
+        .tr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 9px 0 10px; }
+        .tr-chip {
+            padding: 8px 12px; border-radius: 11px; font-family: inherit;
+            background: rgba(255, 255, 255, 0.075); border: 1px solid var(--line);
+            color: #e2e8f0; font-size: 11.5px; font-weight: 750; cursor: pointer;
+        }
+        .tr-chip:active { background: rgba(255, 255, 255, 0.16); }
+        .tr-fee { font-size: 11.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+        .tr-fee b { color: var(--gold); }
     </style>
 </head>
 <body>
@@ -1135,6 +1234,21 @@
                     <span class="menu-btn-badge">777 — x50 · три в ряд — x10</span>
                 </div>
                 <span class="chev">›</span>
+            </div>
+        </div>
+
+        <div class="section-label"><span>Экономика</span><span>трать с умом</span></div>
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="openGame('shop')">
+                <div class="menu-icon">🛒</div>
+                <span class="menu-btn-text">Магазин</span>
+                <span class="menu-btn-badge"><span id="mShopOwned">0</span> <span id="mShopOwnedWord">предметов</span></span>
+            </div>
+
+            <div class="menu-btn" onclick="openGame('transfer')">
+                <div class="menu-icon">💸</div>
+                <span class="menu-btn-text">Переводы</span>
+                <span class="menu-btn-badge">друзьям</span>
             </div>
         </div>
 
@@ -1254,6 +1368,61 @@
             <button class="ark-btn" onclick="arkNudge(1)">▶</button>
         </div>
         <div class="ark-hint" id="arkHint">Тапай по полю или жми стрелки — платформа едет за пальцем</div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- МАГАЗИН -->
+    <div id="shop" class="screen">
+        <h1>🛒 Магазин</h1>
+        <p class="subtitle">Предметы покупаются один раз за уровень и остаются навсегда</p>
+
+        <div class="shop-balance">
+            <span>В кошельке</span>
+            <span><b id="shopBalance">0</b> 🪙</span>
+        </div>
+
+        <div id="shopList"></div>
+
+        <div class="shop-hint">
+            Уровни покупаются по порядку: сначала 1-й, потом 2-й и так далее.
+            Цены растут втрое — на последние уровни копить придётся долго.
+        </div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- ПЕРЕВОДЫ -->
+    <div id="transfer" class="screen">
+        <h1>💸 Переводы</h1>
+        <p class="subtitle">Отправь монеты другу — комиссия 5%</p>
+
+        <div class="transfer-balance">
+            <span>В кошельке</span>
+            <span><b id="trBalance">0</b> 🪙</span>
+        </div>
+
+        <input class="tr-search" id="trSearch" type="text" placeholder="🔍 Поиск по имени"
+               oninput="renderTransferPeople()" autocomplete="off">
+
+        <div class="tr-people" id="trPeople"></div>
+
+        <input class="tr-amount" id="trAmount" type="text" inputmode="numeric" placeholder="Сколько монет перевести"
+               oninput="updateTransferFee()">
+
+        <div class="tr-chips">
+            <button class="tr-chip" onclick="setTransferAmount(100)">100</button>
+            <button class="tr-chip" onclick="setTransferAmount(500)">500</button>
+            <button class="tr-chip" onclick="setTransferAmount(1000)">1 000</button>
+            <button class="tr-chip" onclick="setTransferAmount(5000)">5 000</button>
+            <button class="tr-chip" onclick="setTransferAmount('half')">Половина</button>
+            <button class="tr-chip" onclick="setTransferAmount('all')">Всё</button>
+        </div>
+
+        <div class="tr-fee" id="trFee">Выбери получателя и сумму перевода.</div>
+
+        <button class="btn-primary" id="trSendBtn" onclick="sendTransfer()">💸 Перевести</button>
+        <div id="trStatus" class="save-status" role="status" aria-live="polite"></div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
     </div>
@@ -1486,6 +1655,239 @@
             localStorage.setItem('pupuEarned', '0');
             localStorage.setItem('pupuSpent', '0');
         }
+        // Магазин: предметы покупаются по уровням, цены растут втрое.
+        // Уровни живут в localStorage рядом с кошельком.
+        const SHOP_ITEMS = [
+            {id: 'tap', name: 'Золотой палец', icon: '💪', max: 5,
+             desc: '+2 монеты за каждый тап',
+             prices: [2500, 9000, 32000, 110000, 380000]},
+            {id: 'energy', name: 'Энергоядро', icon: '⚡', max: 5,
+             desc: '+50 к максимуму энергии и полный заряд',
+             prices: [3000, 11000, 40000, 140000, 480000]},
+            {id: 'boost', name: 'Монетный магнит', icon: '🧲', max: 5,
+             desc: '+15% монет во всех играх, кроме казино',
+             prices: [4000, 15000, 55000, 200000, 700000]},
+            {id: 'paddle', name: 'Широкая платформа', icon: '🧱', max: 3,
+             desc: '+8 к ширине платформы в арканоиде',
+             prices: [3500, 14000, 52000]},
+            {id: 'heart', name: 'Запасное сердце', icon: '❤️', max: 2,
+             desc: '+1 жизнь в арканоиде',
+             prices: [6000, 26000]},
+            {id: 'snake', name: 'Медленный яд', icon: '🐍', max: 3,
+             desc: 'Змейка ползёт на 12% медленнее',
+             prices: [5000, 20000, 80000]}
+        ];
+        let pupuShop = {};
+        try {
+            const stored = JSON.parse(localStorage.getItem('pupuShop') || '{}');
+            if (stored && typeof stored === 'object') pupuShop = stored;
+        } catch (e) { pupuShop = {}; }
+
+        function shopLevel(id) {
+            const item = SHOP_ITEMS.find(i => i.id === id);
+            if (!item) return 0;
+            return Math.max(0, Math.min(item.max, parseInt(pupuShop[id], 10) || 0));
+        }
+
+        function shopSave() {
+            localStorage.setItem('pupuShop', JSON.stringify(pupuShop));
+        }
+
+        function shopOwnedCount() {
+            return SHOP_ITEMS.reduce((sum, item) => sum + shopLevel(item.id), 0);
+        }
+
+        function renderShop() {
+            const list = document.getElementById('shopList');
+            if (!list) return;
+            const balance = document.getElementById('shopBalance');
+            if (balance) balance.innerText = formatNum(myCoins);
+            list.innerHTML = SHOP_ITEMS.map(item => {
+                const level = shopLevel(item.id);
+                const maxed = level >= item.max;
+                const price = maxed ? 0 : item.prices[level];
+                const canBuy = !maxed && myCoins >= price;
+                const pips = Array.from({length: item.max}, (_, i) =>
+                    `<span class="shop-pip${i < level ? ' filled' : ''}"></span>`
+                ).join('');
+                return `<div class="shop-item${maxed ? ' maxed' : ''}">
+                    <div class="shop-icon">${item.icon}</div>
+                    <div class="shop-body">
+                        <div class="shop-name">${item.name}</div>
+                        <div class="shop-desc">${item.desc}</div>
+                        <div class="shop-level">${pips}<span>уровень ${level}/${item.max}</span></div>
+                    </div>
+                    <button class="shop-buy" ${canBuy ? '' : 'disabled'} onclick="buyShopItem('${item.id}')">
+                        ${maxed ? '✓ Куплено' : formatNum(price) + ' 🪙'}
+                    </button>
+                </div>`;
+            }).join('');
+            const owned = document.getElementById('mShopOwned');
+            if (owned) owned.innerText = shopOwnedCount();
+        }
+
+        function buyShopItem(id) {
+            const item = SHOP_ITEMS.find(i => i.id === id);
+            if (!item) return;
+            const level = shopLevel(id);
+            if (level >= item.max) return;
+            const price = item.prices[level];
+            if (myCoins < price) return;
+            spendCoins(price);
+            pupuShop[id] = level + 1;
+            shopSave();
+            // Текущие характеристики применяются сразу; новые игры получают их
+            // при следующем старте. Магнит и замедление читаются на лету.
+            if (id === 'tap') tapPower += 2;
+            if (id === 'energy') {
+                maxEnergy += 50;
+                energy = maxEnergy;
+                localStorage.setItem('maxEnergy', String(maxEnergy));
+                saveEnergy();
+            }
+            updateAllUI();
+            renderShop();
+            if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        let transferTargetKey = '';
+        let transferPending = false;
+
+        function transferPeople() {
+            const mine = myBoardKey || '';
+            return boardRows.filter(row => row.key && row.key !== mine);
+        }
+
+        function renderTransferPeople() {
+            const box = document.getElementById('trPeople');
+            if (!box) return;
+            const query = (document.getElementById('trSearch')?.value || '').trim().toLocaleLowerCase();
+            const people = transferPeople().filter(row => !query || String(row.name || '').toLocaleLowerCase().includes(query));
+            if (!people.length) {
+                box.innerHTML = '<div class="tr-empty">Игроки пока не загрузились или никого не нашли.</div>';
+                return;
+            }
+            box.innerHTML = people.map(row => {
+                const active = row.key === transferTargetKey ? ' active' : '';
+                const rawName = String(row.name || 'Игрок');
+                const name = escapeHtml(rawName);
+                const initial = escapeHtml((rawName.trim().charAt(0) || '?').toUpperCase());
+                return `<button class="tr-person${active}" onclick="selectTransferTarget('${row.key}')">
+                    <span class="tr-avatar">${initial}</span>
+                    <span class="tr-person-name">${name}</span>
+                    <span class="tr-person-coins">${formatNum(row.points || 0)} 🪙</span>
+                </button>`;
+            }).join('');
+        }
+
+        function selectTransferTarget(key) {
+            if (!transferPeople().some(row => row.key === key)) return;
+            transferTargetKey = key;
+            renderTransferPeople();
+            updateTransferFee();
+        }
+
+        function transferAmount() {
+            const raw = String(document.getElementById('trAmount')?.value || '').replace(/\s/g, '');
+            if (!/^\d+$/.test(raw)) return 0;
+            return Math.floor(Number(raw));
+        }
+
+        function updateTransferFee() {
+            const amount = transferAmount();
+            const fee = Math.ceil(amount * 0.05);
+            const total = amount + fee;
+            const target = transferPeople().find(row => row.key === transferTargetKey);
+            const box = document.getElementById('trFee');
+            if (!box) return;
+            if (!target || amount <= 0) {
+                box.innerHTML = 'Выбери получателя и сумму перевода.';
+                return;
+            }
+            box.innerHTML = `Получатель: <b>${escapeHtml(String(target.name || 'Игрок'))}</b> · получит <b>${formatNum(amount)} 🪙</b><br>Комиссия: <b>${formatNum(fee)} 🪙</b> · спишется всего: <b>${formatNum(total)} 🪙</b>`;
+        }
+
+        function setTransferAmount(value) {
+            const amount = value === 'half' ? Math.floor(myCoins / 2)
+                : value === 'all' ? Math.floor(myCoins / 1.05)
+                : Number(value) || 0;
+            const input = document.getElementById('trAmount');
+            if (input) input.value = String(Math.max(0, amount));
+            updateTransferFee();
+        }
+
+        function openTransfer() {
+            transferPending = false;
+            const status = document.getElementById('trStatus');
+            if (status) status.innerText = '';
+            renderTransferPeople();
+            updateTransferFee();
+            // Список получателей берётся из свежей таблицы, иначе только что
+            // зарегистрированный друг не появится до перезапуска приложения.
+            loadLeaders(false).then(() => {
+                if (!document.getElementById('transfer').classList.contains('active')) return;
+                renderTransferPeople();
+                updateTransferFee();
+            });
+        }
+
+        function sendTransfer() {
+            const status = document.getElementById('trStatus');
+            const amount = transferAmount();
+            const fee = Math.ceil(amount * 0.05);
+            const total = amount + fee;
+            if (transferPending) return;
+            if (!hasTelegramDataChannel()) {
+                if (status) { status.innerText = 'Открой Mini App через кнопку бота.'; status.className = 'save-status error'; }
+                return;
+            }
+            if (!transferTargetKey) {
+                if (status) { status.innerText = 'Сначала выбери получателя.'; status.className = 'save-status error'; }
+                return;
+            }
+            if (amount <= 0 || total > myCoins) {
+                if (status) { status.innerText = 'Проверь сумму и баланс с учётом комиссии.'; status.className = 'save-status error'; }
+                return;
+            }
+            const target = transferPeople().find(row => row.key === transferTargetKey);
+            if (!target) return;
+
+            const payload = JSON.stringify({
+                action: 'transfer_coins',
+                target: target.key,
+                amount: amount,
+                fee: fee,
+                // Защита от двойного списания, если Telegram продублирует отправку.
+                nonce: ensureEpoch() + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+                // Кошелёк целиком: бот сначала применит накопленный заработок,
+                // и только потом спишет перевод с уже актуального баланса.
+                coins: myCoins,
+                earned: pupuEarned,
+                spent: pupuSpent,
+                epoch: ensureEpoch()
+            });
+
+            // Списываем локально сами: отправка через sendData закрывает
+            // Mini App, и страница больше не узнает о результате. Комиссию
+            // в pupuSpent не пишем — её учитывает сервер, иначе списали бы дважды.
+            const before = myCoins;
+            myCoins = Math.max(0, myCoins - total);
+            persistWallet();
+
+            try {
+                sendTelegramData(payload);
+                transferPending = true;
+                if (status) { status.innerText = 'Перевод отправлен. Подтверждение придёт в чат.'; status.className = 'save-status ok'; }
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            } catch (e) {
+                myCoins = before;
+                persistWallet();
+                if (status) { status.innerText = 'Не удалось отправить запрос.'; status.className = 'save-status error'; }
+            }
+            updateAllUI();
+            updateTransferFee();
+        }
+
         let bestSnake = parseInt(localStorage.getItem('bestSnake')) || 0;
         let bestRace = parseInt(localStorage.getItem('bestRace')) || 0;
         let bestG2048 = parseInt(localStorage.getItem('bestG2048')) || 0;
@@ -1525,6 +1927,17 @@
             myCoins += value;
             pupuEarned += value;
             persistWallet();
+        }
+
+        // Заработок в играх проходит через магнит: он не трогает казино,
+        // иначе бонус превращался бы в бесконечные монеты на ставках.
+        function earnGameCoins(amount) {
+            const bonus = 1 + shopLevel('boost') * 0.15;
+            earnCoins(Math.floor(Math.max(0, Number(amount) || 0) * bonus));
+        }
+
+        function gameSpeedScale() {
+            return 1 + shopLevel('snake') * 0.12;
         }
 
         function spendCoins(amount) {
@@ -1698,7 +2111,27 @@
                 const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
                 myBoardKey = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
                 renderBoard();
+                reconcileWallet();
             } catch (e) { /* подсветка себя недоступна */ }
+        }
+
+        // sendData закрывает Mini App, поэтому перевод нельзя подтвердить
+        // на месте. Зато бот кладёт в таблицу наш баланс и подтверждённые
+        // счётчики: при следующем открытии сверяемся с ними и убираем
+        // локальные расхождения (например, если перевод не прошёл).
+        function reconcileWallet() {
+            if (!myBoardKey) return;
+            const row = boardRows.find(r => r && r.key === myBoardKey);
+            if (!row || !row.epoch || row.epoch !== pupuEpoch) return;
+            const ackEarned = Math.max(0, parseInt(row.ackEarned, 10) || 0);
+            const ackSpent = Math.max(0, parseInt(row.ackSpent, 10) || 0);
+            const pendingEarned = Math.max(0, pupuEarned - ackEarned);
+            const pendingSpent = Math.max(0, pupuSpent - ackSpent);
+            const expected = Math.max(0, (parseInt(row.points, 10) || 0) + pendingEarned - pendingSpent);
+            if (expected === myCoins) return;
+            myCoins = expected;
+            persistWallet();
+            updateAllUI();
         }
 
         async function loadLeaders(manual) {
@@ -1719,6 +2152,7 @@
                     }
                 }
             } catch (e) { /* остаётся статичная копия */ }
+            reconcileWallet();
             renderBoard();
             updateAllUI();
         }
@@ -1999,6 +2433,10 @@
             document.getElementById('mRace').innerText = bestRace;
             document.getElementById('mG2048').innerText = bestG2048;
             document.getElementById('mArkanoid').innerText = bestArkanoid;
+            document.getElementById('mShopOwned').innerText = shopOwnedCount();
+            document.getElementById('mShopOwnedWord').innerText = plural(shopOwnedCount(), 'предмет', 'предмета', 'предметов');
+            document.getElementById('shopBalance').innerText = formatNum(myCoins);
+            document.getElementById('trBalance').innerText = formatNum(myCoins);
             document.getElementById('mLeadersCount').innerText = boardRows.length;
             document.getElementById('mLeadersWord').innerText = plural(boardRows.length, 'участник', 'участника', 'участников');
             document.getElementById('mTapLvl').innerText = tapPower;
@@ -2052,6 +2490,8 @@
             if (id === 'g2048') init2048();
             if (id === 'casino') openCasino();
             if (id === 'arkanoid') openArkanoid();
+            if (id === 'shop') renderShop();
+            if (id === 'transfer') openTransfer();
         }
 
         function setSaveStatus(text, kind) {
@@ -2106,7 +2546,7 @@
             if (energy < 1) return;
             const wasFull = energy >= maxEnergy;
             energy -= 1;
-            earnCoins(tapPower);
+            earnGameCoins(tapPower);
             if (wasFull) energyUpdatedAt = Date.now();
             saveEnergy();
             updateAllUI();
@@ -2171,7 +2611,7 @@
             document.getElementById('snakeBest').innerText = bestSnake;
             spawnFood();
             if (snakeInterval) clearInterval(snakeInterval);
-            snakeInterval = setInterval(updateSnake, 160);
+            snakeInterval = setInterval(updateSnake, Math.round(160 * gameSpeedScale()));
         }
 
         function spawnFood() {
@@ -2206,7 +2646,7 @@
             snake.unshift(head);
             if (head.x === food.x && head.y === food.y) {
                 sScore++;
-                earnCoins(2);
+                earnGameCoins(2);
                 document.getElementById('snakeScore').innerText = sScore;
                 if (sScore > bestSnake) {
                     bestSnake = sScore;
@@ -2384,7 +2824,7 @@
                     obstacles.splice(i, 1);
                     i--;
                     rScore++;
-                    earnCoins(1);
+                    earnGameCoins(1);
                     document.getElementById('raceScore').innerText = rScore;
                     if (rScore > bestRace) {
                         bestRace = rScore;
@@ -2509,7 +2949,7 @@
                 bestG2048 = g2048Score;
                 localStorage.setItem('bestG2048', bestG2048);
             }
-            earnCoins(Math.max(1, Math.floor(g2048Score / 100)));
+            earnGameCoins(Math.max(1, Math.floor(g2048Score / 100)));
             draw2048();
             updateAllUI();
 
@@ -2656,10 +3096,25 @@
             arkDraw();
         }
 
+        function arkApplyShopPaddle() {
+            // Широкая платформа: +8 к ширине за каждый уровень предмета.
+            const want = 62 + shopLevel('paddle') * 8;
+            if (arkPaddle.w !== want) {
+                const center = arkPaddle.x + arkPaddle.w / 2;
+                arkPaddle.w = want;
+                arkPaddle.x = Math.max(0, Math.min(ARK_W - want, center - want / 2));
+            }
+        }
+
+        function arkStartLives() {
+            return 3 + shopLevel('heart');
+        }
+
         function openArkanoid() {
             arkScore = 0;
-            arkLives = 3;
+            arkLives = arkStartLives();
             arkLevel = 1;
+            arkApplyShopPaddle();
             arkPaddle.x = (ARK_W - arkPaddle.w) / 2;
             arkBuildBricks();
             arkResetBall();
@@ -2675,8 +3130,9 @@
 
         function startArkanoid() {
             arkScore = 0;
-            arkLives = 3;
+            arkLives = arkStartLives();
             arkLevel = 1;
+            arkApplyShopPaddle();
             arkPaddle.x = (ARK_W - arkPaddle.w) / 2;
             arkBuildBricks();
             arkResetBall();
@@ -2796,7 +3252,7 @@
 
                 brick.alive = false;
                 arkScore += (ARK_ROWS - brick.row) * 10 * arkLevel;
-                earnCoins(1);
+                earnGameCoins(1);
                 if (arkScore > bestArkanoid) {
                     bestArkanoid = arkScore;
                     localStorage.setItem('bestArkanoid', bestArkanoid);
