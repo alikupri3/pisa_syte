@@ -25,18 +25,6 @@
       "ackSpent": 0
     },
     {
-      "key": "3b82c50e4a",
-      "name": "Броник",
-      "points": 1000,
-      "owner": "54a9d82aa1",
-      "price": 507,
-      "income": 41,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
       "key": "ed1c09d73e",
       "name": "Zod1us",
       "points": 90,
@@ -139,6 +127,18 @@
       "owner": "54a9d82aa1",
       "price": 2556,
       "income": 153,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
+      "key": "3b82c50e4a",
+      "name": "Броник",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 507,
+      "income": 41,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
