@@ -26,6 +26,19 @@
     "ackSpent": 0
   },
   {
+    "key": "a71cc81108",
+    "name": "Jealous Eyedress",
+    "points": 1480,
+    "snake": 0,
+    "race": 18,
+    "g2048": 1284,
+    "arkanoid": 1200,
+    "slaves": 0,
+    "epoch": "1792775857177-wubfum",
+    "ackEarned": 8398,
+    "ackSpent": 6985
+  },
+  {
     "key": "bbad70fd57",
     "name": "Атлантический",
     "points": 1068,
@@ -50,19 +63,6 @@
     "epoch": "1792693625936-5u95jd",
     "ackEarned": 1043,
     "ackSpent": 0
-  },
-  {
-    "key": "a71cc81108",
-    "name": "Jealous Eyedress",
-    "points": 157,
-    "snake": 0,
-    "race": 18,
-    "g2048": 1284,
-    "arkanoid": 1200,
-    "slaves": 0,
-    "epoch": "1792775857177-wubfum",
-    "ackEarned": 5734,
-    "ackSpent": 5644
   },
   {
     "key": "ed1c09d73e",
