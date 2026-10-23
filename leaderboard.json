@@ -18,15 +18,6 @@
     "slaves": 1
   },
   {
-    "key": "3b82c50e4a",
-    "name": "Броник",
-    "points": 1000,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 0
-  },
-  {
     "key": "ed1c09d73e",
     "name": "Zod1us",
     "points": 90,
@@ -101,6 +92,15 @@
   {
     "key": "47c4260078",
     "name": "эвочка",
+    "points": 0,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 0
+  },
+  {
+    "key": "3b82c50e4a",
+    "name": "Броник",
     "points": 0,
     "snake": 0,
     "race": 0,
