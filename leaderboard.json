@@ -45,6 +45,15 @@
     "slaves": 0
   },
   {
+    "key": "301557b376",
+    "name": "-",
+    "points": 50,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 0
+  },
+  {
     "key": "a71cc81108",
     "name": "Jealous Eyedress",
     "points": 0,
@@ -83,15 +92,6 @@
   {
     "key": "47c4260078",
     "name": "эвочка",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 0
-  },
-  {
-    "key": "301557b376",
-    "name": "-",
     "points": 0,
     "snake": 0,
     "race": 0,
