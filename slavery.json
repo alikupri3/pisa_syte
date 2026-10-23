@@ -25,6 +25,18 @@
       "ackSpent": 0
     },
     {
+      "key": "a71cc81108",
+      "name": "Jealous Eyedress",
+      "points": 1449,
+      "owner": "54a9d82aa1",
+      "price": 8616,
+      "income": 416,
+      "lastCollect": 0,
+      "ackEpoch": "1792775857177-wubfum",
+      "ackEarned": 3649,
+      "ackSpent": 2200
+    },
+    {
       "key": "bbad70fd57",
       "name": "Атлантический",
       "points": 1067,
@@ -103,18 +115,6 @@
       "owner": "54a9d82aa1",
       "price": 2559,
       "income": 153,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
-      "key": "a71cc81108",
-      "name": "Jealous Eyedress",
-      "points": 0,
-      "owner": "54a9d82aa1",
-      "price": 8616,
-      "income": 416,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
