@@ -585,17 +585,25 @@
             min-width: 0;
             font-size: 13px;
             font-weight: 700;
+        }
+
+        .board-name-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .board-row-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 7px;
             font-size: 10px;
             opacity: 0.72;
             margin-top: 2px;
             font-weight: 500;
         }
+
+        .board-row-meta span { white-space: nowrap; }
 
         .board-value {
             font-size: 14px;
@@ -1136,7 +1144,7 @@
                 <div class="menu-icon">🏆</div>
                 <div class="menu-copy">
                     <span class="menu-btn-text">Таблица лидеров</span>
-                    <span class="menu-btn-badge"><span id="mLeadersCount">0</span> участников</span>
+                    <span class="menu-btn-badge"><span id="mLeadersCount">0</span> <span id="mLeadersWord">участников</span></span>
                 </div>
                 <span class="chev">›</span>
             </div>
@@ -1566,15 +1574,32 @@
         let myBoardKey = null;
 
         const BOARD_SORTS = {
-            points: {label: 'монет', icon: '💰', value: r => r.points || 0},
-            snake: {label: 'очков', icon: '🐍', value: r => r.snake || 0},
-            race: {label: 'очков', icon: '🏎', value: r => r.race || 0},
-            g2048: {label: 'очков', icon: '🧩', value: r => r.g2048 || 0},
-            arkanoid: {label: 'очков', icon: '🧱', value: r => r.arkanoid || 0}
+            points: {label: 'монетам', icon: '💰', value: r => r.points || 0},
+            snake: {label: 'очкам змейки', icon: '🐍', value: r => r.snake || 0},
+            race: {label: 'очкам гонок', icon: '🏎', value: r => r.race || 0},
+            g2048: {label: 'очкам 2048', icon: '🧩', value: r => r.g2048 || 0},
+            arkanoid: {label: 'очкам арканоида', icon: '🧱', value: r => r.arkanoid || 0}
         };
+        // Что показываем мелким шрифтом в строке — без той игры, по которой сейчас сортировка.
+        const BOARD_META = [
+            {key: 'points', icon: '🪙', value: r => r.points || 0},
+            {key: 'snake', icon: '🐍', value: r => r.snake || 0},
+            {key: 'race', icon: '🏎', value: r => r.race || 0},
+            {key: 'g2048', icon: '🧩', value: r => r.g2048 || 0},
+            {key: 'arkanoid', icon: '🧱', value: r => r.arkanoid || 0}
+        ];
 
         function formatNum(n) {
             return Number(n || 0).toLocaleString('ru-RU');
+        }
+
+        function plural(n, one, few, many) {
+            const abs = Math.abs(n) % 100;
+            const last = abs % 10;
+            if (abs > 10 && abs < 20) return many;
+            if (last > 1 && last < 5) return few;
+            if (last === 1) return one;
+            return many;
         }
 
         function avatarColor(key) {
@@ -1602,8 +1627,7 @@
             const medals = ['🥇', '🥈', '🥉'];
 
             document.getElementById('boardSubtitle').innerText =
-                `${rows.length} участников · сортировка по ${metric.label}`;
-
+                `${rows.length} ${plural(rows.length, 'участник', 'участника', 'участников')} · сортировка по ${metric.label}`;
             const podium = document.getElementById('boardPodium');
             const top = rows.slice(0, 3);
             const order = top.length >= 3 ? [1, 0, 2] : top.map((_, i) => i);
@@ -1617,7 +1641,7 @@
                     <div class="podium-medal">${medals[idx]}</div>
                     <div class="podium-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
                     <div class="podium-coins">${metric.icon} ${formatNum(metric.value(p))}</div>
-                    <div class="podium-meta">🪙 ${formatNum(p.points)}</div>`;
+                    ${boardSort === 'points' ? '' : `<div class="podium-meta">🪙 ${formatNum(p.points)}</div>`}`;
                 podium.appendChild(card);
             });
 
@@ -1630,11 +1654,16 @@
                 const row = document.createElement('div');
                 row.className = 'board-row' + (myBoardKey && p.key === myBoardKey ? ' me' : '');
                 const place = i < 3 ? medals[i] : (i + 1);
+                const meta = BOARD_META
+                    .filter(m => m.key !== boardSort)
+                    .map(m => `<span>${m.icon} ${formatNum(m.value(p))}</span>`)
+                    .join('');
                 row.innerHTML = `
                     <div class="board-place">${place}</div>
                     <div class="board-avatar" style="background:${avatarColor(p.key)}">${escapeHtml(playerInitials(p.name))}</div>
-                    <div class="board-name">${escapeHtml(p.name)}${myBoardKey && p.key === myBoardKey ? ' <span style="opacity:.7">· ты</span>' : ''}
-                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)} · 🧱 ${formatNum(p.arkanoid)}</div>
+                    <div class="board-name">
+                        <div class="board-name-text">${escapeHtml(p.name)}${myBoardKey && p.key === myBoardKey ? ' <span style="opacity:.7">· ты</span>' : ''}</div>
+                        <div class="board-row-meta">${meta}</div>
                     </div>
                     <div class="board-value">${metric.icon} ${formatNum(metric.value(p))}</div>`;
                 list.appendChild(row);
@@ -1645,7 +1674,7 @@
             if (me) {
                 meBox.innerHTML = `<span>Твоя позиция</span><span><strong>#${rows.indexOf(me) + 1}</strong> · ${metric.icon} ${formatNum(metric.value(me))}</span>`;
             } else {
-                meBox.innerHTML = `<span>Твой результат</span><span><strong>${formatNum(myCoins)}</strong> 🪙 в этой игре</span>`;
+                meBox.innerHTML = `<span>Твой результат</span><span><strong>${formatNum(myCoins)}</strong> 🪙 в кошельке</span>`;
             }
         }
 
@@ -1971,6 +2000,7 @@
             document.getElementById('mG2048').innerText = bestG2048;
             document.getElementById('mArkanoid').innerText = bestArkanoid;
             document.getElementById('mLeadersCount').innerText = boardRows.length;
+            document.getElementById('mLeadersWord').innerText = plural(boardRows.length, 'участник', 'участника', 'участников');
             document.getElementById('mTapLvl').innerText = tapPower;
             document.getElementById('tapScore').innerText = myCoins;
             document.getElementById('energyVal').innerText = energy;
