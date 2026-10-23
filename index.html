@@ -1220,6 +1220,63 @@
             return false;
         }
 
+        // === HTTP API БИРЖИ ===
+        // sendData закрывает Mini App, поэтому покупки идут обычным fetch.
+        // Адрес API бот публикует в api.json рядом с этой страницей.
+        const API_FALLBACK_KEY = 'pupuApiBase';
+        let apiBasePromise = null;
+
+        function apiBaseFromStorage() {
+            return localStorage.getItem(API_FALLBACK_KEY) || '';
+        }
+
+        function loadApiBase() {
+            if (!apiBasePromise) {
+                apiBasePromise = fetch('api.json?t=' + Date.now(), {cache: 'no-store'})
+                    .then(resp => resp.ok ? resp.json() : null)
+                    .then(cfg => {
+                        const base = cfg && typeof cfg.api === 'string' ? cfg.api.replace(/\/$/, '') : '';
+                        if (base) localStorage.setItem(API_FALLBACK_KEY, base);
+                        return base || apiBaseFromStorage();
+                    })
+                    .catch(() => apiBaseFromStorage());
+            }
+            return apiBasePromise;
+        }
+
+        async function apiCall(path, options) {
+            const base = await loadApiBase();
+            if (!base) return null;
+            const url = base.replace(/\/api\/slavery$/, '') + path;
+            try {
+                const resp = await fetch(url, options);
+                return await resp.json();
+            } catch (e) {
+                // Туннель мог перезапуститься с новым адресом.
+                apiBasePromise = null;
+                localStorage.removeItem(API_FALLBACK_KEY);
+                return null;
+            }
+        }
+
+        async function slaveryApi(mode, target) {
+            const initData = telegramInitData();
+            if (!initData) return null;
+            const path = mode === 'state' ? '/api/slavery' : '/api/slavery/action';
+            try {
+                if (mode === 'state') {
+                    return await apiCall(path + '?initData=' + encodeURIComponent(initData));
+                }
+                return await apiCall(path, {
+                    method: 'POST',
+                    headers: {'content-type': 'application/json'},
+                    body: JSON.stringify({initData, mode, target: target || ''})
+                });
+            } catch (e) {
+                return null;
+            }
+        }
+
         // Загрузка данных
         let myCoins = parseInt(localStorage.getItem('myCoins')) || 0;
         let pupuEarned = Math.max(0, parseInt(localStorage.getItem('pupuEarned'), 10) || 0);
@@ -1462,10 +1519,10 @@
             try {
                 const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
                 myBoardKey = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
-                // Первый вход добавляет игрока на общий рынок через бота.
+                // Регистрация идёт через HTTP API: sendData закрыл бы Mini App.
                 if (!localStorage.getItem('pupuUserSynced')) {
                     localStorage.setItem('pupuUserSynced', '1');
-                    sendTelegramData(JSON.stringify({action: 'sync_user', coins: myCoins}));
+                    slaveryApi('state').catch(() => {});
                 }
                 renderBoard();
                 // Если биржа уже успела загрузиться до готовности ключа,
@@ -1618,6 +1675,7 @@
         // === БИРЖА ОДНОГРУППНИКОВ ===
         let slaveryState = null;
         let slaveryLoading = false;
+        let slaveryBusy = false;
         let slaveryTimer = null;
 
         function telegramUser() {
@@ -1739,11 +1797,16 @@
                 // Не показываем чужой/пустой баланс, пока не готов
                 // SHA-1 ключ текущего Telegram-пользователя.
                 if (!myBoardKey && telegramUser()) await computeMyKey();
-                const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                const fresh = await resp.json();
-                // На GitHub Pages биржа публикуется как статичный снимок.
-                // Telegram ID в нём скрыт, поэтому сопоставляем себя по
+                // Сначала живой API бота, затем статичный снимок на случай,
+                // если бот выключен и адрес туннеля уже не отвечает.
+                let fresh = await slaveryApi('state');
+                if (fresh && fresh.slavery) fresh = fresh.slavery;
+                if (!fresh || !Array.isArray(fresh.players)) {
+                    const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    fresh = await resp.json();
+                }
+                // Telegram ID в снимке скрыт, поэтому сопоставляем себя по
                 // тому же SHA-1 ключу, который используется в рейтинге.
                 if (fresh && Array.isArray(fresh.players)) {
                     const players = fresh.players.map(p => ({...p, id: p.key, balance: p.points || 0}));
@@ -1768,31 +1831,31 @@
             if (!user) {
                 return slaveryToast('Открой игру через Telegram, чтобы покупать.');
             }
+            if (slaveryBusy) return;
+            slaveryBusy = true;
+            slaveryToast('Отправляю запрос…');
             try {
-                // Покупки и сбор дохода выполняются ботом через Telegram:
-                // на GitHub Pages нет серверных функций Netlify.
-                const messages = {
-                    buy: 'Купить игрока',
-                    improve: 'Улучшить игрока',
-                    collect: 'Собрать доход'
-                };
-                const text = '/slave ' + action + (target ? ' ' + target : '');
-                const reply = tg && tg.showConfirm
-                    ? await new Promise(resolve => tg.showConfirm(messages[action] + '?\n\nОтправь команду боту: ' + text, resolve))
-                    : true;
-                if (!reply) return;
-                if (hasTelegramDataChannel()) {
-                    sendTelegramData(JSON.stringify({
-                        action: 'slavery_action',
-                        mode: action,
-                        target
-                    }));
-                    slaveryToast('Запрос отправлен боту. Открой чат для результата.');
-                } else {
-                    slaveryToast('Открой игру через Telegram, чтобы выполнить действие.');
+                const result = await slaveryApi(action, target);
+                if (!result) {
+                    slaveryToast('Биржа недоступна. Проверь, что бот запущен.');
+                    return;
+                }
+                if (result.slavery) {
+                    const players = (result.slavery.players || []).map(p => ({...p, id: p.key, balance: p.points || 0}));
+                    slaveryState = {...result.slavery, players, me: players.find(p => p.id === myBoardKey) || null};
+                    renderSlavery();
+                }
+                slaveryToast(result.message || (result.ok ? 'Готово.' : 'Не удалось.'));
+                if (result.ok) {
+                    await loadSlavery(false);
+                    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                } else if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('error');
                 }
             } catch (e) {
                 slaveryToast('Нет связи с биржей.');
+            } finally {
+                slaveryBusy = false;
             }
         }
 
