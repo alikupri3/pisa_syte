@@ -1223,61 +1223,77 @@
         // === HTTP API БИРЖИ ===
         // sendData закрывает Mini App, поэтому покупки идут обычным fetch.
         // Адрес API бот публикует в api.json рядом с этой страницей.
-        const API_FALLBACK_KEY = 'pupuApiBase';
-        let apiBasePromise = null;
+        const API_FALLBACK_KEY = 'pupuApiList';
+        // Бот держит два туннеля сразу: localhost.run рвёт маршрут каждые
+        // 6–18 минут. Пока один адрес переезжает, второй отвечает, а сайт
+        // перебирает их по очереди — так «биржа недоступна» не появляется
+        // на время переподключения.
+        let apiListPromise = null;
 
-        function apiBaseFromStorage() {
-            return localStorage.getItem(API_FALLBACK_KEY) || '';
+        function apiListFromStorage() {
+            try {
+                const raw = localStorage.getItem(API_FALLBACK_KEY);
+                const list = raw ? JSON.parse(raw) : [];
+                return Array.isArray(list) ? list.filter(u => typeof u === 'string' && u) : [];
+            } catch (e) {
+                return [];
+            }
         }
 
-        function loadApiBase() {
-            if (!apiBasePromise) {
-                apiBasePromise = fetch('api.json?t=' + Date.now(), {cache: 'no-store'})
+        function loadApiList() {
+            if (!apiListPromise) {
+                apiListPromise = fetch('api.json?t=' + Date.now(), {cache: 'no-store'})
                     .then(resp => resp.ok ? resp.json() : null)
                     .then(cfg => {
-                        const base = cfg && typeof cfg.api === 'string' ? cfg.api.replace(/\/$/, '') : '';
-                        if (base) {
-                            localStorage.setItem(API_FALLBACK_KEY, base);
-                            return base;
+                        let list = [];
+                        if (cfg && Array.isArray(cfg.api_list)) {
+                            list = cfg.api_list;
+                        } else if (cfg && typeof cfg.api === 'string') {
+                            list = [cfg.api];
+                        }
+                        list = list
+                            .filter(u => typeof u === 'string' && u)
+                            .map(u => u.replace(/\/$/, ''));
+                        if (list.length) {
+                            localStorage.setItem(API_FALLBACK_KEY, JSON.stringify(list));
+                            return list;
                         }
                         // api.json ещё не опубликован (бот не запущен) —
                         // не запоминаем пустоту, иначе до перезагрузки
                         // страница так и будет считать, что API нет.
-                        apiBasePromise = null;
-                        return apiBaseFromStorage();
+                        apiListPromise = null;
+                        return apiListFromStorage();
                     })
                     .catch(() => {
-                        apiBasePromise = null;
-                        return apiBaseFromStorage();
+                        apiListPromise = null;
+                        return apiListFromStorage();
                     });
             }
-            return apiBasePromise;
+            return apiListPromise;
         }
 
         async function apiCall(path, options) {
-            // Две попытки: туннель живёт недолго и переезжает на новый
-            // адрес, а api.json обновляется только после этого. Без повтора
-            // игрок видел «биржа недоступна», хотя бот уже поднял новый
-            // адрес — достаточно было перечитать api.json.
-            for (let attempt = 0; attempt < 2; attempt++) {
-                const base = await loadApiBase();
-                if (!base) return null;
-                const url = base.replace(/\/api\/slavery$/, '') + path;
+            // Перебираем адреса по очереди. Умерший туннель отдаёт 502
+            // или не отвечает вовсе — сразу идём к следующему.
+            const list = await loadApiList();
+            if (!list.length) return null;
+            let lastError = null;
+            for (let i = 0; i < list.length; i++) {
+                const url = list[i].replace(/\/api\/slavery$/, '') + path;
                 try {
                     const resp = await fetch(url, options);
                     // 4xx — это ответ бота (например, «не хватает монет»),
-                    // его надо показать как есть. 5xx и невалидный JSON —
-                    // это умерший туннель, его пробуем ещё раз.
+                    // его надо показать как есть. 5xx — умерший туннель.
                     if (resp.status >= 500) throw new Error('HTTP ' + resp.status);
                     return await resp.json();
                 } catch (e) {
-                    // Забываем адрес, чтобы следующая попытка взяла
-                    // свежий из api.json.
-                    apiBasePromise = null;
-                    localStorage.removeItem(API_FALLBACK_KEY);
-                    if (attempt === 0) await new Promise(r => setTimeout(r, 700));
+                    lastError = e;
                 }
             }
+            // Все адреса мертвы: перечитываем api.json при следующем
+            // обращении — бот мог уже поднять новые.
+            apiListPromise = null;
+            console.warn('Биржа недоступна:', lastError);
             return null;
         }
 
