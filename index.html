@@ -1847,6 +1847,8 @@
             try {
                 const result = await slaveryApi(action, target);
                 if (!result) {
+                    // Никакого sendData: Telegram закрыл бы Mini App и
+                    // выбросил игрока в чат — ради этого всё и переделывалось.
                     slaveryToast('Биржа недоступна. Проверь, что бот запущен.');
                     return;
                 }
