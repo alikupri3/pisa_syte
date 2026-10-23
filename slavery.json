@@ -13,6 +13,18 @@
       "ackSpent": 624273
     },
     {
+      "key": "84c100c056",
+      "name": "moon",
+      "points": 1002,
+      "owner": "54a9d82aa1",
+      "price": 5745,
+      "income": 300,
+      "lastCollect": 1792690787,
+      "ackEpoch": "1792693625936-5u95jd",
+      "ackEarned": 1043,
+      "ackSpent": 0
+    },
+    {
       "key": "3b82c50e4a",
       "name": "Броник",
       "points": 1000,
@@ -22,18 +34,6 @@
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
-      "key": "84c100c056",
-      "name": "moon",
-      "points": 669,
-      "owner": "54a9d82aa1",
-      "price": 5745,
-      "income": 300,
-      "lastCollect": 1792690787,
-      "ackEpoch": "1792693625936-5u95jd",
-      "ackEarned": 710,
       "ackSpent": 0
     },
     {
