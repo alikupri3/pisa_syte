@@ -25,6 +25,18 @@
       "ackSpent": 0
     },
     {
+      "key": "bbad70fd57",
+      "name": "Атлантический",
+      "points": 1067,
+      "owner": "54a9d82aa1",
+      "price": 1702,
+      "income": 109,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
       "key": "84c100c056",
       "name": "moon",
       "points": 1002,
@@ -67,18 +79,6 @@
       "owner": "54a9d82aa1",
       "price": 2560,
       "income": 157,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
-      "key": "bbad70fd57",
-      "name": "Атлантический",
-      "points": 50,
-      "owner": "54a9d82aa1",
-      "price": 1702,
-      "income": 109,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
