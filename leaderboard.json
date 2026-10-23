@@ -20,16 +20,6 @@
     "slaves": 0
   },
   {
-    "key": "a71cc81108",
-    "name": "Jealous Eyedress",
-    "points": 1449,
-    "snake": 0,
-    "race": 18,
-    "g2048": 1284,
-    "arkanoid": 0,
-    "slaves": 0
-  },
-  {
     "key": "bbad70fd57",
     "name": "Атлантический",
     "points": 1067,
@@ -48,6 +38,16 @@
     "g2048": 1420,
     "arkanoid": 0,
     "slaves": 1
+  },
+  {
+    "key": "a71cc81108",
+    "name": "Jealous Eyedress",
+    "points": 90,
+    "snake": 0,
+    "race": 18,
+    "g2048": 1284,
+    "arkanoid": 1200,
+    "slaves": 0
   },
   {
     "key": "ed1c09d73e",
