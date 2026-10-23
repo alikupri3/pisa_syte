@@ -63,8 +63,8 @@
     "slaves": 0
   },
   {
-    "key": "e153c7b1cc",
-    "name": ".",
+    "key": "301557b376",
+    "name": "-",
     "points": 50,
     "snake": 0,
     "race": 0,
@@ -72,9 +72,9 @@
     "slaves": 0
   },
   {
-    "key": "301557b376",
-    "name": "-",
-    "points": 50,
+    "key": "e153c7b1cc",
+    "name": ".",
+    "points": 40,
     "snake": 0,
     "race": 0,
     "g2048": 0,
