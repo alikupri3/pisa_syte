@@ -841,65 +841,6 @@
         .podium-card { background: rgba(255, 255, 255, 0.06); border-color: var(--line); border-radius: 20px; }
         .podium-card.first { background: linear-gradient(165deg, rgba(251, 191, 36, 0.24), rgba(255, 255, 255, 0.05)); border-color: rgba(251, 191, 36, 0.42); }
         .board-value, .podium-coins { color: var(--gold); }
-
-        .slavery-wrap { max-width: 520px; margin: 0 auto; text-align: left; }
-        .slavery-hero {
-            border-radius: 22px; padding: 18px;
-            background: linear-gradient(145deg, rgba(34, 211, 238, 0.16), rgba(139, 92, 246, 0.18));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            margin-bottom: 14px;
-        }
-        .slavery-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-        .slavery-title { font-size: 20px; font-weight: 850; letter-spacing: -0.4px; }
-        .slavery-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
-        .slavery-balance { text-align: right; font-size: 23px; font-weight: 850; color: var(--gold); }
-        .slavery-balance small { display: block; font-size: 10px; color: var(--muted); font-weight: 600; }
-        .slavery-stats { display: flex; gap: 8px; margin-top: 14px; }
-        .slavery-stat {
-            flex: 1; padding: 10px 11px; border-radius: 13px;
-            background: rgba(0, 0, 0, 0.18); border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .slavery-stat b { display: block; font-size: 15px; margin-top: 2px; }
-        .slavery-stat span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
-        .slavery-actions { display: flex; gap: 8px; margin-bottom: 16px; }
-        .slavery-action {
-            flex: 1; padding: 13px 10px; border-radius: 14px; border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.07); color: #fff; font-size: 12px; font-weight: 750;
-            cursor: pointer; font-family: inherit;
-        }
-        .slavery-action.primary { background: linear-gradient(135deg, #0ea5e9, #6366f1); border: 0; }
-        .slavery-action:disabled { opacity: 0.45; }
-        .slavery-list { display: flex; flex-direction: column; gap: 8px; }
-        .slave-row {
-            display: flex; align-items: center; gap: 11px; padding: 12px;
-            border-radius: 16px; background: var(--panel); border: 1px solid var(--line);
-        }
-        .slave-row.mine { border-color: rgba(52, 211, 153, 0.35); background: rgba(16, 185, 129, 0.09); }
-        .slave-row.owned { border-color: rgba(251, 191, 36, 0.22); }
-        .slave-avatar {
-            width: 38px; height: 38px; border-radius: 13px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 850; color: #fff;
-        }
-        .slave-info { flex: 1; min-width: 0; }
-        .slave-name { font-size: 13px; font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .slave-sub { font-size: 10px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .slave-buy {
-            border: 0; border-radius: 11px; padding: 9px 12px; cursor: pointer;
-            font-size: 11px; font-weight: 800; color: #0b1022; background: #fbbf24; font-family: inherit;
-            white-space: nowrap;
-        }
-        .slave-buy.upgrade { background: #34d399; }
-        .slave-buy:disabled { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.45); }
-        .slavery-note { font-size: 10px; color: var(--muted); line-height: 1.55; margin: 12px 2px 0; }
-        .slavery-toast {
-            position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
-            background: rgba(15, 23, 42, 0.96); border: 1px solid rgba(255, 255, 255, 0.14);
-            padding: 11px 16px; border-radius: 13px; font-size: 12px; font-weight: 650;
-            opacity: 0; pointer-events: none; transition: all 0.22s ease; z-index: 50;
-            max-width: 86vw;
-        }
-        .slavery-toast.show { opacity: 1; transform: translate(-50%, 0); }
     </style>
 </head>
 <body>
@@ -909,7 +850,7 @@
         <div class="hero">
             <div class="hero-brand"><span class="hero-dot"></span> Game Hub · онлайн</div>
             <div class="hero-title">Играй. <span>Зарабатывай.</span></div>
-            <div class="hero-sub">Мини-игры, рейтинг и биржа одногруппников</div>
+            <div class="hero-sub">Мини-игры и рейтинг группы</div>
             <div class="hero-balance">
                 <div>
                     <div class="hero-balance-label">Твой баланс</div>
@@ -948,15 +889,6 @@
 
         <div class="section-label"><span>Сообщество</span><span>общее для всех</span></div>
         <div class="menu-grid">
-            <div class="menu-btn wide" onclick="openGame('slavery')">
-                <div class="menu-icon">⛓️</div>
-                <div class="menu-copy">
-                    <span class="menu-btn-text">Биржа одногруппников</span>
-                    <span class="menu-btn-badge">Общий рынок · синхронизация в реальном времени</span>
-                </div>
-                <span class="chev">›</span>
-            </div>
-
             <div class="menu-btn wide" onclick="openGame('leaders')">
                 <div class="menu-icon">🏆</div>
                 <div class="menu-copy">
@@ -1084,44 +1016,6 @@
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
     </div>
 
-    <!-- БИРЖА ОДНОГРУППНИКОВ -->
-    <div id="slavery" class="screen">
-        <div class="slavery-wrap">
-            <div class="slavery-hero">
-                <div class="slavery-top">
-                    <div>
-                        <div class="slavery-title">⛓️ Биржа</div>
-                        <div class="slavery-meta" id="slvStatus">Загрузка общего рынка…</div>
-                    </div>
-                    <div class="slavery-balance">
-                        <span id="slvBalance">0</span>
-                        <small>монет</small>
-                    </div>
-                </div>
-                <div class="slavery-stats">
-                    <div class="slavery-stat"><span>У тебя</span><b id="slvOwned">0</b></div>
-                    <div class="slavery-stat"><span>Доход</span><b id="slvIncome">+0</b></div>
-                    <div class="slavery-stat"><span>Хозяин</span><b id="slvOwner">—</b></div>
-                </div>
-            </div>
-
-            <div class="slavery-actions">
-                <button class="slavery-action primary" id="slvCollect" onclick="slaveryCollect()">💰 Собрать доход</button>
-                <button class="slavery-action" onclick="loadSlavery(true)">↻ Обновить</button>
-            </div>
-
-            <div class="section-label"><span>Участники</span><span id="slvCount">0</span></div>
-            <div class="slavery-list" id="slvList"></div>
-            <div class="slavery-note">
-                Баланс биржи берётся из бота: монеты из тапалки и игр после «Сохранить в Топ бота»,
-                выигрыши казино и собранный доход. Доход можно собирать раз в 5 минут.
-            </div>
-        </div>
-
-        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
-        <div class="slavery-toast" id="slvToast"></div>
-    </div>
-
     <!-- 2048 -->
     <div id="g2048" class="screen">
         <h1>🧩 2048</h1>
@@ -1220,109 +1114,14 @@
             return false;
         }
 
-        // === HTTP API БИРЖИ ===
-        // sendData закрывает Mini App, поэтому покупки идут обычным fetch.
-        // Адрес API бот публикует в api.json рядом с этой страницей.
-        const API_FALLBACK_KEY = 'pupuApiList';
-        // Бот держит два туннеля сразу: localhost.run рвёт маршрут каждые
-        // 6–18 минут. Пока один адрес переезжает, второй отвечает, а сайт
-        // перебирает их по очереди — так «биржа недоступна» не появляется
-        // на время переподключения.
-        let apiListPromise = null;
-
-        function apiListFromStorage() {
-            try {
-                const raw = localStorage.getItem(API_FALLBACK_KEY);
-                const list = raw ? JSON.parse(raw) : [];
-                return Array.isArray(list) ? list.filter(u => typeof u === 'string' && u) : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function loadApiList() {
-            if (!apiListPromise) {
-                apiListPromise = fetch('api.json?t=' + Date.now(), {cache: 'no-store'})
-                    .then(resp => resp.ok ? resp.json() : null)
-                    .then(cfg => {
-                        let list = [];
-                        if (cfg && Array.isArray(cfg.api_list)) {
-                            list = cfg.api_list;
-                        } else if (cfg && typeof cfg.api === 'string') {
-                            list = [cfg.api];
-                        }
-                        list = list
-                            .filter(u => typeof u === 'string' && u)
-                            .map(u => u.replace(/\/$/, ''));
-                        if (list.length) {
-                            localStorage.setItem(API_FALLBACK_KEY, JSON.stringify(list));
-                            return list;
-                        }
-                        // api.json ещё не опубликован (бот не запущен) —
-                        // не запоминаем пустоту, иначе до перезагрузки
-                        // страница так и будет считать, что API нет.
-                        apiListPromise = null;
-                        return apiListFromStorage();
-                    })
-                    .catch(() => {
-                        apiListPromise = null;
-                        return apiListFromStorage();
-                    });
-            }
-            return apiListPromise;
-        }
-
-        async function apiCall(path, options) {
-            // Перебираем адреса по очереди. Умерший туннель отдаёт 502
-            // или не отвечает вовсе — сразу идём к следующему.
-            const list = await loadApiList();
-            if (!list.length) return null;
-            let lastError = null;
-            for (let i = 0; i < list.length; i++) {
-                const url = list[i].replace(/\/api\/slavery$/, '') + path;
-                try {
-                    const resp = await fetch(url, options);
-                    // 4xx — это ответ бота (например, «не хватает монет»),
-                    // его надо показать как есть. 5xx — умерший туннель.
-                    if (resp.status >= 500) throw new Error('HTTP ' + resp.status);
-                    return await resp.json();
-                } catch (e) {
-                    lastError = e;
-                }
-            }
-            // Все адреса мертвы: перечитываем api.json при следующем
-            // обращении — бот мог уже поднять новые.
-            apiListPromise = null;
-            console.warn('Биржа недоступна:', lastError);
-            return null;
-        }
-
-        async function slaveryApi(mode, target) {
-            const initData = telegramInitData();
-            if (!initData) return null;
-            const path = mode === 'state' ? '/api/slavery' : '/api/slavery/action';
-            try {
-                if (mode === 'state') {
-                    return await apiCall(path + '?initData=' + encodeURIComponent(initData));
-                }
-                return await apiCall(path, {
-                    method: 'POST',
-                    headers: {'content-type': 'application/json'},
-                    body: JSON.stringify({initData, mode, target: target || ''})
-                });
-            } catch (e) {
-                return null;
-            }
-        }
-
         // Загрузка данных
         let myCoins = parseInt(localStorage.getItem('myCoins')) || 0;
         let pupuEarned = Math.max(0, parseInt(localStorage.getItem('pupuEarned'), 10) || 0);
         let pupuSpent = Math.max(0, parseInt(localStorage.getItem('pupuSpent'), 10) || 0);
         let pupuEpoch = localStorage.getItem('pupuEpoch') || '';
         // В старых версиях не было эпохи и счётчика заработка. Их локальные
-        // значения уже могли быть учтены сервером, поэтому начинаем новый
-        // период с нуля и берём баланс из slavery.json.
+        // значения уже могли быть учтены ботом, поэтому начинаем новый
+        // период с нуля и берём баланс из таблицы лидеров.
         if (!pupuEpoch || localStorage.getItem('pupuEarned') === null) {
             pupuEpoch = String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
             pupuEarned = 0;
@@ -1347,11 +1146,8 @@
             localStorage.setItem('energyUpdatedAt', String(energyUpdatedAt));
         }
 
-        // Серверный баланс — общий кошелёк для биржи, казино и игр.
-        // Заработок и траты хранятся отдельными счётчиками с меткой эпохи.
-        // Сервер применяет только приращения, а в slavery.json возвращает
-        // подтверждение. Поэтому повторное сохранение не удваивает монеты,
-        // а ожидающая трата не отменяется старым серверным снимком.
+        // Заработок и траты хранятся отдельными счётчиками с меткой эпохи,
+        // чтобы бот не удваивал монеты при повторном сохранении.
         function ensureEpoch() {
             if (!pupuEpoch) {
                 pupuEpoch = String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
@@ -1380,40 +1176,6 @@
             myCoins = Math.max(0, myCoins - value);
             pupuSpent += value;
             persistWallet();
-        }
-
-        function applyServerWallet(balance, ackEpoch, ackEarned, ackSpent) {
-            const serverBalance = Math.max(0, Math.floor(Number(balance) || 0));
-            const sameEpoch = String(ackEpoch || '') === ensureEpoch();
-            // Счётчики накапливаются за эпоху. Сервер возвращает, сколько из
-            // них уже применено, поэтому повторный снимок не удваивает
-            // заработок и не возвращает потраченные монеты.
-            const ackE = sameEpoch ? Math.max(0, Math.floor(Number(ackEarned) || 0)) : 0;
-            const ackS = sameEpoch ? Math.max(0, Math.floor(Number(ackSpent) || 0)) : 0;
-            // Если сервер уже ушёл вперёд (например, сохранение пришло с
-            // другого устройства), продолжаем счётчики с его значения.
-            pupuEarned = Math.max(pupuEarned, ackE);
-            pupuSpent = Math.max(pupuSpent, ackS);
-            const pendingEarned = Math.max(0, pupuEarned - ackE);
-            const pendingSpent = Math.max(0, pupuSpent - ackS);
-            myCoins = Math.max(0, serverBalance + pendingEarned - pendingSpent);
-            persistWallet();
-            updateAllUI();
-            if (slaveryState) renderSlavery();
-            return true;
-        }
-
-        async function syncServerBalance() {
-            if (!myBoardKey) return;
-            try {
-                const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
-                if (!resp.ok) return;
-                const fresh = await resp.json();
-                const rows = Array.isArray(fresh && fresh.players) ? fresh.players : [];
-                const me = rows.find(p => p.key === myBoardKey);
-                if (!me) return;
-                applyServerWallet(me.points, me.ackEpoch, me.ackEarned, me.ackSpent);
-            } catch (e) { /* офлайн: остаётся локальный баланс */ }
         }
 
         // Начисляем энергию по прошедшему времени, поэтому закрытое
@@ -1505,7 +1267,7 @@
                     <div class="podium-medal">${medals[idx]}</div>
                     <div class="podium-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</div>
                     <div class="podium-coins">${metric.icon} ${formatNum(metric.value(p))}</div>
-                    <div class="podium-meta">🪙 ${formatNum(p.points)} · ⛓ ${p.slaves || 0}</div>`;
+                    <div class="podium-meta">🪙 ${formatNum(p.points)}</div>`;
                 podium.appendChild(card);
             });
 
@@ -1522,7 +1284,7 @@
                     <div class="board-place">${place}</div>
                     <div class="board-avatar" style="background:${avatarColor(p.key)}">${escapeHtml(playerInitials(p.name))}</div>
                     <div class="board-name">${escapeHtml(p.name)}${myBoardKey && p.key === myBoardKey ? ' <span style="opacity:.7">· ты</span>' : ''}
-                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · ⛓ ${p.slaves || 0} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)}</div>
+                        <div class="board-row-meta">🪙 ${formatNum(p.points)} · 🐍 ${formatNum(p.snake)} · 🏎 ${formatNum(p.race)} · 🧩 ${formatNum(p.g2048)}</div>
                     </div>
                     <div class="board-value">${metric.icon} ${formatNum(metric.value(p))}</div>`;
                 list.appendChild(row);
@@ -1551,22 +1313,12 @@
         }
 
         async function computeMyKey() {
-            const currentUser = telegramUser();
-            const uid = currentUser && currentUser.id;
+            const uid = telegramUserId();
             if (!uid || !window.crypto || !crypto.subtle) return;
             try {
                 const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(String(uid)));
                 myBoardKey = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
-                // Регистрация идёт через HTTP API: sendData закрыл бы Mini App.
-                if (!localStorage.getItem('pupuUserSynced')) {
-                    localStorage.setItem('pupuUserSynced', '1');
-                    slaveryApi('state').catch(() => {});
-                }
                 renderBoard();
-                // Если биржа уже успела загрузиться до готовности ключа,
-                // перерисовываем её с привязкой к текущему игроку.
-                if (slaveryState) renderSlavery();
-                syncServerBalance();
             } catch (e) { /* подсветка себя недоступна */ }
         }
 
@@ -1638,8 +1390,6 @@
             updateAllUI();
             clearInterval(snakeInterval);
             cancelAnimationFrame(raceAnim);
-            if (slaveryTimer) clearInterval(slaveryTimer);
-            slaveryTimer = null;
             if (leaderboardTimer) clearInterval(leaderboardTimer);
             leaderboardTimer = null;
         }
@@ -1655,11 +1405,6 @@
                 loadLeaders(false);
                 if (leaderboardTimer) clearInterval(leaderboardTimer);
                 leaderboardTimer = setInterval(() => loadLeaders(false), 15000);
-            }
-            if (id === 'slavery') {
-                loadSlavery(false);
-                if (slaveryTimer) clearInterval(slaveryTimer);
-                slaveryTimer = setInterval(() => loadSlavery(false), 15000);
             }
             if (id === 'g2048') init2048();
         }
@@ -1710,199 +1455,6 @@
         }
 
         // === ТАПАЛКА ===
-        // === БИРЖА ОДНОГРУППНИКОВ ===
-        let slaveryState = null;
-        let slaveryLoading = false;
-        let slaveryBusy = false;
-        let slaveryTimer = null;
-
-        function telegramUser() {
-            const uid = telegramUserId();
-            if (!uid) return null;
-            let user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
-            if (!user) {
-                const initData = telegramInitData();
-                if (initData) {
-                    try {
-                        const raw = new URLSearchParams(initData).get('user');
-                        if (raw) user = JSON.parse(raw);
-                    } catch (e) { /* профиль недоступен */ }
-                }
-            }
-            return {
-                id: String(user && user.id ? user.id : uid),
-                name: user
-                    ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Игрок')
-                    : 'Игрок',
-                initData: telegramInitData()
-            };
-        }
-
-        function slaveryToast(text) {
-            const el = document.getElementById('slvToast');
-            if (!el) return;
-            el.innerText = text;
-            el.classList.add('show');
-            clearTimeout(slaveryToast.timer);
-            slaveryToast.timer = setTimeout(() => el.classList.remove('show'), 2600);
-        }
-
-        function findSlaveryPlayer(key) {
-            if (!slaveryState || !key) return null;
-            return slaveryState.players.find(p => p.id === key) || null;
-        }
-
-        function renderSlavery() {
-            if (!slaveryState) return;
-            const user = telegramUser();
-            const me = slaveryState.me
-                || (user ? findSlaveryPlayer(user.id) : null)
-                || (myBoardKey ? findSlaveryPlayer(myBoardKey) : null);
-            const players = slaveryState.players || [];
-
-            document.getElementById('slvStatus').innerText =
-                user ? 'Общий рынок · обновлено только что' : 'Открой через Telegram, чтобы участвовать';
-            // На бирже показываем серверный кошелёк: именно с него бот
-            // списывает цену. Несохранённый заработок появится здесь после
-            // кнопки «Сохранить в Топ бота».
-            document.getElementById('slvBalance').innerText = formatNum(me ? (me.balance || 0) : 0);
-            document.getElementById('slvCount').innerText = players.length;
-
-            const owned = me ? players.filter(p => p.owner === me.id) : [];
-            const income = owned.reduce((sum, p) => sum + (p.income || 0), 0);
-            document.getElementById('slvOwned').innerText = owned.length;
-            document.getElementById('slvIncome').innerText = '+' + formatNum(income);
-
-            const owner = me && me.owner ? findSlaveryPlayer(me.owner) : null;
-            document.getElementById('slvOwner').innerText = owner ? owner.name : '—';
-
-            const btn = document.getElementById('slvCollect');
-            if (!me) {
-                btn.disabled = true;
-                btn.innerText = '💰 Собрать доход';
-            } else if (!owned.length) {
-                btn.disabled = true;
-                btn.innerText = '💰 Пока нечего собирать';
-            } else {
-                const left = Math.max(0, (me.lastCollect || 0) + (slaveryState.cooldown || 300) - Math.floor(Date.now() / 1000));
-                btn.disabled = left > 0;
-                btn.innerText = left > 0
-                    ? '⏳ ' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0')
-                    : '💰 Собрать +' + formatNum(income);
-            }
-
-            const list = document.getElementById('slvList');
-            list.innerHTML = '';
-            if (!players.length) {
-                list.innerHTML = '<div class="slavery-note">Пока никого нет. Открой биржу через Telegram.</div>';
-                return;
-            }
-
-            players.forEach(p => {
-                const isMe = me && p.id === me.id;
-                const isMine = me && p.owner === me.id;
-                const owner = p.owner ? findSlaveryPlayer(p.owner) : null;
-                const row = document.createElement('div');
-                row.className = 'slave-row' + (isMine ? ' mine' : '') + (p.owner && !isMine ? ' owned' : '');
-
-                let sub = 'Свободен · цена ' + formatNum(p.price) + ' 🪙';
-                if (isMine) sub = 'Твой · доход +' + formatNum(p.income) + ' 🪙';
-                else if (owner) sub = 'У ' + owner.name + ' · выкуп ' + formatNum(p.price) + ' 🪙';
-                let buy = '';
-                if (!isMe) {
-                    const affordable = me && (me.balance || 0) >= p.price;
-                    buy = '<button class="slave-buy' + (isMine ? ' upgrade' : '') + '" ' +
-                        (affordable ? '' : 'disabled ') +
-                        'onclick="slaveryAction(\'' + (isMine ? 'improve' : 'buy') + '\', \'' +
-                        escapeHtml(p.id) + '\')">' +
-                        (isMine ? 'Улучшить · ' : 'Купить · ') + formatNum(p.price) + '</button>';
-                }
-
-                row.innerHTML =
-                    '<div class="slave-avatar" style="background:' + avatarColor(String(p.id)) + '">' +
-                    escapeHtml(playerInitials(p.name)) + '</div>' +
-                    '<div class="slave-info"><div class="slave-name">' + escapeHtml(p.name) +
-                    (isMe ? ' <span style="opacity:.6">· ты</span>' : '') + '</div>' +
-                    '<div class="slave-sub">' + escapeHtml(sub) + '</div></div>' + buy;
-                list.appendChild(row);
-            });
-        }
-
-        async function loadSlavery(manual) {
-            if (slaveryLoading) return;
-            slaveryLoading = true;
-            try {
-                // Не показываем чужой/пустой баланс, пока не готов
-                // SHA-1 ключ текущего Telegram-пользователя.
-                if (!myBoardKey && telegramUser()) await computeMyKey();
-                // Сначала живой API бота, затем статичный снимок на случай,
-                // если бот выключен и адрес туннеля уже не отвечает.
-                let fresh = await slaveryApi('state');
-                if (fresh && fresh.slavery) fresh = fresh.slavery;
-                if (!fresh || !Array.isArray(fresh.players)) {
-                    const resp = await fetch('slavery.json?t=' + Date.now(), {cache: 'no-store'});
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    fresh = await resp.json();
-                }
-                // Telegram ID в снимке скрыт, поэтому сопоставляем себя по
-                // тому же SHA-1 ключу, который используется в рейтинге.
-                if (fresh && Array.isArray(fresh.players)) {
-                    const players = fresh.players.map(p => ({...p, id: p.key, balance: p.points || 0}));
-                    const user = telegramUser();
-                    const me = user ? players.find(p => p.id === myBoardKey) || null : null;
-                    slaveryState = {...fresh, players, me};
-                    if (me) applyServerWallet(me.balance, me.ackEpoch, me.ackEarned, me.ackSpent);
-                } else {
-                    slaveryState = fresh;
-                }
-                renderSlavery();
-                if (manual) slaveryToast('Список обновлён');
-            } catch (e) {
-                document.getElementById('slvStatus').innerText = 'Биржа временно недоступна';
-            } finally {
-                slaveryLoading = false;
-            }
-        }
-
-        async function slaveryAction(action, target) {
-            const user = telegramUser();
-            if (!user) {
-                return slaveryToast('Открой игру через Telegram, чтобы покупать.');
-            }
-            if (slaveryBusy) return;
-            slaveryBusy = true;
-            slaveryToast('Отправляю запрос…');
-            try {
-                const result = await slaveryApi(action, target);
-                if (!result) {
-                    // Никакого sendData: Telegram закрыл бы Mini App и
-                    // выбросил игрока в чат — ради этого всё и переделывалось.
-                    slaveryToast('Биржа недоступна. Проверь, что бот запущен.');
-                    return;
-                }
-                if (result.slavery) {
-                    const players = (result.slavery.players || []).map(p => ({...p, id: p.key, balance: p.points || 0}));
-                    slaveryState = {...result.slavery, players, me: players.find(p => p.id === myBoardKey) || null};
-                    renderSlavery();
-                }
-                slaveryToast(result.message || (result.ok ? 'Готово.' : 'Не удалось.'));
-                if (result.ok) {
-                    await loadSlavery(false);
-                    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                } else if (tg && tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('error');
-                }
-            } catch (e) {
-                slaveryToast('Нет связи с биржей.');
-            } finally {
-                slaveryBusy = false;
-            }
-        }
-
-        function slaveryCollect() {
-            slaveryAction('collect', '');
-        }
-
         function tapCoin(e) {
             syncEnergy();
             if (energy < 1) return;
@@ -1961,10 +1513,6 @@
         window.addEventListener('pageshow', refreshEnergy);
         window.addEventListener('focus', refreshEnergy);
         if (tg && tg.onEvent) tg.onEvent('activated', refreshEnergy);
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) syncServerBalance();
-        });
-        setInterval(syncServerBalance, 30000);
 
         // === ЗМЕЙКА ===
         const sCtx = document.getElementById('sCanvas').getContext('2d');
