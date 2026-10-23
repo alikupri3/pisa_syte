@@ -73,18 +73,6 @@
       "ackSpent": 0
     },
     {
-      "key": "bbad70fd57",
-      "name": "Атлантический",
-      "points": 50,
-      "owner": "54a9d82aa1",
-      "price": 1702,
-      "income": 109,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
       "key": "301557b376",
       "name": "-",
       "points": 50,
@@ -115,6 +103,18 @@
       "owner": "54a9d82aa1",
       "price": 3838,
       "income": 214,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
+      "key": "bbad70fd57",
+      "name": "Атлантический",
+      "points": 0,
+      "owner": "54a9d82aa1",
+      "price": 1702,
+      "income": 109,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
