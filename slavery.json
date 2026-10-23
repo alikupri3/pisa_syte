@@ -85,24 +85,24 @@
       "ackSpent": 0
     },
     {
-      "key": "e153c7b1cc",
-      "name": ".",
-      "points": 50,
-      "owner": "54a9d82aa1",
-      "price": 2559,
-      "income": 153,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
-    },
-    {
       "key": "301557b376",
       "name": "-",
       "points": 50,
       "owner": "54a9d82aa1",
       "price": 5751,
       "income": 300,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
+      "key": "e153c7b1cc",
+      "name": ".",
+      "points": 40,
+      "owner": "54a9d82aa1",
+      "price": 2559,
+      "income": 153,
       "lastCollect": 0,
       "ackEpoch": "",
       "ackEarned": 0,
