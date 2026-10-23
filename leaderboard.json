@@ -9,6 +9,15 @@
     "slaves": 10
   },
   {
+    "key": "000304bf64",
+    "name": "qsef",
+    "points": 2500,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "slaves": 0
+  },
+  {
     "key": "3b82c50e4a",
     "name": "Броник",
     "points": 1000,
@@ -47,15 +56,6 @@
   {
     "key": "c970169c9c",
     "name": "Amir",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "slaves": 0
-  },
-  {
-    "key": "000304bf64",
-    "name": "qsef",
     "points": 0,
     "snake": 0,
     "race": 0,
