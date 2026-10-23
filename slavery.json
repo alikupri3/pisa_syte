@@ -37,6 +37,18 @@
       "ackSpent": 0
     },
     {
+      "key": "ed1c09d73e",
+      "name": "Zod1us",
+      "points": 100,
+      "owner": null,
+      "price": 150,
+      "income": 15,
+      "lastCollect": 0,
+      "ackEpoch": "",
+      "ackEarned": 0,
+      "ackSpent": 0
+    },
+    {
       "key": "62cf218c52",
       "name": "descriptecal",
       "points": 50,
