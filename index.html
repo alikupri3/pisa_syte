@@ -1173,6 +1173,35 @@
         .tr-chip:active { background: rgba(255, 255, 255, 0.16); }
         .tr-fee { font-size: 11.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
         .tr-fee b { color: var(--gold); }
+
+        /* ДУЭЛИ */
+        .du-section {
+            font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--muted); font-weight: 850; margin: 14px 0 8px;
+        }
+        .du-games { display: flex; flex-wrap: wrap; gap: 7px; }
+        .du-game {
+            padding: 11px 13px; border-radius: 14px; cursor: pointer;
+            background: var(--panel); border: 1px solid var(--line);
+            color: #e2e8f0; font-family: inherit; font-size: 12.5px; font-weight: 750;
+        }
+        .du-game.active {
+            background: rgba(251, 191, 36, 0.16); border-color: rgba(251, 191, 36, 0.55);
+            color: var(--gold);
+        }
+        .du-game:active { transform: scale(0.96); }
+        .du-history {
+            padding: 10px 12px; border-radius: 14px; background: var(--panel);
+            border: 1px solid var(--line); margin-bottom: 7px;
+        }
+        .du-history-title {
+            display: flex; justify-content: space-between; font-size: 12px;
+            font-weight: 800; margin-bottom: 3px;
+        }
+        .du-history-meta { font-size: 11px; color: var(--muted); line-height: 1.5; }
+        .du-history-meta b { color: var(--gold); }
+        .du-win { color: #4ade80; }
+        .du-loss { color: #f87171; }
     </style>
 </head>
 <body>
@@ -1259,6 +1288,15 @@
                 <div class="menu-copy">
                     <span class="menu-btn-text">Таблица лидеров</span>
                     <span class="menu-btn-badge"><span id="mLeadersCount">0</span> <span id="mLeadersWord">участников</span></span>
+                </div>
+                <span class="chev">›</span>
+            </div>
+
+            <div class="menu-btn wide" onclick="openGame('duels')">
+                <div class="menu-icon">⚔</div>
+                <div class="menu-copy">
+                    <span class="menu-btn-text">Дуэли</span>
+                    <span class="menu-btn-badge">вызови друга на ставку</span>
                 </div>
                 <span class="chev">›</span>
             </div>
@@ -1423,6 +1461,48 @@
 
         <button class="btn-primary" id="trSendBtn" onclick="sendTransfer()">💸 Перевести</button>
         <div id="trStatus" class="save-status" role="status" aria-live="polite"></div>
+
+        <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
+    </div>
+
+    <!-- ДУЭЛИ -->
+    <div id="duels" class="screen">
+        <h1>⚔ Дуэли</h1>
+        <p class="subtitle">Вызови друга: у кого рекорд выше — забирает ставку</p>
+
+        <div class="transfer-balance">
+            <span>В кошельке</span>
+            <span><b id="duBalance">0</b> 🪙</span>
+        </div>
+
+        <div class="du-section">🎮 Игра</div>
+        <div class="du-games" id="duGames"></div>
+
+        <div class="du-section">👤 Соперник</div>
+        <input class="tr-search" id="duSearch" type="text" placeholder="🔍 Поиск по имени"
+               oninput="renderDuelsPeople()" autocomplete="off">
+        <div class="tr-people" id="duPeople"></div>
+
+        <div class="du-section">🪙 Ставка</div>
+        <input class="tr-amount" id="duStake" type="text" inputmode="numeric" placeholder="Ставка на дуэль"
+               oninput="updateDuelHint()">
+
+        <div class="tr-chips">
+            <button class="tr-chip" onclick="setDuelStake(100)">100</button>
+            <button class="tr-chip" onclick="setDuelStake(1000)">1 000</button>
+            <button class="tr-chip" onclick="setDuelStake(5000)">5 000</button>
+            <button class="tr-chip" onclick="setDuelStake(25000)">25 000</button>
+            <button class="tr-chip" onclick="setDuelStake('half')">Половина</button>
+            <button class="tr-chip" onclick="setDuelStake('all')">Всё</button>
+        </div>
+
+        <div class="tr-fee" id="duHint">Выбери игру, соперника и ставку.</div>
+
+        <button class="btn-primary" id="duSendBtn" onclick="sendDuelChallenge()">⚔ Вызвать на дуэль</button>
+        <div id="duStatus" class="save-status" role="status" aria-live="polite"></div>
+
+        <div class="du-section" id="duHistoryTitle" style="display:none">📜 Последние дуэли</div>
+        <div id="duHistory"></div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
     </div>
@@ -1886,6 +1966,217 @@
             }
             updateAllUI();
             updateTransferFee();
+        }
+
+        // ===== ДУЭЛИ =====
+        const DUEL_GAMES = [
+            { id: 'snake', label: '🐍 Змейка' },
+            { id: 'race', label: '🏎 Гонки' },
+            { id: 'g2048', label: '🧩 2048' },
+            { id: 'arkanoid', label: '🧱 Арканоид' },
+        ];
+        let duelGame = 'snake';
+        let duelTargetKey = '';
+        let duelPending = false;
+        let duelsData = null;
+
+        function duelBestScore(gameId) {
+            const row = boardRows.find(r => myBoardKey && r.key === myBoardKey);
+            if (row && row[gameId] != null) return Math.max(0, Number(row[gameId]) || 0);
+            if (gameId === 'snake') return bestSnake;
+            if (gameId === 'race') return bestRace;
+            if (gameId === 'g2048') return bestG2048;
+            if (gameId === 'arkanoid') return bestArkanoid;
+            return 0;
+        }
+
+        function renderDuelGames() {
+            const box = document.getElementById('duGames');
+            if (!box) return;
+            box.innerHTML = DUEL_GAMES.map(g =>
+                `<button class="du-game${g.id === duelGame ? ' active' : ''}" onclick="selectDuelGame('${g.id}')">${g.label}</button>`
+            ).join('');
+        }
+
+        function selectDuelGame(id) {
+            duelGame = id;
+            renderDuelGames();
+            updateDuelHint();
+        }
+
+        function duelPeople() {
+            const mine = myBoardKey || '';
+            return boardRows.filter(row => row.key && row.key !== mine);
+        }
+
+        function renderDuelsPeople() {
+            const box = document.getElementById('duPeople');
+            if (!box) return;
+            const query = (document.getElementById('duSearch')?.value || '').trim().toLocaleLowerCase();
+            const people = duelPeople().filter(row => !query || String(row.name || '').toLocaleLowerCase().includes(query));
+            if (!people.length) {
+                box.innerHTML = '<div class="tr-empty">Игроки пока не загрузились или никого не нашли.</div>';
+                return;
+            }
+            box.innerHTML = people.map(row => {
+                const active = row.key === duelTargetKey ? ' active' : '';
+                const rawName = String(row.name || 'Игрок');
+                const name = escapeHtml(rawName);
+                const initial = escapeHtml((rawName.trim().charAt(0) || '?').toUpperCase());
+                return `<button class="tr-person${active}" onclick="selectDuelTarget('${row.key}')">
+                    <span class="tr-avatar">${initial}</span>
+                    <span class="tr-person-name">${name}</span>
+                    <span class="tr-person-coins">${formatNum(row.points || 0)} 🪙</span>
+                </button>`;
+            }).join('');
+        }
+
+        function selectDuelTarget(key) {
+            if (!duelPeople().some(row => row.key === key)) return;
+            duelTargetKey = key;
+            renderDuelsPeople();
+            updateDuelHint();
+        }
+
+        function duelStake() {
+            const raw = String(document.getElementById('duStake')?.value || '').replace(/\s/g, '');
+            if (!/^\d+$/.test(raw)) return 0;
+            return Math.floor(Number(raw));
+        }
+
+        function updateDuelHint() {
+            const stake = duelStake();
+            const target = duelPeople().find(row => row.key === duelTargetKey);
+            const game = DUEL_GAMES.find(g => g.id === duelGame);
+            const box = document.getElementById('duHint');
+            if (!box) return;
+            if (!target || stake <= 0) {
+                box.innerHTML = 'Выбери игру, соперника и ставку.';
+                return;
+            }
+            const mine = duelBestScore(duelGame);
+            const theirs = Math.max(0, Number(target[duelGame]) || 0);
+            const who = mine > theirs ? '<b class="du-win">у тебя больше</b>'
+                : mine < theirs ? '<b class="du-loss">у соперника больше</b>'
+                : '<b>ничья</b>';
+            box.innerHTML = `Соперник: <b>${escapeHtml(String(target.name || 'Игрок'))}</b> · ставка <b>${formatNum(stake)} 🪙</b><br>` +
+                `Рекорды в «${game.label}»: у тебя <b>${formatNum(mine)}</b>, у соперника <b>${formatNum(theirs)}</b> — ${who}.<br>` +
+                `Победитель забирает ставку целиком, при равных рекордах ставки возвращаются.`;
+        }
+
+        function setDuelStake(value) {
+            const amount = value === 'half' ? Math.floor(myCoins / 2)
+                : value === 'all' ? Math.floor(myCoins)
+                : Number(value) || 0;
+            const input = document.getElementById('duStake');
+            if (input) input.value = String(Math.max(0, amount));
+            updateDuelHint();
+        }
+
+        function openDuels() {
+            duelPending = false;
+            const status = document.getElementById('duStatus');
+            if (status) status.innerText = '';
+            renderDuelGames();
+            renderDuelsPeople();
+            updateDuelHint();
+            renderDuelHistory();
+            loadLeaders(false).then(() => {
+                if (!document.getElementById('duels').classList.contains('active')) return;
+                renderDuelsPeople();
+                updateDuelHint();
+                loadDuelsHistory();
+            });
+        }
+
+        function renderDuelHistory() {
+            const box = document.getElementById('duHistory');
+            const title = document.getElementById('duHistoryTitle');
+            if (!box) return;
+            const items = (duelsData && duelsData.recent) || [];
+            if (!items.length) {
+                if (title) title.style.display = 'none';
+                box.innerHTML = '';
+                return;
+            }
+            if (title) title.style.display = '';
+            box.innerHTML = items.map(item => {
+                const name = key => escapeHtml(String(
+                    (item.fromKey === key ? item.fromName : item.toName) || 'Игрок'
+                ));
+                const game = DUEL_GAMES.find(g => g.id === item.game);
+                const stake = formatNum(item.stake || 0);
+                if (item.status === 'accepted') {
+                    const win = item.winnerKey && item.winnerKey === myBoardKey;
+                    const draw = !item.winnerKey;
+                    const head = draw ? '🤝 Ничья'
+                        : win ? `<span class="du-win">🏆 Победа</span>`
+                        : `<span class="du-loss">😞 Поражение</span>`;
+                    return `<div class="du-history">
+                        <div class="du-history-title"><span>${game ? game.label : '🎮'} · ${stake} 🪙</span><span>${head}</span></div>
+                        <div class="du-history-meta">${name(item.fromKey)} ${formatNum(item.scoreFrom || 0)} — ${formatNum(item.scoreTo || 0)} ${name(item.toKey)}</div>
+                    </div>`;
+                }
+                const what = item.status === 'declined' ? 'отклонена' : 'отменена';
+                return `<div class="du-history">
+                    <div class="du-history-title"><span>${game ? game.label : '🎮'} · ${stake} 🪙</span><span>${what}</span></div>
+                    <div class="du-history-meta">${name(item.fromKey)} → ${name(item.toKey)}</div>
+                </div>`;
+            }).join('');
+        }
+
+        async function loadDuelsHistory() {
+            try {
+                const res = await fetch('duels.json?v=' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) return;
+                duelsData = await res.json();
+                renderDuelHistory();
+            } catch (e) { /* история не критична */ }
+        }
+
+        function sendDuelChallenge() {
+            const status = document.getElementById('duStatus');
+            const stake = duelStake();
+            if (duelPending) return;
+            if (!hasTelegramDataChannel()) {
+                if (status) { status.innerText = 'Открой Mini App через кнопку бота.'; status.className = 'save-status error'; }
+                return;
+            }
+            if (!duelTargetKey) {
+                if (status) { status.innerText = 'Сначала выбери соперника.'; status.className = 'save-status error'; }
+                return;
+            }
+            if (stake < 10) {
+                if (status) { status.innerText = 'Минимальная ставка — 10 монет.'; status.className = 'save-status error'; }
+                return;
+            }
+            if (stake > myCoins) {
+                if (status) { status.innerText = 'Ставка больше твоего баланса.'; status.className = 'save-status error'; }
+                return;
+            }
+            const target = duelPeople().find(row => row.key === duelTargetKey);
+            if (!target) return;
+
+            const payload = JSON.stringify({
+                action: 'duel_challenge',
+                target: target.key,
+                game: duelGame,
+                stake: stake,
+                nonce: ensureEpoch() + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+                coins: myCoins,
+                earned: pupuEarned,
+                spent: pupuSpent,
+                epoch: ensureEpoch()
+            });
+
+            try {
+                sendTelegramData(payload);
+                duelPending = true;
+                if (status) { status.innerText = 'Вызов отправлен. Сопернику придут кнопки в чат.'; status.className = 'save-status ok'; }
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            } catch (e) {
+                if (status) { status.innerText = 'Не удалось отправить вызов.'; status.className = 'save-status error'; }
+            }
         }
 
         let bestSnake = parseInt(localStorage.getItem('bestSnake')) || 0;
@@ -2437,6 +2728,7 @@
             document.getElementById('mShopOwnedWord').innerText = plural(shopOwnedCount(), 'предмет', 'предмета', 'предметов');
             document.getElementById('shopBalance').innerText = formatNum(myCoins);
             document.getElementById('trBalance').innerText = formatNum(myCoins);
+            document.getElementById('duBalance').innerText = formatNum(myCoins);
             document.getElementById('mLeadersCount').innerText = boardRows.length;
             document.getElementById('mLeadersWord').innerText = plural(boardRows.length, 'участник', 'участника', 'участников');
             document.getElementById('mTapLvl').innerText = tapPower;
@@ -2492,6 +2784,7 @@
             if (id === 'arkanoid') openArkanoid();
             if (id === 'shop') renderShop();
             if (id === 'transfer') openTransfer();
+            if (id === 'duels') openDuels();
         }
 
         function setSaveStatus(text, kind) {
