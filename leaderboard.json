@@ -7,7 +7,10 @@
     "race": 208,
     "g2048": 1896,
     "arkanoid": 12000,
-    "slaves": 10
+    "slaves": 10,
+    "epoch": "1792693320607-6ux24p",
+    "ackEarned": 4510,
+    "ackSpent": 625783
   },
   {
     "key": "3b82c50e4a",
@@ -17,7 +20,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "bbad70fd57",
@@ -27,7 +33,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "84c100c056",
@@ -37,7 +46,10 @@
     "race": 130,
     "g2048": 1420,
     "arkanoid": 0,
-    "slaves": 1
+    "slaves": 1,
+    "epoch": "1792693625936-5u95jd",
+    "ackEarned": 1043,
+    "ackSpent": 0
   },
   {
     "key": "a71cc81108",
@@ -47,7 +59,10 @@
     "race": 18,
     "g2048": 1284,
     "arkanoid": 1200,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "1792775857177-wubfum",
+    "ackEarned": 5734,
+    "ackSpent": 5644
   },
   {
     "key": "ed1c09d73e",
@@ -57,7 +72,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "62cf218c52",
@@ -67,7 +85,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "000304bf64",
@@ -77,7 +98,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "301557b376",
@@ -87,7 +111,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "e153c7b1cc",
@@ -97,7 +124,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "c970169c9c",
@@ -107,7 +137,10 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   },
   {
     "key": "47c4260078",
@@ -117,6 +150,9 @@
     "race": 0,
     "g2048": 0,
     "arkanoid": 0,
-    "slaves": 0
+    "slaves": 0,
+    "epoch": "",
+    "ackEarned": 0,
+    "ackSpent": 0
   }
 ]
