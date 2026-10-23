@@ -9,6 +9,15 @@
     "slaves": 10
   },
   {
+    "key": "84c100c056",
+    "name": "moon",
+    "points": 1002,
+    "snake": 21,
+    "race": 130,
+    "g2048": 1420,
+    "slaves": 1
+  },
+  {
     "key": "3b82c50e4a",
     "name": "Броник",
     "points": 1000,
@@ -16,15 +25,6 @@
     "race": 0,
     "g2048": 0,
     "slaves": 0
-  },
-  {
-    "key": "84c100c056",
-    "name": "moon",
-    "points": 669,
-    "snake": 21,
-    "race": 130,
-    "g2048": 1420,
-    "slaves": 1
   },
   {
     "key": "62cf218c52",
