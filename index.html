@@ -1236,10 +1236,20 @@
                     .then(resp => resp.ok ? resp.json() : null)
                     .then(cfg => {
                         const base = cfg && typeof cfg.api === 'string' ? cfg.api.replace(/\/$/, '') : '';
-                        if (base) localStorage.setItem(API_FALLBACK_KEY, base);
-                        return base || apiBaseFromStorage();
+                        if (base) {
+                            localStorage.setItem(API_FALLBACK_KEY, base);
+                            return base;
+                        }
+                        // api.json ещё не опубликован (бот не запущен) —
+                        // не запоминаем пустоту, иначе до перезагрузки
+                        // страница так и будет считать, что API нет.
+                        apiBasePromise = null;
+                        return apiBaseFromStorage();
                     })
-                    .catch(() => apiBaseFromStorage());
+                    .catch(() => {
+                        apiBasePromise = null;
+                        return apiBaseFromStorage();
+                    });
             }
             return apiBasePromise;
         }
