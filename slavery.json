@@ -1,6 +1,18 @@
 {
   "players": [
     {
+      "key": "54a9d82aa1",
+      "name": "່",
+      "points": 1000050,
+      "owner": "84c100c056",
+      "price": 505,
+      "income": 40,
+      "lastCollect": 1792689639,
+      "ackEpoch": "1792693320607-6ux24p",
+      "ackEarned": 3125,
+      "ackSpent": 624273
+    },
+    {
       "key": "3b82c50e4a",
       "name": "Броник",
       "points": 1000,
@@ -23,18 +35,6 @@
       "ackEpoch": "1792693625936-5u95jd",
       "ackEarned": 303,
       "ackSpent": 0
-    },
-    {
-      "key": "54a9d82aa1",
-      "name": "່",
-      "points": 50,
-      "owner": "84c100c056",
-      "price": 505,
-      "income": 40,
-      "lastCollect": 1792689639,
-      "ackEpoch": "1792693320607-6ux24p",
-      "ackEarned": 3125,
-      "ackSpent": 624273
     },
     {
       "key": "62cf218c52",
