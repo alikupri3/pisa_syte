@@ -1,4 +1,33 @@
 {
-  "recent": [],
-  "tops": []
+  "recent": [
+    {
+      "id": "9fd8fa8200dd",
+      "fromKey": "84c100c056",
+      "fromName": "moon",
+      "toKey": "54a9d82aa1",
+      "toName": "່",
+      "game": "snake",
+      "stake": 100,
+      "status": "accepted",
+      "scoreFrom": 21,
+      "scoreTo": 24,
+      "winnerKey": "54a9d82aa1"
+    }
+  ],
+  "tops": [
+    {
+      "key": "54a9d82aa1",
+      "name": "່",
+      "wins": 1,
+      "losses": 0,
+      "points": 890804
+    },
+    {
+      "key": "84c100c056",
+      "name": "moon",
+      "wins": 0,
+      "losses": 1,
+      "points": 703
+    }
+  ]
 }
