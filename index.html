@@ -258,79 +258,10 @@
             box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
         }
 
-        /* Магазин */
-        .shop-container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 16px;
-            padding: 15px;
+        /* Тапалка: прокачки на экране нет — только ссылка в магазин */
+        .tap-shop-link {
             max-width: 360px;
-            margin: 20px auto;
-        }
-
-        .shop-title {
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            opacity: 0.9;
-        }
-
-        .upgrade-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .upgrade-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .upgrade-info {
-            text-align: left;
-            flex: 1;
-        }
-
-        .upgrade-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .upgrade-desc {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .upgrade-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .upgrade-btn:active {
-            transform: scale(0.95);
-        }
-
-        .upgrade-btn:disabled {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.4);
-            cursor: not-allowed;
-            box-shadow: none;
+            margin: 18px auto 0;
         }
 
         /* Игровой холст */
@@ -835,12 +766,10 @@
         }
         .btn-back { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); border-radius: 14px; padding: 11px 22px; font-size: 13px; }
 
-        .shop-container, .stats, .board-list, .board-me, .g2048-grid {
+        .stats, .board-list, .board-me, .g2048-grid {
             background: var(--panel); border-color: var(--line);
             box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18);
         }
-        .upgrade-item { background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 14px; }
-        .upgrade-btn { background: linear-gradient(135deg, #10b981, #0d9488); border-radius: 11px; }
         canvas { border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3); }
         .control-btn { background: rgba(255, 255, 255, 0.075); border-color: var(--line); border-radius: 14px; }
         .board-tabs { background: rgba(0, 0, 0, 0.28); border-color: var(--line); }
@@ -1103,7 +1032,11 @@
         .shop-body { flex: 1; min-width: 0; }
         .shop-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.2px; }
         .shop-desc { font-size: 11px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
-        .shop-level { display: flex; gap: 3px; margin-top: 6px; }
+        .shop-level {
+            display: flex; align-items: center; gap: 3px; margin-top: 6px;
+            font-size: 10.5px; color: var(--muted); font-weight: 750;
+        }
+        .shop-level span:last-child { margin-left: 5px; white-space: nowrap; }
         .shop-pip { width: 14px; height: 4px; border-radius: 3px; background: rgba(255, 255, 255, 0.14); }
         .shop-pip.filled { background: var(--gold); }
         .shop-buy {
@@ -1425,6 +1358,7 @@
         <div class="shop-hint">
             Уровни покупаются по порядку: сначала 1-й, потом 2-й и так далее.
             Цены растут втрое — на последние уровни копить придётся долго.
+            Всё купленное действует сразу и навсегда.
         </div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
@@ -1433,7 +1367,7 @@
     <!-- ПЕРЕВОДЫ -->
     <div id="transfer" class="screen">
         <h1>💸 Переводы</h1>
-        <p class="subtitle">Отправь монеты другу — комиссия 5%</p>
+        <p class="subtitle">Отправь монеты другу — комиссия 5% (снижается предметом)</p>
 
         <div class="transfer-balance">
             <span>В кошельке</span>
@@ -1521,30 +1455,14 @@
 
         <div class="energy-info">
             ⚡ <span id="energyVal">100</span> / <span id="energyMax">100</span>
-            <span style="opacity: 0.7; font-size: 12px;">(+1 / 3 сек)</span>
+            <span style="opacity: 0.7; font-size: 12px;">(+1 / <span id="energyRegen">3</span> сек)</span>
         </div>
         <div class="energy-bar">
             <div class="energy-fill" id="energyFill"></div>
         </div>
 
-        <div class="shop-container">
-            <div class="shop-title">🛠 Прокачка</div>
-
-            <div class="upgrade-item">
-                <div class="upgrade-info">
-                    <div class="upgrade-title">💪 Сила клика (+<span id="uiPower">1</span>)</div>
-                    <div class="upgrade-desc">Больше монет за 1 тап</div>
-                </div>
-                <button class="upgrade-btn" id="btnBuyPower" onclick="buyPower()">600 🪙</button>
-            </div>
-
-            <div class="upgrade-item">
-                <div class="upgrade-info">
-                    <div class="upgrade-title">🔋 Энергия (<span id="uiMaxE">100</span>)</div>
-                    <div class="upgrade-desc">+50 к максимуму</div>
-                </div>
-                <button class="upgrade-btn" id="btnBuyEnergy" onclick="buyEnergy()">600 🪙</button>
-            </div>
+        <div class="tap-shop-link">
+            <button class="btn-primary" onclick="openGame('shop')">🛒 Прокачка в магазине</button>
         </div>
 
         <button class="btn-back" onclick="openMenu()">⬅ Назад</button>
@@ -1755,7 +1673,19 @@
              prices: [6000, 26000]},
             {id: 'snake', name: 'Медленный яд', icon: '🐍', max: 3,
              desc: 'Змейка ползёт на 12% медленнее',
-             prices: [5000, 20000, 80000]}
+             prices: [5000, 20000, 80000]},
+            {id: 'charge', name: 'Быстрая зарядка', icon: '🔌', max: 4,
+             desc: 'Энергия восстанавливается на 0,4 сек быстрее',
+             prices: [2000, 8000, 30000, 100000]},
+            {id: 'race', name: 'Турбо-двигатель', icon: '🏎', max: 3,
+             desc: 'Встречные машины едут на 7% медленнее',
+             prices: [4500, 17000, 60000]},
+            {id: 'fee', name: 'Дружеский перевод', icon: '💸', max: 5,
+             desc: 'Комиссия за перевод −1% за уровень',
+             prices: [2500, 7000, 20000, 60000, 180000]},
+            {id: 'gem', name: 'Алмазный кирпич', icon: '💎', max: 3,
+             desc: '+1 монета за каждый разбитый кирпич',
+             prices: [4000, 16000, 65000]}
         ];
         let pupuShop = {};
         try {
@@ -1873,9 +1803,20 @@
             return Math.floor(Number(raw));
         }
 
+        // Дружеский перевод снижает комиссию: 5% минус 1% за уровень, не ниже 1%.
+        // Считаем в целых процентах: 1000 * 0.03 даёт 30.000000000000004
+        // и Math.ceil превращает честные 3% в лишнюю монету.
+        function transferFeePercent() {
+            return Math.max(1, 5 - shopLevel('fee'));
+        }
+
+        function transferFee(amount) {
+            return Math.ceil(amount * transferFeePercent() / 100);
+        }
+
         function updateTransferFee() {
             const amount = transferAmount();
-            const fee = Math.ceil(amount * 0.05);
+            const fee = transferFee(amount);
             const total = amount + fee;
             const target = transferPeople().find(row => row.key === transferTargetKey);
             const box = document.getElementById('trFee');
@@ -1888,8 +1829,9 @@
         }
 
         function setTransferAmount(value) {
-            const amount = value === 'half' ? Math.floor(myCoins / 2)
-                : value === 'all' ? Math.floor(myCoins / 1.05)
+            const rate = transferFeePercent() / 100;
+            const amount = value === 'half' ? Math.floor(myCoins / (2 * (1 + rate)))
+                : value === 'all' ? Math.floor(myCoins / (1 + rate))
                 : Number(value) || 0;
             const input = document.getElementById('trAmount');
             if (input) input.value = String(Math.max(0, amount));
@@ -1914,7 +1856,7 @@
         function sendTransfer() {
             const status = document.getElementById('trStatus');
             const amount = transferAmount();
-            const fee = Math.ceil(amount * 0.05);
+            const fee = transferFee(amount);
             const total = amount + fee;
             if (transferPending) return;
             if (!hasTelegramDataChannel()) {
@@ -2187,7 +2129,6 @@
         let maxEnergy = parseInt(localStorage.getItem('maxEnergy')) || 100;
         let energy = parseInt(localStorage.getItem('currEnergy'));
         if (isNaN(energy)) energy = maxEnergy;
-        const ENERGY_REGEN_MS = 3000;
         let energyUpdatedAt = parseInt(localStorage.getItem('energyUpdatedAt'), 10);
         if (!Number.isFinite(energyUpdatedAt)) energyUpdatedAt = Date.now();
 
@@ -2239,6 +2180,11 @@
             persistWallet();
         }
 
+        // Быстрая зарядка из магазина сокращает паузу между тапами.
+        function energyRegenMs() {
+            return Math.max(600, 3000 - shopLevel('charge') * 400);
+        }
+
         // Начисляем энергию по прошедшему времени, поэтому закрытое
         // приложение или свёрнутая вкладка не останавливают восстановление.
         function syncEnergy(now = Date.now()) {
@@ -2247,13 +2193,14 @@
                 return false;
             }
 
-            const gained = Math.floor(Math.max(0, now - energyUpdatedAt) / ENERGY_REGEN_MS);
+            const regen = energyRegenMs();
+            const gained = Math.floor(Math.max(0, now - energyUpdatedAt) / regen);
             if (gained < 1) return false;
 
             energy = Math.min(maxEnergy, energy + gained);
             energyUpdatedAt = energy >= maxEnergy
                 ? now
-                : energyUpdatedAt + gained * ENERGY_REGEN_MS;
+                : energyUpdatedAt + gained * regen;
             saveEnergy();
             return true;
         }
@@ -2450,15 +2397,6 @@
 
         computeMyKey();
         loadLeaders(false);
-
-        // Цены улучшений
-        function getPowerCost() {
-            return Math.floor(600 * Math.pow(1.6, tapPower - 1));
-        }
-
-        function getEnergyCost() {
-            return Math.floor(600 * Math.pow(1.6, (maxEnergy - 100) / 50));
-        }
 
         // === КАЗИНО ===
         // Механика повторяет бота: 64 исхода, 64 — джекпот 777 (x50),
@@ -2719,7 +2657,7 @@
         }
 
         function updateAllUI() {
-            document.getElementById('mainCoins').innerText = myCoins;
+            document.getElementById('mainCoins').innerText = formatNum(myCoins);
             document.getElementById('mSnake').innerText = bestSnake;
             document.getElementById('mRace').innerText = bestRace;
             document.getElementById('mG2048').innerText = bestG2048;
@@ -2732,23 +2670,12 @@
             document.getElementById('mLeadersCount').innerText = boardRows.length;
             document.getElementById('mLeadersWord').innerText = plural(boardRows.length, 'участник', 'участника', 'участников');
             document.getElementById('mTapLvl').innerText = tapPower;
-            document.getElementById('tapScore').innerText = myCoins;
+            document.getElementById('tapScore').innerText = formatNum(myCoins);
             document.getElementById('energyVal').innerText = energy;
             document.getElementById('energyMax').innerText = maxEnergy;
             document.getElementById('energyFill').style.width = ((energy / maxEnergy) * 100) + '%';
-
-            let pCost = getPowerCost();
-            let eCost = getEnergyCost();
-            document.getElementById('uiPower').innerText = tapPower;
-            document.getElementById('uiMaxE').innerText = maxEnergy;
-
-            let btnP = document.getElementById('btnBuyPower');
-            btnP.innerText = pCost + ' 🪙';
-            btnP.disabled = myCoins < pCost;
-
-            let btnE = document.getElementById('btnBuyEnergy');
-            btnE.innerText = eCost + ' 🪙';
-            btnE.disabled = myCoins < eCost;
+            const regenEl = document.getElementById('energyRegen');
+            if (regenEl) regenEl.innerText = String(energyRegenMs() / 1000).replace('.', ',');
 
             updateCasinoUI();
         }
@@ -2854,31 +2781,6 @@
             setTimeout(() => num.remove(), 800);
 
             if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        }
-
-        function buyPower() {
-            let cost = getPowerCost();
-            if (myCoins >= cost) {
-                spendCoins(cost);
-                tapPower += 1;
-                localStorage.setItem('tapPower', tapPower);
-                updateAllUI();
-                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            }
-        }
-
-        function buyEnergy() {
-            let cost = getEnergyCost();
-            if (myCoins >= cost) {
-                spendCoins(cost);
-                maxEnergy += 50;
-                energy += 50;
-                localStorage.setItem('maxEnergy', maxEnergy);
-                if (energy >= maxEnergy) energyUpdatedAt = Date.now();
-                saveEnergy();
-                updateAllUI();
-                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            }
         }
 
         function refreshEnergy() {
@@ -3097,8 +2999,11 @@
                 obstacles.push({lane: Math.floor(Math.random() * 3), y: -65, b: c.b, r: c.r});
             }
 
+            // Турбо-двигатель: машины соперников приближаются медленнее,
+            // уворачиваться проще. Своя скорость дороги не меняется.
+            const trafficSpeed = 200 * (1 - shopLevel('race') * 0.07);
             for (let i = 0; i < obstacles.length; i++) {
-                obstacles[i].y += 200 * dt;
+                obstacles[i].y += trafficSpeed * dt;
                 let ox = LANES[obstacles[i].lane], oy = obstacles[i].y;
 
                 drawCar(rCtx, ox, oy, obstacles[i].b, obstacles[i].r, false);
@@ -3547,7 +3452,8 @@
 
                 brick.alive = false;
                 arkScore += (ARK_ROWS - brick.row) * 10 * arkLevel;
-                earnGameCoins(1);
+                // Алмазный кирпич: +1 монета за каждый разбитый кирпич.
+                earnGameCoins(1 + shopLevel('gem'));
                 if (arkScore > bestArkanoid) {
                     bestArkanoid = arkScore;
                     localStorage.setItem('bestArkanoid', bestArkanoid);
