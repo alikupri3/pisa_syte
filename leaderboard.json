@@ -2,7 +2,7 @@
   {
     "key": "54a9d82aa1",
     "name": "່",
-    "points": 898264,
+    "points": 897739,
     "snake": 24,
     "race": 208,
     "g2048": 1896,
@@ -50,6 +50,19 @@
     "epoch": "1792775857177-wubfum",
     "ackEarned": 16920,
     "ackSpent": 15835
+  },
+  {
+    "key": "f369b0540b",
+    "name": "❌",
+    "points": 500,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "arkanoid": 0,
+    "slaves": 0,
+    "epoch": "1792789252558-yr2c2y",
+    "ackEarned": 17,
+    "ackSpent": 0
   },
   {
     "key": "ed1c09d73e",
@@ -153,19 +166,6 @@
     "slaves": 0,
     "epoch": "",
     "ackEarned": 0,
-    "ackSpent": 0
-  },
-  {
-    "key": "f369b0540b",
-    "name": "❌",
-    "points": 0,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "arkanoid": 0,
-    "slaves": 0,
-    "epoch": "1792789252558-yr2c2y",
-    "ackEarned": 17,
     "ackSpent": 0
   }
 ]
