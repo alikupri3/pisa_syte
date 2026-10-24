@@ -13,6 +13,18 @@
       "ackSpent": 727413
     },
     {
+      "key": "bbad70fd57",
+      "name": "Атлантический",
+      "points": 72501,
+      "owner": "54a9d82aa1",
+      "price": 1702,
+      "income": 109,
+      "lastCollect": 0,
+      "ackEpoch": "1792769679723-b2pjsc",
+      "ackEarned": 99735,
+      "ackSpent": 28302
+    },
+    {
       "key": "3b82c50e4a",
       "name": "Броник",
       "points": 2500,
@@ -35,18 +47,6 @@
       "ackEpoch": "1792775857177-wubfum",
       "ackEarned": 8398,
       "ackSpent": 6985
-    },
-    {
-      "key": "bbad70fd57",
-      "name": "Атлантический",
-      "points": 1068,
-      "owner": "54a9d82aa1",
-      "price": 1702,
-      "income": 109,
-      "lastCollect": 0,
-      "ackEpoch": "",
-      "ackEarned": 0,
-      "ackSpent": 0
     },
     {
       "key": "ed1c09d73e",
