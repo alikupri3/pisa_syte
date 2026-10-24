@@ -3220,17 +3220,19 @@
             for (let i = 0; i < 4; i++) {
                 let line = [];
                 for (let j = 0; j < 4; j++) {
-                    if (dx === 1) line.push(g2048Grid[i][j]);
-                    else if (dx === -1) line.push(g2048Grid[i][3 - j]);
-                    else if (dy === 1) line.push(g2048Grid[j][i]);
-                    else line.push(g2048Grid[3 - j][i]);
+                    // slide2048Line укладывает плитки к индексу 0, поэтому строку
+                    // читаем с той стороны, куда едем: dx=1 (вправо) — справа налево.
+                    if (dx === 1) line.push(g2048Grid[i][3 - j]);
+                    else if (dx === -1) line.push(g2048Grid[i][j]);
+                    else if (dy === 1) line.push(g2048Grid[3 - j][i]);
+                    else line.push(g2048Grid[j][i]);
                 }
                 const merged = slide2048Line(line);
                 for (let j = 0; j < 4; j++) {
-                    if (dx === 1) next[i][j] = merged[j];
-                    else if (dx === -1) next[i][3 - j] = merged[j];
-                    else if (dy === 1) next[j][i] = merged[j];
-                    else next[3 - j][i] = merged[j];
+                    if (dx === 1) next[i][3 - j] = merged[j];
+                    else if (dx === -1) next[i][j] = merged[j];
+                    else if (dy === 1) next[3 - j][i] = merged[j];
+                    else next[j][i] = merged[j];
                 }
             }
 
