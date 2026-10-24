@@ -25,6 +25,18 @@
       "ackSpent": 28302
     },
     {
+      "key": "a71cc81108",
+      "name": "Jealous Eyedress",
+      "points": 5000,
+      "owner": "54a9d82aa1",
+      "price": 8616,
+      "income": 416,
+      "lastCollect": 0,
+      "ackEpoch": "1792775857177-wubfum",
+      "ackEarned": 15815,
+      "ackSpent": 10882
+    },
+    {
       "key": "3b82c50e4a",
       "name": "Броник",
       "points": 2500,
@@ -35,18 +47,6 @@
       "ackEpoch": "",
       "ackEarned": 0,
       "ackSpent": 0
-    },
-    {
-      "key": "a71cc81108",
-      "name": "Jealous Eyedress",
-      "points": 1480,
-      "owner": "54a9d82aa1",
-      "price": 8616,
-      "income": 416,
-      "lastCollect": 0,
-      "ackEpoch": "1792775857177-wubfum",
-      "ackEarned": 8398,
-      "ackSpent": 6985
     },
     {
       "key": "ed1c09d73e",
