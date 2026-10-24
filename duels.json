@@ -1,6 +1,19 @@
 {
   "recent": [
     {
+      "id": "831c451caf9c",
+      "fromKey": "84c100c056",
+      "fromName": "moon",
+      "toKey": "bbad70fd57",
+      "toName": "Атлантический",
+      "game": "g2048",
+      "stake": 703,
+      "status": "accepted",
+      "scoreFrom": 2960,
+      "scoreTo": 0,
+      "winnerKey": "84c100c056"
+    },
+    {
       "id": "ffbc12b1ae2a",
       "fromKey": "84c100c056",
       "fromName": "moon",
@@ -38,9 +51,16 @@
     {
       "key": "84c100c056",
       "name": "moon",
+      "wins": 1,
+      "losses": 1,
+      "points": 1406
+    },
+    {
+      "key": "bbad70fd57",
+      "name": "Атлантический",
       "wins": 0,
       "losses": 1,
-      "points": 703
+      "points": 71898
     }
   ]
 }
