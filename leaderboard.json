@@ -28,14 +28,14 @@
   {
     "key": "84c100c056",
     "name": "moon",
-    "points": 5949,
+    "points": 6273,
     "snake": 21,
     "race": 130,
     "g2048": 2960,
-    "arkanoid": 5130,
+    "arkanoid": 43560,
     "slaves": 1,
     "epoch": "1792693625936-5u95jd",
-    "ackEarned": 30374,
+    "ackEarned": 30698,
     "ackSpent": 33014
   },
   {
