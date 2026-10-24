@@ -73,6 +73,18 @@
       "ackSpent": 0
     },
     {
+      "key": "a11f5f08a1",
+      "name": "Некит",
+      "points": 420,
+      "owner": null,
+      "price": 150,
+      "income": 15,
+      "lastCollect": 0,
+      "ackEpoch": "1792862274216-sut4ax",
+      "ackEarned": 320,
+      "ackSpent": 0
+    },
+    {
       "key": "ed1c09d73e",
       "name": "Zod1us",
       "points": 90,
