@@ -78,6 +78,19 @@
     "ackSpent": 0
   },
   {
+    "key": "a11f5f08a1",
+    "name": "Некит",
+    "points": 420,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "arkanoid": 43200,
+    "slaves": 0,
+    "epoch": "1792862274216-sut4ax",
+    "ackEarned": 320,
+    "ackSpent": 0
+  },
+  {
     "key": "ed1c09d73e",
     "name": "Zod1us",
     "points": 90,
