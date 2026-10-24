@@ -27,13 +27,13 @@
     {
       "key": "84c100c056",
       "name": "moon",
-      "points": 9769,
+      "points": 11335,
       "owner": "54a9d82aa1",
       "price": 5745,
       "income": 300,
       "lastCollect": 1792690787,
       "ackEpoch": "1792693625936-5u95jd",
-      "ackEarned": 25124,
+      "ackEarned": 26690,
       "ackSpent": 22014
     },
     {
