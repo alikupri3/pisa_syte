@@ -65,6 +65,19 @@
     "ackSpent": 0
   },
   {
+    "key": "84c100c056",
+    "name": "moon",
+    "points": 500,
+    "snake": 21,
+    "race": 130,
+    "g2048": 2960,
+    "arkanoid": 1280,
+    "slaves": 1,
+    "epoch": "1792693625936-5u95jd",
+    "ackEarned": 22555,
+    "ackSpent": 22014
+  },
+  {
     "key": "ed1c09d73e",
     "name": "Zod1us",
     "points": 90,
@@ -76,19 +89,6 @@
     "epoch": "",
     "ackEarned": 0,
     "ackSpent": 0
-  },
-  {
-    "key": "84c100c056",
-    "name": "moon",
-    "points": 62,
-    "snake": 21,
-    "race": 130,
-    "g2048": 1420,
-    "arkanoid": 1280,
-    "slaves": 1,
-    "epoch": "1792693625936-5u95jd",
-    "ackEarned": 7799,
-    "ackSpent": 7696
   },
   {
     "key": "62cf218c52",
