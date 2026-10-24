@@ -3,14 +3,14 @@
     {
       "key": "54a9d82aa1",
       "name": "່",
-      "points": 891304,
+      "points": 891158,
       "owner": "84c100c056",
       "price": 505,
       "income": 40,
       "lastCollect": 1792689639,
       "ackEpoch": "1792693320607-6ux24p",
       "ackEarned": 4968,
-      "ackSpent": 727413
+      "ackSpent": 727488
     },
     {
       "key": "bbad70fd57",
@@ -75,7 +75,7 @@
     {
       "key": "a11f5f08a1",
       "name": "Некит",
-      "points": 420,
+      "points": 487,
       "owner": null,
       "price": 150,
       "income": 15,
