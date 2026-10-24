@@ -26,6 +26,19 @@
     "ackSpent": 28302
   },
   {
+    "key": "84c100c056",
+    "name": "moon",
+    "points": 3069,
+    "snake": 21,
+    "race": 130,
+    "g2048": 2960,
+    "arkanoid": 5130,
+    "slaves": 1,
+    "epoch": "1792693625936-5u95jd",
+    "ackEarned": 25124,
+    "ackSpent": 22014
+  },
+  {
     "key": "3b82c50e4a",
     "name": "Броник",
     "points": 2567,
@@ -63,19 +76,6 @@
     "epoch": "1792789252558-yr2c2y",
     "ackEarned": 34,
     "ackSpent": 0
-  },
-  {
-    "key": "84c100c056",
-    "name": "moon",
-    "points": 500,
-    "snake": 21,
-    "race": 130,
-    "g2048": 2960,
-    "arkanoid": 1280,
-    "slaves": 1,
-    "epoch": "1792693625936-5u95jd",
-    "ackEarned": 22555,
-    "ackSpent": 22014
   },
   {
     "key": "ed1c09d73e",
