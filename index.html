@@ -148,6 +148,11 @@
         .save-status.ok { color: #86efac; }
         .save-status.error { color: #fda4af; }
 
+        .save-auto-hint {
+            margin-top: 8px; font-size: 11.5px; color: var(--muted);
+            text-align: center; line-height: 1.45;
+        }
+
         .btn-primary:active {
             transform: translateY(2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -1235,7 +1240,8 @@
             </div>
         </div>
 
-        <button class="btn-primary" id="saveBtn" onclick="sendToBot()">💾 Сохранить в Топ бота</button>
+        <button class="btn-primary" id="saveBtn" onclick="sendToBot()">💾 Сохранить сейчас</button>
+        <div class="save-auto-hint">Результаты сохраняются сами, когда закрываешь приложение</div>
         <div id="saveStatus" class="save-status" role="status" aria-live="polite"></div>
     </div>
 
@@ -2714,28 +2720,17 @@
             if (id === 'duels') openDuels();
         }
 
-        function setSaveStatus(text, kind) {
-            const el = document.getElementById('saveStatus');
-            if (!el) return;
-            el.innerText = text;
-            el.className = 'save-status' + (kind ? ' ' + kind : '');
-        }
+        // sendData в Telegram закрывает Mini App, поэтому «сохранять по таймеру»
+        // нельзя — приложение закрывалось бы само. Зато можно отправить снимок
+        // в момент выхода: страница всё равно умирает, и лишнего закрытия нет.
+        // Повторная отправка безопасна: бот считает приращения по epoch/ack,
+        // поэтому дубль даёт нулевую дельту, а не двойное начисление.
+        let autoSaveSent = false;
 
-        // Telegram не сообщает странице, доставлено ли sendData боту. Поэтому
-        // монеты остаются в localStorage до подтверждения из чата; кнопка
-        // повторной отправки появится, если ответа нет через минуту.
-        function sendToBot(retry) {
-            if (!hasTelegramDataChannel()) {
-                setSaveStatus('Открой игру кнопкой «📱 Открыть Mini App» в боте.', 'error');
-                return;
-            }
-            if (!retry && pupuEarned <= 0 && pupuSpent <= 0
-                    && bestSnake <= 0 && bestRace <= 0 && bestG2048 <= 0 && bestArkanoid <= 0) {
-                setSaveStatus('Нет новых результатов для сохранения.', '');
-                return;
-            }
-            const data = {
+        function walletSnapshot(auto) {
+            return {
                 action: 'save_games',
+                auto: !!auto,
                 coins: myCoins,
                 earned: pupuEarned,
                 spent: pupuSpent,
@@ -2745,8 +2740,53 @@
                 g2048: bestG2048,
                 arkanoid: bestArkanoid
             };
+        }
+
+        function hasProgress() {
+            return pupuEarned > 0 || pupuSpent > 0 || bestSnake > 0
+                || bestRace > 0 || bestG2048 > 0 || bestArkanoid > 0;
+        }
+
+        // Автосохранение при уходе со страницы. Ничего не пишем в чат:
+        // иначе каждое закрытие приложения спамило бы сообщениями бота.
+        function autoSaveToBot() {
+            if (autoSaveSent) return;
+            if (!hasTelegramDataChannel()) return;
+            if (!hasProgress()) return;
+            try {
+                sendTelegramData(JSON.stringify(walletSnapshot(true)));
+                autoSaveSent = true;
+                localStorage.removeItem('pupuPendingSave');
+            } catch (e) { /* снимок остался в localStorage, уйдёт в следующий раз */ }
+        }
+
+        // Только реальное закрытие страницы. visibilitychange сюда не годится:
+        // он срабатывает и когда игрок просто переключился в другой чат,
+        // а sendData закрыл бы Mini App прямо у него под руками.
+        window.addEventListener('pagehide', autoSaveToBot);
+        window.addEventListener('beforeunload', autoSaveToBot);
+
+        function setSaveStatus(text, kind) {
+            const el = document.getElementById('saveStatus');
+            if (!el) return;
+            el.innerText = text;
+            el.className = 'save-status' + (kind ? ' ' + kind : '');
+        }
+
+        // Ручное сохранение осталось для тех, кто хочет подтверждение в чате.
+        function sendToBot(retry) {
+            if (!hasTelegramDataChannel()) {
+                setSaveStatus('Открой игру кнопкой «📱 Открыть Mini App» в боте.', 'error');
+                return;
+            }
+            if (!retry && !hasProgress()) {
+                setSaveStatus('Нет новых результатов для сохранения.', '');
+                return;
+            }
+            const data = walletSnapshot(false);
             try {
                 sendTelegramData(JSON.stringify(data));
+                autoSaveSent = true;
                 localStorage.setItem('pupuPendingSave', JSON.stringify(data));
                 setSaveStatus('Отправлено. Проверь сообщение от бота в чате.', 'ok');
                 const btn = document.getElementById('saveBtn');
