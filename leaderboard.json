@@ -13,6 +13,19 @@
     "ackSpent": 727413
   },
   {
+    "key": "bbad70fd57",
+    "name": "Атлантический",
+    "points": 72501,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "arkanoid": 0,
+    "slaves": 0,
+    "epoch": "1792769679723-b2pjsc",
+    "ackEarned": 99735,
+    "ackSpent": 28302
+  },
+  {
     "key": "3b82c50e4a",
     "name": "Броник",
     "points": 2500,
@@ -37,19 +50,6 @@
     "epoch": "1792775857177-wubfum",
     "ackEarned": 8398,
     "ackSpent": 6985
-  },
-  {
-    "key": "bbad70fd57",
-    "name": "Атлантический",
-    "points": 1068,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "arkanoid": 0,
-    "slaves": 0,
-    "epoch": "",
-    "ackEarned": 0,
-    "ackSpent": 0
   },
   {
     "key": "ed1c09d73e",
