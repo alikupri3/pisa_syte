@@ -2,7 +2,7 @@
   {
     "key": "54a9d82aa1",
     "name": "່",
-    "points": 891236,
+    "points": 891237,
     "snake": 24,
     "race": 208,
     "g2048": 1896,
@@ -28,14 +28,14 @@
   {
     "key": "84c100c056",
     "name": "moon",
-    "points": 4432,
+    "points": 6020,
     "snake": 21,
     "race": 130,
     "g2048": 2960,
     "arkanoid": 5130,
     "slaves": 1,
     "epoch": "1792693625936-5u95jd",
-    "ackEarned": 28784,
+    "ackEarned": 30374,
     "ackSpent": 33014
   },
   {
