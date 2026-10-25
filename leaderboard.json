@@ -58,16 +58,16 @@
   {
     "key": "a71cc81108",
     "name": "Jealous Eyedress",
-    "points": 976,
-    "snake": 0,
-    "race": 18,
+    "points": 2153,
+    "snake": 4,
+    "race": 26,
     "g2048": 1284,
     "arkanoid": 1200,
-    "match3": 0,
+    "match3": 1760,
     "slaves": 0,
     "epoch": "1792775857177-wubfum",
-    "ackEarned": 16920,
-    "ackSpent": 15835
+    "ackEarned": 31735,
+    "ackSpent": 29473
   },
   {
     "key": "f369b0540b",
