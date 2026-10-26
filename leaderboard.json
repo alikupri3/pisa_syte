@@ -2,16 +2,16 @@
   {
     "key": "54a9d82aa1",
     "name": "່",
-    "points": 891158,
+    "points": 891449,
     "snake": 24,
     "race": 208,
     "g2048": 1896,
     "arkanoid": 12000,
-    "match3": 0,
+    "match3": 1305,
     "slaves": 10,
     "epoch": "1792693320607-6ux24p",
-    "ackEarned": 4968,
-    "ackSpent": 727488
+    "ackEarned": 5284,
+    "ackSpent": 727513
   },
   {
     "key": "bbad70fd57",
