@@ -1,19 +1,5 @@
 [
   {
-    "key": "54a9d82aa1",
-    "name": "່",
-    "points": 891499,
-    "snake": 24,
-    "race": 208,
-    "g2048": 1896,
-    "arkanoid": 12000,
-    "match3": 1305,
-    "slaves": 10,
-    "epoch": "1792693320607-6ux24p",
-    "ackEarned": 5334,
-    "ackSpent": 727513
-  },
-  {
     "key": "bbad70fd57",
     "name": "Атлантический",
     "points": 70498,
@@ -40,6 +26,20 @@
     "epoch": "1792693625936-5u95jd",
     "ackEarned": 34075,
     "ackSpent": 33014
+  },
+  {
+    "key": "54a9d82aa1",
+    "name": "່",
+    "points": 7578,
+    "snake": 24,
+    "race": 208,
+    "g2048": 1896,
+    "arkanoid": 12000,
+    "match3": 1305,
+    "slaves": 10,
+    "epoch": "1792693320607-6ux24p",
+    "ackEarned": 11913,
+    "ackSpent": 1618013
   },
   {
     "key": "3b82c50e4a",
