@@ -14,23 +14,9 @@
     "ackSpent": 2533533
   },
   {
-    "key": "bbad70fd57",
-    "name": "Атлантический",
-    "points": 70498,
-    "snake": 0,
-    "race": 0,
-    "g2048": 0,
-    "arkanoid": 0,
-    "match3": 0,
-    "slaves": 0,
-    "epoch": "1792769679723-b2pjsc",
-    "ackEarned": 99735,
-    "ackSpent": 28302
-  },
-  {
     "key": "84c100c056",
     "name": "moon",
-    "points": 9650,
+    "points": 250000,
     "snake": 34,
     "race": 130,
     "g2048": 2960,
@@ -40,6 +26,20 @@
     "epoch": "1792693625936-5u95jd",
     "ackEarned": 34075,
     "ackSpent": 33014
+  },
+  {
+    "key": "bbad70fd57",
+    "name": "Атлантический",
+    "points": 123456,
+    "snake": 0,
+    "race": 0,
+    "g2048": 0,
+    "arkanoid": 0,
+    "match3": 0,
+    "slaves": 0,
+    "epoch": "1792769679723-b2pjsc",
+    "ackEarned": 99735,
+    "ackSpent": 28302
   },
   {
     "key": "3b82c50e4a",
