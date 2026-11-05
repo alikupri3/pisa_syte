@@ -59,7 +59,7 @@
       "name": "moon",
       "wins": 2,
       "losses": 1,
-      "points": 9650
+      "points": 250000
     },
     {
       "key": "54a9d82aa1",
@@ -73,7 +73,7 @@
       "name": "Атлантический",
       "wins": 0,
       "losses": 2,
-      "points": 70498
+      "points": 123456
     }
   ]
 }
